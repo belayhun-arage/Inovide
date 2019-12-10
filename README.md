@@ -1,6 +1,6 @@
-#Inovide
+##Inovide
 
-Inovide (Invest On Idea )
+##Inovide (Invest On Idea )
 Our Project is Web Based Entrepreneurs Collaboration Site a place where they upload their idea and Business Strategy from simple business idea upto Advanced Business Ideas where the users of the system having different resources will be Working with them in collaboration.
 	In this system different users will be attended such as :
 Entrepreneurs having a business idea seeking financial support.
@@ -12,7 +12,7 @@ In the system the users are - entrepreneurs - investors - companies  and also - 
 
 
 
-Functional requirements
+##Functional requirements
 Users can upload their ideas and people all over the world can comment or support the idea in different financial and related things.
 Communicate with investors having the desire to support business idea.
 Reading posts and comments of different ideas .
@@ -22,7 +22,7 @@ Investors can browse entrepreneurs on the site and get matched to startups based
 Extend entrepreneurs reach and enable them to access resources well beyond their geography
 Idea crossing , connect entrepreneurs  and investors based on their  profile
 Well known business idea holders will be able to Advertise their city or village to attract their 
-Non-functional : 
+##Non-functional : 
  -posting Business related ideas for target people or for public 
  -voting and commenting on Business ideas 
 - contacting business idea owners and chat
@@ -41,5 +41,4 @@ Non-functional :
 	As Any Paid Account User I Can Set The Visibilities of the Ideas .
 	As Any Paid Account User I can Chat With Other Paid Account User Enterpreneurs and Investors in the 		System
 	As A Paid Account User i can Comment And Rate Others Post And Profile
-	
 
