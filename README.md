@@ -20,9 +20,11 @@
 	Extend entrepreneurs reach and enable them to access resources well beyond their geography
 	Idea crossing , connect entrepreneurs  and investors based on their  profile
 	Well known business idea holders will be able to Advertise their city or village to attract their 
+
+	
 ## Non-functional : 
- -posting Business related ideas for target people or for public 
- -voting and commenting on Business ideas 
+ - posting Business related ideas for target people or for public 
+ - voting and commenting on Business ideas 
  - contacting business idea owners and chat
  - advertisement by different companies 
 
