@@ -1,0 +1,84 @@
+body{
+	background-color: white;
+
+}
+nav{
+	margin: 0px; 
+	box-shadow: 0px 2px 8px 0px rgba(0,0,0,.3); 
+}
+nav ul>li{
+	display: inline; 
+
+}
+
+nav ul a{
+	padding: 1rem;
+	color: black; 
+    text-decoration: none; 
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+nav ul a.active,nav ul a:active{
+	border-bottom: 2px solid blue;
+	background: rgba(0,0,0,.05);  
+}
+nav ul a:hover{
+	background: rgba(0,0,0,.1); 
+}
+
+nav>#nav{
+	padding: 1rem;
+	background: white; 
+	
+	margin: 0px; 
+}
+nav>#nav ul{
+	text-align: right;
+	display: inline-block; 
+}
+#next h3{
+    font-size: 50px;
+    font-family: Impact, 'Haettenschweiler', 'Arial Narrow Bold', sans-serif;
+    padding-left: 20px;
+
+
+}
+#next p{
+    padding-left: 20px;
+    font-size: 20px;
+    position: relative;
+    margin-top: 0%;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif
+
+    
+}
+#next img {
+    position: absolute;
+    margin-left: 35%;
+    margin-top: -9%;
+
+
+}
+#discribe h3{
+    position: absolute;
+    margin-top: 35%;
+    padding-left: 30%;
+    font-size: 30px;
+
+
+}
+#discribe p{
+    position: absolute;
+    margin-top: 38%;
+    padding-left: 15%;
+    font-size: 21px;
+
+
+
+}
+.service .row{
+    position: absolute;
+    margin-top: 50%;
+    
+
+
+}
