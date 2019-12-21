@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="fonts/material-icon/css/material-design-iconic-font.min.css">
 
     
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/style.css" >
 </head>
 <body>
 
@@ -20,26 +20,26 @@
             
             <div class="container">
                 <div class="signup-content">
-                    <form action="/home" method="GET" id="signup-form" class="signup-form">
+                    <form action="/register/" enctype="multipart/form-data" method="POST" id="signup-form" class="signup-form">
                         <h2 class="form-title">Create account</h2>
                         <div class="form-group">
-                            <input type="text" class="form-input" name="first" id="name" placeholder="First Name" required/>
+                            <input type="text" class="form-input" name="firstname" id="name" placeholder="First Name" required/>
                         </div>
                         <div class="form-group">
-                                <input type="text" class="form-input" name="last" id="name" placeholder="Last Name" required/>
+                                <input type="text" class="form-input" name="lastname" id="name" placeholder="Last Name" required/>
                             </div>
                         <div class="form-group">
                             <input type="email" class="form-input" name="email" id="email" placeholder="Your Email " required/>
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-input" name="use" id="password" placeholder="username"/>
+                            <input type="text" class="form-input" name="name" id="password" placeholder="username"/>
                             <span toggle="#password" class="zmdi zmdi-eye field-icon toggle-password"></span>
                         </div>
                         <div class="form-group">
                             <input type="password" class="form-input" name="password" id="re_password" placeholder="password" required/>
                         </div>
                         <div class="form-group">
-                                <input type="text" class="form-input" name="bio" id="name" placeholder="Biography"/>
+                                <input type="text" class="form-input" name="biography" id="name" placeholder="Biography"/>
                             </div>
                         <div class="form-group">
                             <input type="file" name="image"/>
@@ -63,6 +63,6 @@
 
     
     <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="..assets/js/main.js"></script>
+    <script src="../assets/js/main.js"></script>
 </body>
 </html>
