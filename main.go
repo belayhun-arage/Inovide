@@ -17,14 +17,15 @@ func init() {
 
 func main() {
 
-	router := mux.NewRouter()
-	http.Handle("/", router)
+	router := mux.NewRouter().StrictSlash(true)
 	// fs := http.FileServer(http.Dir("./public"))
 	// http.Handle("/public/", http.StripPrefix("/public/", fs))
-	router.Handle("/assets/", http.StripPrefix("/assets/", http.FileServer(http.Dir("/assets/"))))
+	router.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
 	router.HandleFunc("/register/", registrationController.RegistrationRequest).Methods("GET")
 	router.HandleFunc("/register/", registrationController.RegisterUser).Methods("POST")
 	router.HandleFunc("/signin/", registrationController.SignUser).Methods("GET")
 	router.HandleFunc("/signin/", registrationController.SignUser).Methods("POST")
-	http.ListenAndServe(":8080", router)
+
+	http.Handle("/", router)
+	http.ListenAndServe(":8080", nil)
 }
