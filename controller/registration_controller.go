@@ -1,31 +1,20 @@
 package registrationController
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	UsableFunctions "github.com/Samuael/Projects/Inovide/controller/Usables"
 	usermodel "github.com/Samuael/Projects/Inovide/models"
 )
 
-var RegistrationTemplates = template.Must(template.ParseFiles("templates/reg.html"))
-
-type Person struct {
-	Id             int    `json:"id,omitempty"  bson:"id,omitempty"`
-	Firstname      string `json:"firstname,omitempty"  bson:"firstname,omitempty"`
-	Lastname       string `json:"lastname,omitempty"  bson:"lastname,omitempty"`
-	Username       string `json:"name,omitempty"  bson:"name,omitempty"`
-	Password       string `json:"password,omitempty"  bson:"password,omitempty"`
-	Email          string `json:"email,omitempty"  bson:"email,omitempty"`
-	Biography      string `json:"biography,omitempty"  bson:"biography,omitempty"`
-	Followers      int    `json:"followers,omitempty"  bson:"followers,omitempty"`
-	Ideas          int    `json:"idea,omitempty"   bson:"idea,omitempty"`
-	ImageDirectory string `json:"imagedirectory,omitempty"   bson:"imagedirectory,omitempty"`
-}
+var RegistrationTemplates = template.Must(template.ParseFiles("templates/reg.html", "templates/login.html"))
 
 func RegisterUser(w http.ResponseWriter, request *http.Request) {
 
@@ -45,9 +34,20 @@ func RegisterUser(w http.ResponseWriter, request *http.Request) {
 	password := request.FormValue("password")
 	biography := request.FormValue("biography")
 
+	person.Email = email
+	person.Username = username
+
+	message := person.FindUser(person.Username, password)
+
+	if message.Succesful {
+		RegistrationRequestRedirect(w, request, &message)
+		return
+	}
+
 	var newFullNameOfTheImageDirectory string
 
 	//-------------------Image Saving ---------------------------
+
 	if header.Filename != "" {
 
 		stringSliceOfNameOfImage := strings.Split(header.Filename, ".")
@@ -56,32 +56,73 @@ func RegisterUser(w http.ResponseWriter, request *http.Request) {
 
 		randomStringForSavingTheImage := UsableFunctions.GenerateRandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
 
-		newFullNameOfTheImageDirectory = "/public/img/UsersImage/" + randomStringForSavingTheImage + "." + imageExtension
+		newFullNameOfTheImageDirectory = "assets/img/UsersImage/" + randomStringForSavingTheImage + "." + imageExtension
 
 		file, errorCreatingFile := os.Create(newFullNameOfTheImageDirectory)
+
 		if errorCreatingFile != nil {
-			fmt.Println("ErrorWhile Creating the Image ")
+			fmt.Println("ErrorWhile Creating the Image ", errorCreatingFile)
 		}
 		defer file.Close()
 		person.ImageDirectory = newFullNameOfTheImageDirectory
 		io.Copy(file, imagedirectory)
 	}
 
-	person.Username = username
 	person.Password = password
-	person.Email = email
 	person.Biography = biography
 	person.Firstname = firstname
 	person.Lastname = lasetname
 
 	//---------------------------------------
+	_ = person.RegisterUser()
 
-	message := person.RegisterUser()
-	fmt.Println(message)
-	w.Write([]byte("<h1> Succesfully Added </h1> "))
+	mes, erro := json.Marshal(person)
 
+	if erro == nil {
+		w.Header().Add("Content-Type", "application/json")
+		w.Write(mes)
+	}
+	// fmt.Println(messageBody)
+	// w.Write([]byte("<h1> Succesfully Added </h1> "))
 }
 
 func RegistrationRequest(writer http.ResponseWriter, request *http.Request) {
-	RegistrationTemplates.Execute(writer, "templates/reg.html")
+	RegistrationTemplates.ExecuteTemplate(writer, "reg.html", nil)
+}
+
+func RegistrationRequestRedirect(writer http.ResponseWriter, request *http.Request, message *usermodel.Message) {
+	RegistrationTemplates.ExecuteTemplate(writer, "reg.html", message)
+}
+
+func SignUser(writer http.ResponseWriter, request *http.Request) {
+
+	if request.Method == "GET" {
+
+		RegistrationTemplates.ExecuteTemplate(writer, "login.html", nil)
+	} else {
+		username := request.FormValue("name")
+		password := request.FormValue("password")
+
+		person := usermodel.Person{Username: username, Password: password}
+
+		message := person.FindUser(username, password)
+
+		if message.Succesful {
+			expiration := time.Now().Add(365 * 24 * time.Hour)
+			cookiename := http.Cookie{Name: "name", Value: person.Username, Expires: expiration}
+			cookiepassword := http.Cookie{Name: "password", Value: person.Password, Expires: expiration}
+			http.SetCookie(writer, &cookiename)
+			http.SetCookie(writer, &cookiepassword)
+		}
+
+		writer.Header().Set("Content-Type", "application/json")
+		binary, erro := json.Marshal(person)
+
+		if erro != nil {
+			return
+		}
+
+		writer.Write(binary)
+	}
+
 }
