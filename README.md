@@ -2,7 +2,7 @@
 
 ## Inovide (Invest On Idea )
 	Our Project is Web Based Entrepreneurs Collaboration Site a place where they upload their idea and Business Strategy from simple business idea upto Advanced Business Ideas where the users of the system having different resources will be Working with them in collaboration.
-# In this system different users will be attended such as :
+#### In this system different users will be attended such as :
 	Entrepreneurs having a business idea seeking financial support.
 	Individuals looking for Business ideas that have been tried and having a better acceptance .
 	Individuals looking for better understanding of an idea having similarity with the idea they are trying to start their business with . so that , they will maintain their idea and plan by using supporting ideas from different posts in the site and also by talking to those who have tried related business idea formerly by using the chatting platform or feature  of the system.
@@ -21,7 +21,7 @@
 	Idea crossing , connect entrepreneurs  and investors based on their  profile
 	Well known business idea holders will be able to Advertise their city or village to attract their 
 
-	
+
 ## Non-functional : 
  - posting Business related ideas for target people or for public 
  - voting and commenting on Business ideas 

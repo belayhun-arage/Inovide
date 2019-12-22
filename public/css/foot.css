@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .main_footer_container {
     position: relative;
     bottom: 0px;
@@ -9,6 +10,10 @@
 
 footer {
     
+=======
+/*=-footer-=*/
+footer {
+>>>>>>> 025cdf480978114e37bdbe36f8554f6469c39e58
     color: #fff;
     background-attachment: fixed;
     background-color:#222;
@@ -82,7 +87,11 @@ footer .input-group-addon {
     color: #ccc;
 }
 /*=-Copyright-=*/
+<<<<<<< HEAD
 .main_footer_container .copyright {
+=======
+.copyright {
+>>>>>>> 025cdf480978114e37bdbe36f8554f6469c39e58
     background-color: #111;
     padding: 12px 0;
 font-size:14px;
