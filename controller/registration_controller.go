@@ -14,7 +14,7 @@ import (
 	usermodel "github.com/Samuael/Projects/Inovide/models"
 )
 
-var RegistrationTemplates = template.Must(template.ParseFiles("templates/reg.html", "templates/login.html"))
+var RegistrationTemplates = template.Must(template.ParseFiles("templates/reg.html", "templates/footer.html", "templates/login.html"))
 
 func RegisterUser(w http.ResponseWriter, request *http.Request) {
 

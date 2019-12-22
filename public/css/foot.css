@@ -1,5 +1,14 @@
-/*=-footer-=*/
+.main_footer_container {
+    position: relative;
+    bottom: 0px;
+    margin-bottom: 0%;
+    right: 0px;
+    left: 0px;
+}/*=-footer-=*/
+
+
 footer {
+    
     color: #fff;
     background-attachment: fixed;
     background-color:#222;
@@ -73,7 +82,7 @@ footer .input-group-addon {
     color: #ccc;
 }
 /*=-Copyright-=*/
-.copyright {
+.main_footer_container .copyright {
     background-color: #111;
     padding: 12px 0;
 font-size:14px;

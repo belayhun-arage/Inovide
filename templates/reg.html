@@ -38,8 +38,26 @@
                         <div class="form-group">
                             <input type="password" class="form-input" name="password" id="re_password" placeholder="password" required/>
                         </div>
+
                         <div class="form-group">
-                                <input type="text" class="form-input" name="biography" id="name" placeholder="Biography"/>
+                                <input type="password" class="form-input" name="coonfirm_password" id="re_password" placeholder="Confirm Password" required/>
+                            </div>
+                        
+                            <input type="checkbox"  name="paid" placeholder="Paid Account"/>
+                            
+                            <div class="row">
+                            <div class="form-group col-md-6 col-lg-6 col-sm-12">
+                                    <input type="text" class="form-input" name="creditcard" id="creditcard" placeholder="Credit Card " required/>
+                            </div>
+                            <div class="form-group col-md-6 col-lg-6 col-sm-12">
+                                    <input type="text" class="form-input" name="creditpassword" id="re_password" placeholder="Credit Password" required/>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <p><Strong>Tell Us Some Thing About You </Strong></p>
+                                <input type="text" class="form-input hidden" name="biography" height="50%" id="name" placeholder="Biography"/>
                             </div>
                         <div class="form-group">
                             <input type="file" name="image"/>
@@ -61,9 +79,11 @@
         </section>
 
     </div>
+    
 
     
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="../assets/js/main.js"></script>
+    {{template "footer.html"}}
 </body>
 </html>
