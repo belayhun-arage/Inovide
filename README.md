@@ -21,7 +21,11 @@
 	Idea crossing , connect entrepreneurs  and investors based on their  profile
 	Well known business idea holders will be able to Advertise their city or village to attract their 
 
+<<<<<<< HEAD
 
+=======
+	
+>>>>>>> 65fa0ff... Changing the structure
 ## Non-functional : 
  - posting Business related ideas for target people or for public 
  - voting and commenting on Business ideas 
