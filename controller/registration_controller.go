@@ -1,17 +1,15 @@
-package registrationController
+package controllerHandlers
 
 import (
-	"encoding/json"
 	"fmt"
+	UsableFunctions "github.com/Samuael/Projects/Inovide/controller/Usables"
+	usermodel "github.com/Samuael/Projects/Inovide/models"
 	"html/template"
 	"io"
 	"net/http"
 	"os"
 	"strings"
 	"time"
-
-	UsableFunctions "github.com/Samuael/Projects/Inovide/controller/Usables"
-	usermodel "github.com/Samuael/Projects/Inovide/models"
 )
 
 var RegistrationTemplates = template.Must(template.ParseFiles("templates/reg.html", "templates/footer.html", "templates/login.html"))
@@ -56,15 +54,15 @@ func RegisterUser(w http.ResponseWriter, request *http.Request) {
 
 		randomStringForSavingTheImage := UsableFunctions.GenerateRandomString(20, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
 
-		newFullNameOfTheImageDirectory = "assets/img/UsersImage/" + randomStringForSavingTheImage + "." + imageExtension
+		newFullNameOfTheImageDirectory = "public/img/UsersImage/" + randomStringForSavingTheImage + "." + imageExtension
 
 		file, errorCreatingFile := os.Create(newFullNameOfTheImageDirectory)
 
 		if errorCreatingFile != nil {
-			fmt.Println("ErrorWhile Creating the Image ", errorCreatingFile)
+			fmt.Println("Error While Creating the Image ", errorCreatingFile)
 		}
 		defer file.Close()
-		person.ImageDirectory = newFullNameOfTheImageDirectory
+		person.ImageDirectory = "http://127.0.0.1:8080/" + newFullNameOfTheImageDirectory
 		io.Copy(file, imagedirectory)
 	}
 
@@ -76,14 +74,13 @@ func RegisterUser(w http.ResponseWriter, request *http.Request) {
 	//---------------------------------------
 	_ = person.RegisterUser()
 
-	mes, erro := json.Marshal(person)
+	expiration := time.Now().Add(365 * 24 * time.Hour)
+	cookiename := http.Cookie{Name: "name", Value: person.Username, Expires: expiration}
+	cookiepassword := http.Cookie{Name: "password", Value: person.Password, Expires: expiration}
+	http.SetCookie(w, &cookiename)
+	http.SetCookie(w, &cookiepassword)
 
-	if erro == nil {
-		w.Header().Add("Content-Type", "application/json")
-		w.Write(mes)
-	}
-	// fmt.Println(messageBody)
-	// w.Write([]byte("<h1> Succesfully Added </h1> "))
+	ShowProfile(w, request)
 }
 
 func RegistrationRequest(writer http.ResponseWriter, request *http.Request) {
@@ -114,15 +111,8 @@ func SignUser(writer http.ResponseWriter, request *http.Request) {
 			http.SetCookie(writer, &cookiename)
 			http.SetCookie(writer, &cookiepassword)
 		}
+		ShowProfile(writer, request)
 
-		writer.Header().Set("Content-Type", "application/json")
-		binary, erro := json.Marshal(person)
-
-		if erro != nil {
-			return
-		}
-
-		writer.Write(binary)
 	}
 
 }

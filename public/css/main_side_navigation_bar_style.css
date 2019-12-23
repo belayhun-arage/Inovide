@@ -1,0 +1,54 @@
+.main_navigation_controller{
+    margin-top: -200px;
+    width: 100%;
+    height: 200px;
+    background: #006699;
+}
+.main_side_naivgation_bar{
+    position: sticky;
+    top: 200px;
+    left: 0%;
+    background-color:  #0fd895 ;
+    float: left;
+    text-emphasis-color: #069;
+    height: 1000px;
+    width: 100%;
+    background-attachment: fixed;
+    margin-left: -20px;
+    margin-right: 20px;
+}
+.main_side_navigation_bar_profiles {
+    width: 100%;
+    height: 200px;
+    box-shadow: rgb(255, 252, 252) 10px 10px 10px;
+    text-align: center;
+    font-family: cursive;
+    font-weight: bolder;
+    border-radius: 30px;
+    
+}
+.main_side_naviagation_bar_unorderd_list {
+    text-decoration: none;
+    text-align: center;
+    font-family: cursive;
+    font-weight: bold;
+    background-attachment: fixed;
+    list-style: none;
+}
+.main_side_navigation_bar_profiles .main_side_navigation_list{
+    text-decoration: none;
+    background: cornsilk;
+    border-radius: 10px;
+    box-shadow: 10px 10px 10px;
+    list-style: none;
+    width: 100%;
+    height: 100%;
+}
+
+.main_side_navigation_bar_profiles .main_side_navigation_list a{
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    background: cornsilk;
+
+}
