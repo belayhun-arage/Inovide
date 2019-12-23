@@ -20,12 +20,6 @@
 	Extend entrepreneurs reach and enable them to access resources well beyond their geography
 	Idea crossing , connect entrepreneurs  and investors based on their  profile
 	Well known business idea holders will be able to Advertise their city or village to attract their 
-
-<<<<<<< HEAD
-
-=======
-	
->>>>>>> 65fa0ff... Changing the structure
 ## Non-functional : 
  - posting Business related ideas for target people or for public 
  - voting and commenting on Business ideas 
@@ -46,3 +40,30 @@
 	As Any Paid Account User I can Chat With Other Paid Account User Enterpreneurs and Investors in the 		System
 	As A Paid Account User i can Comment And Rate Others Post And Profile
 
+
+## Security
+	-The User Will Have A PAssword And Email FOr Authentication
+	-WE Use Caches and HTTPS (TLS) layered Http Protocol for data Exchange ow Level 
+	-User Of Paid accounts Will Have the Authentication to Prevent and Creeate Communication with Public Users
+	-Non User Unknown User of the Systsem Will not have the access to the Profile and Detail of the System Users 
+	
+### Low Level Security
+	- User Of Paid Account Have the Right to Contol the visibility of the Ideas and No One Will Have the Access to the Ideas Out of the Owners Concern
+	- Cookies Will be used Only for requestes of Get type Methods 
+	-We Use Prepared Statments For Contolling Sql Injection Related Attacks 
+	- We Use html/template statmentes to Prevent from html <script > Injections
+	
+## Work Load Division 
+	WE Will Divide the System  Commponents into Contollers // Templates // Templating // Models and DatabaseFor Each Group Member tO focus Specificall In the Project And  Additionally Collaborate in each Coomponents.
+	
+## Create Upload And Delete Read 
+	- User Profiel 
+	-Messages
+	-Idead 
+	-comments Of Idea
+	-Following
+	-Accounts
+## Kanban Principle 
+	- We Wanted To Apply The kanban Principles Using Dividing the Project Components and Features into 14 different Columns and the Columns are basically Grouped into 4 Four 
+	- Analysis , Design  , implementation , and Review
+	
