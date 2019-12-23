@@ -75,10 +75,49 @@ nav>#nav ul{
 
 
 }
-.service .row{
+.container{
     position: absolute;
-    margin-top: 50%;
-    
+    margin-top: 30%;
+    margin-left: 12%;
+    background: rgb(241, 240, 240);
+
+}
+.container h2{
+    font-family: 'Courier New', Courier, monospace;
 
 
 }
+.container p{
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+.container h3{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+.last{
+    margin-left: 7%;
+   
+}
+.container #circle{
+    border: darkgrey;
+}
+
+
+input[type=text]:focus {
+    width: 20%;
+    
+    border-radius: 4px;
+    border-bottom: blue;
+    box-shadow: blue;
+  }
+  .foot{
+    position: relative;
+    margin-top: 160%;
+
+  }
+  @media screen and (max-width: 1029px) {
+    .next img{
+        visibility: hidden;
+
+
+    }}
+ 
