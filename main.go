@@ -11,8 +11,6 @@ import (
 
 var tpl *template.Template
 
-
-
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)

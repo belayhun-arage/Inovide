@@ -2,9 +2,10 @@ package controllerHandlers
 
 import (
 	"fmt"
-	usermodel "github.com/Samuael/Projects/Inovide/models"
 	"html/template"
 	"net/http"
+
+	usermodel "github.com/FANIMAN/Projects/Inovide/Inovide/models"
 )
 
 ///Foor Now I Am Going to Show The Profile Of te use r using the cookie Data Of the
