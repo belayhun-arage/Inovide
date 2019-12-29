@@ -75,6 +75,7 @@ nav>#nav ul{
 
 
 }
+<<<<<<< HEAD
 .container{
     position: absolute;
     margin-top: 30%;
@@ -121,3 +122,12 @@ input[type=text]:focus {
 
     }}
  
+=======
+.service .row{
+    position: absolute;
+    margin-top: 50%;
+    
+
+
+}
+>>>>>>> 535f693... commit In Mex Controller

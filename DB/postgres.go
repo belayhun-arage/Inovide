@@ -1,41 +1,42 @@
-package postgresSql
+package config
 
 import (
-	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
+
+	// _ "github.com/lib/pq"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-var db *sql.DB
+var db *gorm.DB
+var postgresStatmente string
+var errors error
 
 const (
-	user     = "samuael"
-	password = "samuael"
-	dbname   = "exercise"
-	sslmode  = "disable"
+	username = "samuael"
+	password = "samuaelfirst"
 	host     = "localhost"
-	port     = 5432
+	dbname   = "inovide"
 )
 
-var postgresStatmente string
-var erro error
+func InitializPostgres() (*gorm.DB, error) {
+	// Preparing the statmente
+	postgresStatmente = fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, host, dbname)
 
-func createStatmente() {
-	postgresStatmente = fmt.Sprintf("user=%s  password=%s  host=%s  port=%d  dbname=%s sslmode=%s  ", user, password, host, port, dbname, sslmode)
+	db, errors = gorm.Open("postgres", postgresStatmente)
 
-}
+	if errors != nil {
+		panic(errors)
 
-func initialize() *sql.DB {
-	createStatmente()
-	db, erro := sql.Open("postgres", postgresStatmente)
-
-	if erro != nil {
-		panic(erro)
-	}
-	if erro = db.Ping(); erro != nil {
-		panic("error While creatinga a database ")
 	}
 
-	fmt.Println("Connection Created Succesfully wiith the Database !!!")
-	return db
+	// if errors = db.Ping(); errors != nil {
+	// 	panic(errors)
+	// 	//  if i write a code below the panic statmente it will be Unreachable
+
+	// }
+	fmt.Println("Succesfull Registration ")
+
+	return db, nil
+
 }
