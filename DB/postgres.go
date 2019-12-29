@@ -4,11 +4,14 @@ import (
 	"fmt"
 
 	// _ "github.com/lib/pq"
+	"database/sql"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 var db *gorm.DB
+var dbs *sql.DB
+
 var postgresStatmente string
 var errors error
 
@@ -18,6 +21,26 @@ const (
 	host     = "localhost"
 	dbname   = "inovide"
 )
+
+func InitializPosts() (*sql.DB, error) {
+	postgresStatmente = fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, host, dbname)
+
+	dbs, errors = sql.Open("postgres", postgresStatmente)
+
+	if errors != nil {
+		panic(errors)
+
+	}
+
+	if errors = dbs.Ping(); errors != nil {
+		panic(errors)
+
+	}
+	fmt.Println("Succesfull Registration ")
+
+	return dbs, nil
+
+}
 
 func InitializPostgres() (*gorm.DB, error) {
 	// Preparing the statmente
@@ -30,11 +53,6 @@ func InitializPostgres() (*gorm.DB, error) {
 
 	}
 
-	// if errors = db.Ping(); errors != nil {
-	// 	panic(errors)
-	// 	//  if i write a code below the panic statmente it will be Unreachable
-
-	// }
 	fmt.Println("Succesfull Registration ")
 
 	return db, nil
