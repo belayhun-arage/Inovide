@@ -49,3 +49,15 @@ func (users *UserRepo) CreateUser(enti *entity.Person) error {
 	}
 	return nil
 }
+
+func (users *UserRepo) CheckUser(enti *entity.Person) bool {
+
+	person := entity.Person{}
+	users.db.Table("users").Where(&entity.Person{Username: enti.Username, Password: enti.Password}).Find(&person) //Select([]string{"UserName", "Email", "Password"}).Find(person  , )
+
+	fmt.Println(person.Username)
+	if person.Username == "" || person.Password == "" || person.Email == "" {
+		return false
+	}
+	return true
+}

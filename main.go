@@ -38,9 +38,8 @@ func main() {
 	router.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
 	router.HandleFunc("/register/", userrouter.RegistrationPage).Methods("GET")
 	router.HandleFunc("/register/", userrouter.RegisterUser).Methods("POST")
-	// router.HandleFunc("/signin/", Controller.SignUser).Methods("GET")
-	// router.HandleFunc("/signin/", Controller.SignUser).Methods("POST")
-
+	router.HandleFunc("/signin/", userrouter.LogInPage).Methods("GET")
+	router.HandleFunc("/signin/", userrouter.LogInRequest).Methods("POST")
 	http.Handle("/", router)
 	http.ListenAndServe(":8080", nil)
 }

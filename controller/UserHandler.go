@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"io"
@@ -101,4 +102,49 @@ func (user_Admin *UserHandler) ShowProfile(w http.ResponseWriter, request *http.
 func (user_controller *UserHandler) RegistrationPage(w http.ResponseWriter, request *http.Request) {
 	fmt.Println("Inside Me ")
 	TemplateGroupUser.ExecuteTemplate(w, "reg.html", nil)
+}
+
+//CheckUser
+func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, request *http.Request) {
+
+	request.ParseForm()
+	username := request.PostFormValue("name")
+	password := request.PostFormValue("password")
+	fmt.Println(username, password)
+	person := entity.Person{}
+	person.Username = username
+	person.Password = password
+	writer.Header().Add("Content-Type", "application/json")
+
+	var thebinary []byte
+	var erro error
+	if username == "" || password == "" {
+		message := entity.SystemMessage{}
+		message.Succesful = false
+		message.Message = "Please Insert The Message Appropriately"
+
+		thebinary, erro = json.Marshal(message)
+
+		if erro != nil {
+			panic(erro)
+		}
+
+		writer.Write(thebinary)
+	}
+
+	message := user_controller.userservice.CheckUser(&person)
+
+	thebinary, erro = json.Marshal(message)
+	if erro != nil {
+		panic(erro)
+	}
+	writer.Write(thebinary)
+
+}
+func (user_controller *UserHandler) LogInPage(writer http.ResponseWriter, request *http.Request) {
+	TemplateGroupUser.ExecuteTemplate(writer, "login.html", nil)
+}
+
+func (user_controller *UserHandler) RedirectToHome(writer http.ResponseWriter, request *http.Request) {
+
 }

@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 tempoDBs
 sql
+=======
+tempoDBs/*.go
+>>>>>>> 107bc404766e03500b47c86eb804a2d197570a51

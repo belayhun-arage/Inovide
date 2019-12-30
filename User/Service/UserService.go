@@ -15,8 +15,8 @@ func NewUserService(userep *repository.UserRepo) *UserService {
 	return &UserService{userrepo: userep}
 }
 
-func (userService UserService) RegisterUser(person *entity.Person) *entity.Message {
-	var message = entity.Message{}
+func (userService *UserService) RegisterUser(person *entity.Person) *entity.SystemMessage {
+	var message = entity.SystemMessage{}
 
 	if person.Username == "" || person.Email == "" || person.Password == "" {
 
@@ -36,4 +36,19 @@ func (userService UserService) RegisterUser(person *entity.Person) *entity.Messa
 	message.Succesful = true
 	return &message
 
+}
+
+func (userService *UserService) CheckUser(person *entity.Person) *entity.SystemMessage {
+	var message = entity.SystemMessage{}
+
+	theBool := userService.userrepo.CheckUser(person)
+
+	if theBool {
+		message.Message = "Ok The User Exists "
+		message.Succesful = true
+	} else {
+		message.Message = "No Can't Get The User "
+		message.Succesful = false
+	}
+	return &message
 }

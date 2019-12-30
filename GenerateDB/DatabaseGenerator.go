@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	db, err := config.InitializPostgres()
+	db, err := config.InitializPosts()
 
 	if err != nil {
 		panic(err)
@@ -17,15 +17,40 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	_, err = dot.Exec(db, "create-database-inoide")
-	if err != nil {
-		panic(err)
-	}
+
+	//	_, err = dot.Exec(db, "create-database-inoide")
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//
+	//	_, err = dot.Exec(db, "use-inovide")
+	//	if err != nil {
+	//		panic(err)
+	//	}
+
 	_, err = dot.Exec(db, "create-users-table")
 	if err != nil {
 		panic(err)
 	}
-
+	_, err = dot.Exec(db, "create-Idea-table")
+	if err != nil {
+		panic(err)
+	}
+	_, err = dot.Exec(db, "create-Comment-table")
+	if err != nil {
+		panic(err)
+	}
+	_, err = dot.Exec(db, "create-following-table")
+	if err != nil {
+		panic(err)
+	}
+	_, err = dot.Exec(db, "create-message-table")
+	if err != nil {
+		panic(err)
+	}
+	_, err = dot.Exec(db, "create-alies-table")
+	if err != nil {
+		panic(err)
+	}
 	fmt.Println("Sucssusfull Created Database Inovide and Table User")
-
 }
