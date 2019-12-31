@@ -14,5 +14,4 @@ func GenerateRandomString(length int, charset string) string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return string(b)
-
 }

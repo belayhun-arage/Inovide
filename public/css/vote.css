@@ -1,0 +1,65 @@
+
+body {
+    background-image: url(../image/bg-vote.jpg);
+         background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    ;
+    height: 100%;
+}
+
+.img {
+    margin-left: 12rem;
+}
+
+.container {
+    margin: 5rem 10rem;
+
+}
+
+.info {
+    margin:2rem 0 2rem 5rem;
+}
+
+.cl {
+    margin-left: 30px;
+}
+
+.cr {
+    margin-right: 30px;
+}
+
+.col {
+    margin-bottom: 5rem;
+    padding: 3rem 0;
+    background: whitesmoke;
+    background-size: 100%;
+    border-radius: 15px;
+}
+
+
+.btns button {
+    border: 1px solid;
+    border-color: #00ff90;
+    color: white;
+    border-radius: 8px;
+    align-items: center;
+    margin-left: 100px;
+    background-color: rgb(43, 43, 245);
+    -webkit-transition-duration: 0.5s;
+    cursor: pointer;    
+    
+}
+.btns button:hover {
+    box-shadow: 0 14px 18px 0 rgba(0, 0, 0, 24), 0 17px 50px 0 rgba(0, 0, 0, 19);
+    color: white;
+    background-color: rgba(22, 21, 21, 0.76);
+    font-size: 19px;
+    font-weight: 600;
+}
+
+.btn1 {
+    padding: 7px 25px;
+    
+}
+

@@ -1,41 +1,60 @@
-package postgresSql
+package config
 
 import (
-	"database/sql"
 	"fmt"
-	_ "github.com/lib/pq"
+
+	// _ "github.com/lib/pq"
+	"database/sql"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
-var db *sql.DB
-
-const (
-	user     = "samuael"
-	password = "samuael"
-	dbname   = "exercise"
-	sslmode  = "disable"
-	host     = "localhost"
-	port     = 5432
-)
+var db *gorm.DB
+var dbs *sql.DB
 
 var postgresStatmente string
-var erro error
+var errors error
 
-func createStatmente() {
-	postgresStatmente = fmt.Sprintf("user=%s  password=%s  host=%s  port=%d  dbname=%s sslmode=%s  ", user, password, host, port, dbname, sslmode)
+const (
+	username = "samuael"
+	password = "samuaelfirst"
+	host     = "localhost"
+	dbname   = "inovide"
+)
+
+func InitializPosts() (*sql.DB, error) {
+	postgresStatmente = fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, host, dbname)
+
+	dbs, errors = sql.Open("postgres", postgresStatmente)
+
+	if errors != nil {
+		panic(errors)
+
+	}
+
+	if errors = dbs.Ping(); errors != nil {
+		panic(errors)
+
+	}
+	fmt.Println("Succesfull Registration ")
+
+	return dbs, nil
 
 }
 
-func initialize() *sql.DB {
-	createStatmente()
-	db, erro := sql.Open("postgres", postgresStatmente)
+func InitializPostgres() (*gorm.DB, error) {
+	// Preparing the statmente
+	postgresStatmente = fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=disable", username, password, host, dbname)
 
-	if erro != nil {
-		panic(erro)
-	}
-	if erro = db.Ping(); erro != nil {
-		panic("error While creatinga a database ")
+	db, errors = gorm.Open("postgres", postgresStatmente)
+
+	if errors != nil {
+		panic(errors)
+
 	}
 
-	fmt.Println("Connection Created Succesfully wiith the Database !!!")
-	return db
+	fmt.Println("Succesfull Registration ")
+
+	return db, nil
+
 }

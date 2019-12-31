@@ -3,6 +3,7 @@ package postgresSql
 import (
 	"database/sql"
 	"fmt"
+
 	_ "github.com/lib/pq"
 )
 
@@ -28,7 +29,7 @@ func createStatmente() {
 func initialize() *sql.DB {
 	createStatmente()
 	db, erro := sql.Open("postgres", postgresStatmente)
-
+	// db = db.Debug().Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&entity.Person{})
 	if erro != nil {
 		panic(erro)
 	}
