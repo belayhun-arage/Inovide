@@ -7,18 +7,18 @@ import (
 )
 
 type Person struct {
-	Model     gorm.Model `gorm:"embedded" `
-	ID        uint64     `json:"_id,omitempty"`                                                //  bson:"_id,omitempty"`
-	Firstname string     `json:"firstname,omitempty"  gorm:"column:firstname"`                 //  bson:"firstname,omitempty"`
-	Lastname  string     `json:"lastname,omitempty"  gorm:"column:lastname"`                   //  bson:"lastname,omitempty"`
-	Username  string     `json:"name,omitempty" sql:"not null;unique"  gorm:"column:username"` //bson:"name,omitempty"`
-	Password  string     `json:"password,omitempty" gorm:"column:password"`                    // bson:"password,omitempty"`
-	Email     string     `json:"email,omitempty"  gorm:"column:email"`                         //bson:"email,omitempty"`
-	Biography string     `json:"biography,omitempty" gorm:"column:biography"`                  // bson:"biography,omitempty"`
-	Followers int        `json:"followers,omitempty" gorm:"column:followers" `                 //bson:"followers,omitempty"`
-	Ideas     int        `json:"idea,omitempty"  gorm:"column:ideas"`                          // bson:"idea,omitempty"`
-	Imagedir  string     `json:"imagdire,omitempty" gorm:"column:imagedir"`                    //  bson:"imagedirectory,omitempty"`
-	Paid      int        `json:"paid,omitempty"  `                                             // bson:"paid,omitempty"`
+	gorm.Model
+	ID        uint64 `json:"_id,omitempty"`                                                //  bson:"_id,omitempty"`
+	Firstname string `json:"firstname,omitempty"  gorm:"column:firstname"`                 //  bson:"firstname,omitempty"`
+	Lastname  string `json:"lastname,omitempty"  gorm:"column:lastname"`                   //  bson:"lastname,omitempty"`
+	Username  string `json:"name,omitempty" sql:"not null;unique"  gorm:"column:username"` //bson:"name,omitempty"`
+	Password  string `json:"password,omitempty" gorm:"column:password"`                    // bson:"password,omitempty"`
+	Email     string `json:"email,omitempty"  gorm:"column:email"`                         //bson:"email,omitempty"`
+	Biography string `json:"biography,omitempty" gorm:"column:biography"`                  // bson:"biography,omitempty"`
+	Followers int    `json:"followers,omitempty" gorm:"column:followers" `                 //bson:"followers,omitempty"`
+	Ideas     int    `json:"idea,omitempty"  gorm:"column:ideas"`                          // bson:"idea,omitempty"`
+	Imagedir  string `json:"imagdire,omitempty" gorm:"column:imagedir"`                    //  bson:"imagedirectory,omitempty"`
+	Paid      int    `json:"paid,omitempty"  `                                             // bson:"paid,omitempty"`
 }
 
 type SystemMessage struct {

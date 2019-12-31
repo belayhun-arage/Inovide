@@ -53,9 +53,9 @@ func (users *UserRepo) CreateUser(enti *entity.Person) error {
 func (users *UserRepo) CheckUser(enti *entity.Person) bool {
 
 	person := entity.Person{}
-	users.db.Table("users").Where(&entity.Person{Username: enti.Username, Password: enti.Password}).Find(&person) //Select([]string{"UserName", "Email", "Password"}).Find(person  , )
+	users.db.Debug().Table("users").Model(&entity.Person{}).Where( /*&entity.Person{Username:*/ "UserName=? and Password=?", enti.Username, enti.Password).Find(person) //Select([]string{"UserName", "Email", "Password"}).Find(person  , )
 
-	fmt.Println(person.Username)
+	// fmt.Println(peoples.Username, peoples.Password, peoples.Email)
 	if person.Username == "" || person.Password == "" || person.Email == "" {
 		return false
 	}
