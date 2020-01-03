@@ -46,7 +46,8 @@
 
                 <span class="btns">
                         <button class="btn btn-primary btn1" type="submit">vote</button>
-                        <button class="btn btn-primary" type="submit">comment</button>
+                        <button class="btn btn-primary" href="#commentmodal"
+                        data-toggle="modal" type="submit">comment</button>
                     </span>
             </div>
             <div class="col cl">
@@ -65,7 +66,8 @@
 
                 <span class="btns">
                     <button class="btn btn-primary btn1" type="submit">vote</button>
-                    <button class="btn btn-primary" type="submit">comment</button>
+                    <button class="btn btn-primary" href="#commentmodal"
+                    data-toggle="modal" type="submit">comment</button>
                 </span>
 
 
@@ -86,7 +88,8 @@
 
                 <span class="btns">
                         <button class="btn btn-primary btn1" type="submit">vote</button>
-                        <button class="btn btn-primary" type="submit">comment</button>
+                        <button class="btn btn-primary" href="#commentmodal"
+                        data-toggle="modal" type="submit">comment</button>
                     </span>
             </div>
             <div class="col cl">
@@ -103,9 +106,81 @@
                 </div>
                 <span class="btns">
                         <button class="btn btn-primary btn1" type="submit">vote</button>
-                        <button class="btn btn-primary" type="submit">comment</button>
+                        <button class="btn btn-primary" href="#commentmodal"
+                        data-toggle="modal" type="submit">comment</button>
                     </span>
-            </div </div> </div> <!-- <script src="../public/js/jquery.js">
+                </div>
+         </div> 
+        </div>
+        
+        
+        <div
+        class="modal fade"
+        id="commentmodal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog form-dark" role="document">
+          <!--Content-->
+          <div
+            class="modal-content card card-image"
+            style="background:rgba(43, 98, 124, 0.5);"
+          >
+            <div class="text-white rgba-stylish-strong py-5 px-5 z-depth-4">
+              <form action="/" method="post">
+                <!--Header-->
+                <div class="modal-header text-center pb-4">
+                  <h3
+                    class="modal-title w-100 white-text font-weight-bold"
+                    id="myModalLabel"
+                  >
+                    <strong>Comment</strong>
+                    <a class="green-text font-weight-bold"></a>
+                  </h3>
+                  <button
+                    type="button"
+                    class="close white-text"
+                    data-dismiss="modal"
+                    aria-label="Close"
+                  >
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <!--Body-->
+                <div class="modal-body">
+                  <div class="md-form mb-5">
+                    <label data-error="wrong" data-success="right" for="Lusername"
+                      >Your Comment:</label
+                    >
+                    <textarea
+                      name="writecomment"
+                      id="writecomment"
+                      class="form-control validate white-text"
+                    ></textarea>
+                  </div>
+  
+                  <div class="row d-flex align-items-center mb-4">
+                    <div
+                      class="text-center mb-3 col-md-12 justify-content-center"
+                    >
+                      <button
+                        type="button"
+                        class="btn btn-primary btn-block btn-rounded z-depth-1 "
+                      >
+                        Comment
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+        
+        <!-- <script src="../public/js/jquery.js">
             </script>
             <script src="../public/bootstrap/js/bootstrap.min.js"></script> -->
 </body>
