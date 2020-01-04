@@ -6,6 +6,7 @@ import (
 
 	entity "github.com/Samuael/Projects/Inovide/models"
 	"github.com/jinzhu/gorm"
+	"github.com/lib/pq"
 )
 
 type UserRepo struct {
@@ -18,34 +19,14 @@ func NewUserRepo(sqlite *gorm.DB) *UserRepo {
 
 func (users *UserRepo) CreateUser(enti *entity.Person) error {
 
-	// dot, err := dotsql.LoadFromFile("sql/userQueries.sql")
-	// stri, _ := json.Marshal(enti)
-
-	// fmt.Println(string(stri))
-
-	// stmt, erro := dot.Prepare(users.db, "insert-into-user-table")
-	// if erro != nil {
-	// 	fmt.Println(erro)
-	// 	panic(err)
-	// }
-	// InsertRessult, err := stmt.Exec(users.db, enti.Firstname, enti.Lastname, enti.Username, enti.Password, enti.Email, enti.Biography, enti.ImageDirectory)
-
-	// if err != nil {
-	// 	fmt.Println("Error While inserting the Data  to the table :: User Repository ")
-	// 	return err
-	// }
-	// id, err := InsertRessult.LastInsertId()
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// enti.Id = id
-	// fmt.Println("Inserted At ::Inside Repository UserRepository ")
-
-	erro := users.db.Table("users").Create(enti).GetErrors()
+	err := users.db.Debug().Table("users").Model(&entity.Person{}).Create(enti).Error
+	if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
+		// handle error
+	}
 	fmt.Println("-----------------------")
-	if erro != nil {
-		fmt.Println("\n\n\nerro\n\n\n\n")
-		panic(erro)
+	if err != nil {
+		fmt.Println("\n\n\n erro \n\n\n\n")
+		panic(err)
 	}
 	return nil
 }
@@ -53,7 +34,7 @@ func (users *UserRepo) CreateUser(enti *entity.Person) error {
 func (users *UserRepo) CheckUser(enti *entity.Person) bool {
 
 	person := entity.Person{}
-	users.db.Debug().Table("users").Model(&entity.Person{}).Where( /*&entity.Person{Username:*/ "UserName=? and Password=?", enti.Username, enti.Password).Find(person) //Select([]string{"UserName", "Email", "Password"}).Find(person  , )
+	users.db.Table("users").Debug().Model(&entity.Person{}).Where("UserName=? AND Password=?", enti.Username, enti.Password).Find(&person) //Select([]string{"UserName", "Email", "Password"}).Find(person  , )
 
 	// fmt.Println(peoples.Username, peoples.Password, peoples.Email)
 	if person.Username == "" || person.Password == "" || person.Email == "" {

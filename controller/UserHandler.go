@@ -12,13 +12,37 @@ import (
 	UsableFunctions "github.com/Samuael/Projects/Inovide/Usables"
 	service "github.com/Samuael/Projects/Inovide/User/Service"
 	entity "github.com/Samuael/Projects/Inovide/models"
+	"github.com/gorilla/sessions"
 )
+
+const (
+	SESSION_USER_NAME = "username"
+	SESSION_PASSWORD  = "password"
+)
+
+func SaveSession(username string, password string, writer http.ResponseWriter, request *http.Request) {
+
+	session, erro := store.Get(request, "session")
+	if erro != nil {
+		fmt.Println("Error While Reading the session  ")
+		return
+	}
+	session.Values[SESSION_USER_NAME] = username // session.Values is the Map Insid the sessions Package to Hold Messages
+	session.Values[SESSION_PASSWORD] = password  // session.Values is the Map Insid the sessions Package to Hold Messages
+
+	session.Save(request, writer) // writing the session to the ResposnseWriter
+}
 
 var (
 	LENGTH_OF_IMAGE_CHARACTER        = 30
 	SITE_HOST                 string = "127.0.0.1"
 	SITE_PORT                        = 8080
 )
+
+var templatesOf = template.Must(template.ParseFiles("inadex.html", "detailPage.html"))
+
+// var client *redis.Client
+var store = sessions.NewCookieStore([]byte("The Top Secter ot the daya ")) // The place where to save the session Cookies on
 
 // PortNumber := strconv.Itoa(SITE_PORT)
 // prePath = "http://" + SITE_HOST + ":" + PortNumber ;
@@ -81,6 +105,7 @@ func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request 
 	message := user_Admin.userservice.RegisterUser(&person)
 	if message.Succesful {
 		io.Copy(file, imagedirectory)
+		SaveSession(username, password, writer, request)
 	}
 
 	writer.Write([]byte(message.Message))
@@ -133,7 +158,9 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 	}
 
 	message := user_controller.userservice.CheckUser(&person)
-
+	if message.Succesful {
+		SaveSession(username, password, writer, request)
+	}
 	thebinary, erro = json.Marshal(message)
 	if erro != nil {
 		panic(erro)

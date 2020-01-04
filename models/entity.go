@@ -8,7 +8,7 @@ import (
 
 type Person struct {
 	gorm.Model
-	ID        uint64 `json:"_id,omitempty"`                                                //  bson:"_id,omitempty"`
+	ID        uint   `gorm:"primary_key;AUTO_INCREMENT" json:"-"`                          //  bson:"_id,omitempty"`
 	Firstname string `json:"firstname,omitempty"  gorm:"column:firstname"`                 //  bson:"firstname,omitempty"`
 	Lastname  string `json:"lastname,omitempty"  gorm:"column:lastname"`                   //  bson:"lastname,omitempty"`
 	Username  string `json:"name,omitempty" sql:"not null;unique"  gorm:"column:username"` //bson:"name,omitempty"`
@@ -19,6 +19,7 @@ type Person struct {
 	Ideas     int    `json:"idea,omitempty"  gorm:"column:ideas"`                          // bson:"idea,omitempty"`
 	Imagedir  string `json:"imagdire,omitempty" gorm:"column:imagedir"`                    //  bson:"imagedirectory,omitempty"`
 	Paid      int    `json:"paid,omitempty"  `                                             // bson:"paid,omitempty"`
+
 }
 
 type SystemMessage struct {
@@ -67,38 +68,3 @@ type Alie struct {
 	UserOnline string
 	AlieOnline string
 }
-
-// var databasemongo = mongodb.InitializeMongo()
-// var Users *mongo.Collection
-
-// func (person *Person) RegisterUser() interface{} {
-// 	Users := databasemongo.Collection("User")
-
-// 	// filteroption = option
-// 	// Row := Users.FindOne(context.TODO() , bson.D{}
-
-// 	insertInfo, erro := Users.InsertOne(context.TODO(), person)
-
-// 	if erro != nil {
-// 		return nil
-// 	}
-
-// 	return insertInfo.InsertedID
-// }
-// func (person *Person) FindUser(username string, password string) Message {
-// 	Users = databasemongo.Collection("User")
-// 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-// 	errors := Users.FindOne(ctx, person).Decode(person)
-
-// 	message := Message{}
-// 	if person.Imagedir == "" {
-// 		fmt.Println("There Is No User Named ", username, errors, person.Firstname, person.Lastname, person.Imagedir)
-// 		message.Message = "No User Named " + username
-// 		message.Succesful = false
-// 		return message
-// 	}
-
-// 	message.Message = "User Does Exist !!"
-// 	message.Succesful = true
-// 	return message
-// }
