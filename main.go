@@ -21,8 +21,6 @@ var userrouter *userhandler.UserHandler
 
 func init() {
 
-<<<<<<< HEAD
-=======
 	db, errors = config.InitializPostgres()
 
 	if errors != nil {
@@ -34,7 +32,6 @@ func init() {
 
 }
 
->>>>>>> origin/master
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
