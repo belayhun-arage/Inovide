@@ -43,6 +43,8 @@ func main() {
 	router.HandleFunc("/register/", userrouter.RegisterUser).Methods("POST")
 	router.HandleFunc("/signin/", userrouter.LogInPage).Methods("GET")
 	router.HandleFunc("/signin/", userrouter.LogInRequest).Methods("POST")
+	router.HandleFunc("/create-idea/", userrouter.CreateIdeaPage).Methods("GET")
+	router.HandleFunc("/create-idea/", userrouter.CreateIdea).Methods("POST")
 	http.Handle("/", router)
 	http.ListenAndServe(":8080", nil)
 }
