@@ -7,9 +7,9 @@ import (
 	"os"
 	"strings"
 
-	UsableFunctions "github.com/BELAY-hun/Projects/Inovide/Usables"
-	service "github.com/BELAY-hun/Projects/Inovide/User/Service"
-	entity "github.com/BELAY-hun/Projects/Inovide/models"
+	UsableFunctions "github.com/Samuael/Projects/Inovide/Usables"
+	service "github.com/Samuael/Projects/Inovide/Idea/Service"
+	entity "github.com/Samuael/Projects/Inovide/models"
 )
 
 var (
