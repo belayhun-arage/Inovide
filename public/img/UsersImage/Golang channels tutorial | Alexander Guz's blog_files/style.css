@@ -1,0 +1,151 @@
+/* general */
+@import url('https://fonts.googleapis.com/css?family=PT+Serif:400,400i,700,700i&display=swap&subset=cyrillic');
+body { font-family: "PT Serif", serif; font-size: 15px; line-height: 25px; text-align: justify; margin: 0; padding: 0; color: black; /*background-color: aliceblue;*/}
+
+/* links */
+/*a:link { text-decoration: none; }*/
+a:link, a:active, a:visited { color: rgb(0, 0, 227); }
+a:hover { color: firebrick; text-decoration: none; }
+a[href^="#"] { color: black; background: cornsilk; }
+
+/* headings */
+h1 { font-size: 1.7em; line-height: 1.3em; }
+h1 > a[href^="#"], h2 > a[href^="#"], h3 > a[href^="#"] { background: white; }
+h1, h2, h3 {
+    font-weight: normal;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+h1, h2, h3, h4, h5, h6 {
+    text-align: left;
+}
+article h4 {
+    font-weight: bold;
+}
+
+/* anchors */
+.fa {
+    display: inline-block;
+    font-weight: normal;
+    line-height: 1;
+    background: white;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.fa-link:before {
+    content: "§";
+}
+
+.header-link {
+    position: relative;
+    left: 0.5em;
+    opacity: 0;
+
+    transition: opacity 0.2s ease-in-out 0.1s;
+    -webkit-transition: opacity 0.2s ease-in-out 0.1s;
+    -moz-transition: opacity 0.2s ease-in-out 0.1s;
+    -ms-transition: opacity 0.2s ease-in-out 0.1s;
+}
+h2:hover .header-link,
+h3:hover .header-link,
+h4:hover .header-link,
+h5:hover .header-link,
+h6:hover .header-link {
+    opacity: 1;
+    color: rgb(0, 0, 227);
+}
+
+/* layout */
+section.container { padding: 15px 30px 10px 30px; margin: 0 0 0 60px; background-color: white; }
+@media screen and (max-width: 900px) {
+    section.container { margin: 0 auto; }
+}
+@media screen and (min-width: 900px) {
+    section.container { width: 650px; }
+}
+section.main { clear: both; margin-top: 25px; }
+footer { margin: 30px 0 25px 0; }
+.clear { clear: both; }
+.center { text-align: center; }
+
+/* menu */
+nav.menu a { border-bottom: none; font-family: Verdana, Helvetica, sans-serif; font-weight: 600; text-transform: uppercase; color: firebrick; font-size: 0.7em; text-decoration: none; }
+nav.menu a:hover { text-decoration: underline; }
+nav.menu ul { list-style: none outside none; padding: 0; margin: 0; }
+nav.menu ul li { display: inline; margin-right: 6px; }
+
+/* index list */
+.entry > span { display: inline-block; margin: 0 5px; }
+.entry { margin-bottom: 2px; }
+.entry > time, .not_found_list time { color: #24292e; font-size: 11px; font-family: Menlo, 'Bitstream Vera Sans Mono', 'Lucida Console', monospace; }
+
+/* paginator */
+nav.pagination { margin-top: 20px; }
+
+/* disqus */
+#disqus_thread { margin-top: 52px; }
+
+/* footer */
+footer { font-size: 0.6em; color: #888a85; font-family: Helvetica, sans-serif; }
+footer a { color: #888a85; }
+section.copyright { float: left; }
+section.contact { float: right; }
+
+/* notes */
+ul#notes { list-style-type: none; display: table-row; }
+ul#notes li { margin-bottom: 2px; }
+ul#notes li .col-1 { display: table-cell; text-align: right; background: cornsilk; }
+ul#notes li .col-2 { display: table-cell; padding-left: 10px; }
+
+/* article */
+.main > time { font-size: 0.9em; color: black; font-style: italic; }
+blockquote { font-style: italic; }
+article ul, ol { padding-left: 30px; }
+ul.list_archive li { margin-bottom: 6px; }
+article li { margin-bottom: 10px; }
+article h4.notes { margin-top: 60px; }
+article img.left-image { margin-right: 7px; }
+.center img { margin-top: 25px; margin-bottom: 25px; }
+
+/* archive, not found */
+ul.list_archive li { margin-bottom: 6px; }
+.list_archive h2 { margin-left: -30px; }
+
+/* code */
+p > code, li > code {
+    color: black;
+    background-color: cornsilk;
+    white-space: nowrap;
+    padding: 2px;
+    border-radius: 3px;
+    /*font-size: 0.80em;*/
+    /*font-weight: bold;*/
+
+    /*font-family: Helvetica, sans-serif;*/
+    font-family: Consolas, Menlo, 'Lucida Console', monospace;
+}
+
+figure {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    margin: 0;
+}
+
+figure.img {
+    /* -webkit-margin-before: 0; */
+    /* -webkit-margin-after: 0; */
+    /* margin: 0; */
+    text-align: center;
+    font-style: italic;
+    font-size: small;
+}
+
+.highlight pre { margin: 0; line-height: 1.3em; }
+.highlight code {
+    font-family: Menlo, 'Lucida Console', monospace;
+    font-size: 0.7em;
+    border: none;
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+}

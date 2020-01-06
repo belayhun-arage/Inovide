@@ -1,17 +1,13 @@
 package entity
 
-import (
-	"crypto/rand"
-	"encoding/base64"
-	"io"
-)
+import "fmt"
 
 type Hub struct {
 	// Registered clients.
 	Clients map[*Client]bool
 
 	// Inbound messages from the clients.
-	Message   chan []byte
+	Message chan *Message
 
 	// Register requests from the clients.
 	Register chan *Client
@@ -26,36 +22,37 @@ type Hub struct {
 // application ensures that there is at most one writer to a connection by
 // executing all writes from this goroutine.
 
-func newHub() *Hub {
+func NewHub() *Hub {
 	return &Hub{
-		Message :  make(chan []byte),
+		Message:    make(chan *Message),
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),
 		Clients:    make(map[*Client]bool),
 	}
 }
-
-func (h *Hub) run() {
+func (h *Hub) Run() {
 	for {
+
 		select {
-		case client := <-h.register:
-			h.clients[client] = true
-		case client := <-h.unregister:
-			if _, ok := h.clients[client]; ok {
-				delete(h.clients, client)
-				close(client.send)
+		case client := <-h.Register:
+			h.Clients[client] = true
+			fmt.Println("Receiing the Client From Handler Class ")
+
+		case client := <-h.Unregister:
+			if _, ok := h.Clients[client]; ok {
+				delete(h.Clients, client)
+				close(client.Send)
 			}
-		case message := <-h.broadcast:
-			for client := range h.clients {
+		case message := <-h.Message:
+			for client := range h.Clients {
 				select {
-				case client.send <- message:
+				case client.Send <- message:
 				default:
-					close(client.send)
-					delete(h.clients, client)
+					close(client.Send)
+					delete(h.Clients, client)
 				}
 			}
 		}
+
 	}
 }
-
-

@@ -25,8 +25,7 @@ func (users *UserRepo) CreateUser(enti *entity.Person) error {
 	}
 	fmt.Println("-----------------------")
 	if err != nil {
-		fmt.Println("\n\n\n erro \n\n\n\n")
-		panic(err)
+		return err
 	}
 	return nil
 }

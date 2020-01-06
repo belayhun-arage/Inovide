@@ -38,6 +38,11 @@ func (userService *UserService) RegisterUser(person *entity.Person) *entity.Syst
 
 }
 
+//This Method Checks Whether the User Presents or Not and Populate the Person struct Pointer with the data in the database
+// if and only if the ser exists
+// this method send and Recieve a message to and from UserHandler and UserRepository Respectively
+//Returning a SystemMessage
+//            For More Info About The System Messagelook for The System Message Struct in the models Folder entity Package
 func (userService *UserService) CheckUser(person *entity.Person) *entity.SystemMessage {
 	var message = entity.SystemMessage{}
 

@@ -2,6 +2,8 @@ package entity
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
@@ -9,16 +11,9 @@ import (
 )
 
 const (
-	// Time allowed to write a message to the peer.
-	writeWait = 10 * time.Second
-
-	// Time allowed to read the next pong message from the peer.
-	pongWait = 60 * time.Second
-
-	// Send pings to peer with this period. Must be less than pongWait.
-	pingPeriod = (pongWait * 9) / 10
-
-	// Maximum message size allowed from peer.
+	writeWait      = 10 * time.Second
+	pongWait       = 60 * time.Second
+	pingPeriod     = (pongWait * 9) / 10
 	maxMessageSize = 512
 )
 
@@ -28,22 +23,29 @@ var (
 )
 
 // Client is a middleman between the websocket connection and the hub.
+// We Will Use this Struct Data in the RAM of the system For Accessing Different Web Socket Users online
+// Using their Id Number
 type Client struct {
 	TheDistributor *Hub
-
-	// The websocket connection.
-	Conn *websocket.Conn
-
+	Conn           *websocket.Conn
 	// Buffered channel of outbound messages.
-	Send chan []byte
+	Send                 chan *Message
+	IdentificationNumber int
 }
 
-// readPump pumps messages from the websocket connection to the hub.
-//
-// The application runs readPump in a per-connection goroutine. The application
-// ensures that there is at most one reader on a connection by executing all
-// reads from this goroutine.
-func (c *Client) readPump() {
+func NewClient(theDistributor *Hub, conn *websocket.Conn, id int) *Client {
+
+	return &Client{TheDistributor: theDistributor, Conn: conn, Send: make(chan *Message), IdentificationNumber: id}
+}
+
+/*
+This Pump is Deliberately Made to Read Message From The Client Side of the System  Running infinitely
+Each Online Connected Cient Will Have Will Have a single Infinitely Running Reading Pump
+*/
+func (c *Client) ReadPump() {
+
+	fmt.Println("    Incomming Message  ...")
+
 	defer func() {
 		c.TheDistributor.Unregister <- c
 		c.Conn.Close()
@@ -51,7 +53,9 @@ func (c *Client) readPump() {
 	c.Conn.SetReadLimit(maxMessageSize)
 	c.Conn.SetReadDeadline(time.Now().Add(pongWait))
 	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	var mMessage *Message
 	for {
+		mMessage = &Message{}
 		_, message, err := c.Conn.ReadMessage()
 		if err != nil {
 			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
@@ -60,11 +64,15 @@ func (c *Client) readPump() {
 			break
 		}
 		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-		c.TheDistributor.Message <- message
+		err = json.Unmarshal(message, mMessage)
+		if err != nil {
+			continue
+		}
+		c.TheDistributor.Message <- mMessage
 	}
 }
 
-func (c *Client) writePump() {
+func (c *Client) WritePump() {
 	ticker := time.NewTicker(pingPeriod)
 	defer func() {
 		ticker.Stop()
@@ -75,24 +83,24 @@ func (c *Client) writePump() {
 		case message, ok := <-c.Send:
 			c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
-				// The hub closed the channel.
 				c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-
 			w, err := c.Conn.NextWriter(websocket.TextMessage)
 			if err != nil {
 				return
 			}
-			w.Write(message)
-
-			// Add queued chat messages to the current websocket message.
+			jsonMessage, err := json.Marshal(message)
+			if err != nil {
+				continue
+			}
+			w.Write(jsonMessage)
 			n := len(c.Send)
 			for i := 0; i < n; i++ {
 				w.Write(newline)
-				w.Write(<-c.Send)
+				val, _ := json.Marshal(<-c.Send)
+				w.Write(val)
 			}
-
 			if err := w.Close(); err != nil {
 				return
 			}

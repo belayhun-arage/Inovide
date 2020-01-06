@@ -23,13 +23,21 @@ window.onload = function () {
         if (!msg.value) {
             return false;
         }
-        conn.send(msg.value);
+        var Message = {
+            senderid :0,
+            recieverid : 0,
+            seen :0,
+            messagedata : msg.value
+
+        }
+        var stringified = JSON.stringify(Message)
+        conn.send(stringified);
         msg.value = "";
         return false;
     };
 
     if (window["WebSocket"]) {
-        conn = new WebSocket("ws://" + document.location.host + "/ws");
+        conn = new WebSocket("ws://" + document.location.host + "/Chat/");
         conn.onclose = function (evt) {
             var item = document.createElement("div");
             item.innerHTML = "<b>Connection closed.</b>";

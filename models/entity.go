@@ -31,20 +31,22 @@ type Message struct {
 	SenderId        int      `json:"senderid,omitempty" `
 	RecieverId      int      `json:"recieverid,omitempty"  `
 	DateOfCreation  string   `json:"dateofcreation,omitempty"  `
-	Seen            int      `json:"seen,omitempty"  `
+	Seen            int      `json:"seen,omitempty"  ` // minus (-1) if not Seen ++++  1-if Seen
 	MessageData     string   `json:"messagedata,omitempty"  `
 	MessageResource []string `json:"messageresource,omitempty"  `
 }
 
 type Idea struct {
-	Id              int    `json:"id,omitempty"  `
-	OwnerId         int    `json:"ownerid,omitempty"  `
-	CreationData    string `json:"creationdate,omitempty"  `
-	Title           string `json:"title,omitempty"  `
-	Description     string `json:"description,omitempty"  `
-	Visibility      string `json:"visibility,omitempty"  `
-	NumberOfVotes   int    `json:"numberofvotes,omitempty"  `
-	NumberOfComment int    `json:"numberofcomment,omitempty"  `
+	Id           int    `json:"id,omitempty"  `
+	OwnerId      int    `json:"ownerid,omitempty"  `
+	CreationData string `json:"creationdate,omitempty"  `
+	Title        string `json:"title,omitempty"  `
+	Description  string `json:"description,omitempty"  `
+	Visibility   string `json:"visibility,omitempty"  `
+	//  Consider the following into consideration while Working on Ideas
+	// Use String 	"pu" --For Public  "pv" -- For Private  "pr" -- For Protected
+	NumberOfVotes   int `json:"numberofvotes,omitempty"  `
+	NumberOfComment int `json:"numberofcomment,omitempty"  `
 }
 
 type Comment struct {

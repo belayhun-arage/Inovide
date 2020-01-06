@@ -3,22 +3,30 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+	UsableFunctions "github.com/Samuael/Projects/Inovide/Usables"
+	service "github.com/Samuael/Projects/Inovide/User/Service"
+	entity "github.com/Samuael/Projects/Inovide/models"
+	"github.com/gorilla/sessions"
 	"html/template"
 	"io"
 	"net/http"
 	"os"
 	"strings"
-
-	UsableFunctions "github.com/Samuael/Projects/Inovide/Usables"
-	service "github.com/Samuael/Projects/Inovide/User/Service"
-	entity "github.com/Samuael/Projects/Inovide/models"
-	"github.com/gorilla/sessions"
 )
+
+var SystemTemplates *template.Template
+
+/*                Session Related Datas                                 <<Begin>>     */
+/*                Session Related Datas                                 <<Begin>>     */
+/*                Session Related Datas                                 <<Begin>>     */
+/*                Session Related Datas                                 <<Begin>>     */
 
 const (
 	SESSION_USER_NAME = "username"
 	SESSION_PASSWORD  = "password"
 )
+
+var store = sessions.NewCookieStore([]byte("The Top Secter ot the daya ")) // The place where to save the session Cookies on
 
 func SaveSession(username string, password string, writer http.ResponseWriter, request *http.Request) {
 
@@ -33,16 +41,38 @@ func SaveSession(username string, password string, writer http.ResponseWriter, r
 	session.Save(request, writer) // writing the session to the ResposnseWriter
 }
 
+//  --  Use This to read The Session From The Sessio Store
+func ReadSession(request *http.Request) (string, string, bool) {
+
+	sessional, err := store.Get(request, "session")
+	if err != nil {
+		return "", "", false
+	}
+
+	usernam, ok := (sessional.Values[SESSION_USER_NAME])
+	if !ok {
+		return "", "", ok
+	}
+	username := usernam.(string)
+	password := sessional.Values[SESSION_PASSWORD].(string)
+
+	return username, password, ok
+}
+
+/*                Session Related Datas                                 <<Begin>>     */
+/*                Session Related Datas                                 <<Begin>>     */
+/*                Session Related Datas                                 <<Begin>>     */
+/*                Session Related Datas                                 <<Begin>>     */
+
 var (
 	LENGTH_OF_IMAGE_CHARACTER        = 30
 	SITE_HOST                 string = "127.0.0.1"
 	SITE_PORT                        = 8080
 )
 
-var templatesOf = template.Must(template.ParseFiles("inadex.html", "detailPage.html"))
+// var templatesOf = template.Must(template.ParseFiles("templates/index.html", "templates/detailPage.html"))
 
 // var client *redis.Client
-var store = sessions.NewCookieStore([]byte("The Top Secter ot the daya ")) // The place where to save the session Cookies on
 
 // PortNumber := strconv.Itoa(SITE_PORT)
 // prePath = "http://" + SITE_HOST + ":" + PortNumber ;
@@ -50,8 +80,6 @@ var store = sessions.NewCookieStore([]byte("The Top Secter ot the daya ")) // Th
 type UserHandler struct {
 	userservice *service.UserService
 }
-
-var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/footer.html", "templates/login.html"))
 
 func NewUserHandler(theService *service.UserService) *UserHandler {
 	return &UserHandler{userservice: theService}
@@ -108,6 +136,10 @@ func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request 
 		SaveSession(username, password, writer, request)
 	}
 
+	//-------------------------------
+
+	//Fetching the session From The Request
+
 	writer.Write([]byte(message.Message))
 
 	/*
@@ -126,7 +158,7 @@ func (user_Admin *UserHandler) ShowProfile(w http.ResponseWriter, request *http.
 
 func (user_controller *UserHandler) RegistrationPage(w http.ResponseWriter, request *http.Request) {
 	fmt.Println("Inside Me ")
-	TemplateGroupUser.ExecuteTemplate(w, "reg.html", nil)
+	SystemTemplates.ExecuteTemplate(w, "reg.html", nil)
 }
 
 //CheckUser
@@ -139,7 +171,7 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 	person := entity.Person{}
 	person.Username = username
 	person.Password = password
-	writer.Header().Add("Content-Type", "application/json")
+	// writer.Header().Add("Content-Type", "application/json")
 
 	var thebinary []byte
 	var erro error
@@ -165,11 +197,11 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 	if erro != nil {
 		panic(erro)
 	}
-	writer.Write(thebinary)
+	SystemTemplates.ExecuteTemplate(writer, "home.html", nil)
 
 }
 func (user_controller *UserHandler) LogInPage(writer http.ResponseWriter, request *http.Request) {
-	TemplateGroupUser.ExecuteTemplate(writer, "login.html", nil)
+	SystemTemplates.ExecuteTemplate(writer, "login.html", nil)
 }
 
 func (user_controller *UserHandler) RedirectToHome(writer http.ResponseWriter, request *http.Request) {
