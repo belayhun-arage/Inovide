@@ -7,7 +7,11 @@ import (
 	config "github.com/Samuael/Projects/Inovide/DB"
 	repository "github.com/Samuael/Projects/Inovide/User/Repository"
 	service "github.com/Samuael/Projects/Inovide/User/Service"
-	userhandler "github.com/Samuael/Projects/Inovide/controller"
+	handler "github.com/Samuael/Projects/Inovide/controller"
+
+	IdeaRepository "github.com/Samuael/Projects/Inovide/Idea/Repository"
+	ideaService "github.com/Samuael/Projects/Inovide/Idea/Service"
+
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
@@ -18,6 +22,10 @@ var errors error
 var userRepository *repository.UserRepo
 var userservice *service.UserService
 var userrouter *userhandler.UserHandler
+
+var ideaRepository *IdeaRepository.IdeaRepo
+var ideaservice *ideaService.IdeaService
+var idearouter *handler.IdeaHandler
 
 func init() {
 
@@ -30,6 +38,10 @@ func init() {
 	userservice = service.NewUserService(userRepository)
 	userrouter = userhandler.NewUserHandler(userservice)
 
+	ideaRepository = IdeaRepository.NewIdeaRepo(db)
+	ideaservice = ideaService.NewIdeaService(ideaRepository)
+	idearouter = handler.NewIdeaHandler(ideaservice)
+
 }
 
 func main() {
@@ -40,8 +52,8 @@ func main() {
 	router.HandleFunc("/register/", userrouter.RegisterUser).Methods("POST")
 	router.HandleFunc("/signin/", userrouter.LogInPage).Methods("GET")
 	router.HandleFunc("/signin/", userrouter.LogInRequest).Methods("POST")
-	router.HandleFunc("/create-idea/", userrouter.CreateIdeaPage).Methods("GET")
-	router.HandleFunc("/create-idea/", userrouter.CreateIdea).Methods("POST")
+	router.HandleFunc("/create-idea/", idearouter.CreateIdeaPage).Methods("GET")
+	router.HandleFunc("/create-idea/", idearouter.CreateIdea).Methods("POST")
 	http.Handle("/", router)
 	http.ListenAndServe(":8080", nil)
 }
