@@ -63,7 +63,7 @@ func (chathandler *ChatHandler) HandleChat(response http.ResponseWriter, request
 	if !systemMessage.Succesful {
 		// 404 Page Not Found Template Here
 	}
-	chathandler.CreateWS(response, request)
+	chathandler.CreateWS(response, request, person)
 }
 
 //  Upgrading and Starting the Web Socket for the Incomming  Request in the header and Starting A web Socket Connectio With it
@@ -73,7 +73,7 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1024,
 }
 
-func (chathandler *ChatHandler) CreateWS(w http.ResponseWriter, r *http.Request) {
+func (chathandler *ChatHandler) CreateWS(w http.ResponseWriter, r *http.Request, person *entity.Person) {
 	wsKey, _ := generateKey()
 	r.Header.Add("Connection", "Upgrade")
 	r.Header.Add("Upgrade", "websocket")
@@ -86,6 +86,7 @@ func (chathandler *ChatHandler) CreateWS(w http.ResponseWriter, r *http.Request)
 		log.Println(err)
 		return
 	}
+	ClientId := getClientId(person)
 	client := entity.NewClient(chathandler.TheHub, conn, 0)
 
 	client.TheDistributor.Register <- client
@@ -99,4 +100,22 @@ func (chathandler *ChatHandler) ChatPage(w http.ResponseWriter, r *http.Request)
 
 	SystemTemplates.ExecuteTemplate(w, "home.html", nil)
 
+}
+
+func (chathandler *ChatHandler) SaveMesage(message *entity.Message) *entity.Message {
+
+	TheMessage := chathandler.TheChatService.CreateMessage(message)
+	if TheMessage.Succesful {
+		return message
+	}
+	return nil
+}
+
+func (chathandler *ChatHandler) getClientId(person *entity.Person) int {
+
+	theServiceMesasge, id := chathandler.TheChatService.GetId(person)
+	if theServiceMesasge.Succesful {
+		return id
+	}
+	return -1
 }

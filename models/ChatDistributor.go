@@ -1,6 +1,8 @@
 package entity
 
-import "fmt"
+import (
+	handler "github.com/Samuael/Projects/Inovide/controller"
+)
 
 type Hub struct {
 	// Registered clients.
@@ -21,6 +23,11 @@ type Hub struct {
 // A goroutine running writePump is started for each connection. The
 // application ensures that there is at most one writer to a connection by
 // executing all writes from this goroutine.
+var chatHandler *handler.ChatHandler
+
+func SetChatControllHandler(chatServe *handler.ChatHandler) {
+	chatHandler = chatServe
+}
 
 func NewHub() *Hub {
 	return &Hub{
@@ -36,7 +43,6 @@ func (h *Hub) Run() {
 		select {
 		case client := <-h.Register:
 			h.Clients[client] = true
-			fmt.Println("Receiing the Client From Handler Class ")
 
 		case client := <-h.Unregister:
 			if _, ok := h.Clients[client]; ok {
@@ -44,13 +50,23 @@ func (h *Hub) Run() {
 				close(client.Send)
 			}
 		case message := <-h.Message:
+
+			Mesage := chatHandler.SaveMesage(message)
+			if Mesage != nil {
+				continue
+			}
 			for client := range h.Clients {
-				select {
-				case client.Send <- message:
-				default:
-					close(client.Send)
-					delete(h.Clients, client)
+				// select client.IdentificationNumber  {
+				// 	case Mesage.SenderId:
+				// 	default:
+				// 	close(client.Send)
+				// 	delete(h.Clients, client)
+				// }
+				if client.IdentificationNumber == message.SenderId || client.IdentificationNumber == message.RecieverId {
+
+					client.Send <- Mesage
 				}
+
 			}
 		}
 

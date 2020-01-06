@@ -31,6 +31,7 @@ window.onload = function () {
 
         }
         var stringified = JSON.stringify(Message)
+        console.log(stringified)
         conn.send(stringified);
         msg.value = "";
         return false;
@@ -44,12 +45,14 @@ window.onload = function () {
             appendLog(item);
         };
         conn.onmessage = function (evt) {
-            var messages = evt.data.split('\n');
-            for (var i = 0; i < messages.length; i++) {
-                var item = document.createElement("div");
-                item.innerText = messages[i];
-                appendLog(item);
-            }
+            var messages = evt.data;
+            var jesonized = JSON.parse(messages);
+            console.log(messages);
+            // for (var i = 0; i < messages.length; i++) {
+            var item = document.createElement("div");
+            item.innerText = jesonized.messagedata  +" : "+ jesonized.senderid;
+            appendLog(item);
+            // }
         };
     } else {
         var item = document.createElement("div");

@@ -24,3 +24,10 @@ func (chRe *ChatRepository) SaveChat(chatmessage *entity.Message) error {
 	}
 	return nil
 }
+func (chre *ChatRepository) GetId(person *entity.Person) error {
+	err := chre.db.Table("message").Model(&entity.Person).Debug().Find(person).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

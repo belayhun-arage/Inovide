@@ -63,11 +63,12 @@ func (c *Client) ReadPump() {
 			}
 			break
 		}
-		message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
+		message = bytes.Replace(message, newline, space, -1)
 		err = json.Unmarshal(message, mMessage)
 		if err != nil {
 			continue
 		}
+
 		c.TheDistributor.Message <- mMessage
 	}
 }

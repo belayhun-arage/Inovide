@@ -37,3 +37,15 @@ func (chatService *ChatService) CreateMessage(message *entity.Message) *entity.S
 		Succesful: true,
 	}
 }
+func (chatService *ChatService) GetId(person *entity.Person) (*entity.SystemMessage, int) {
+	message := &entity.SystemMessage{}
+
+	err := chatService.chatRepo.GetId(person)
+	if err != nil {
+		message.Message = "The  User Do Have A n Account "
+		message.Succesful = true
+		return message, person.ID
+	}
+
+	return message, -1
+}

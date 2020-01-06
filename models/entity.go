@@ -27,13 +27,13 @@ type SystemMessage struct {
 	Succesful bool   `json:"succesfull,omitempty"  bson:"succesfull,omitempty"`
 }
 type Message struct {
-	Id              int      `json:"id,omitempty"  `
-	SenderId        int      `json:"senderid,omitempty" `
-	RecieverId      int      `json:"recieverid,omitempty"  `
-	DateOfCreation  string   `json:"dateofcreation,omitempty"  `
+	Id              int      `json:"id"  `
+	SenderId        int      `json:"senderid" `
+	RecieverId      int      `json:"recieverid"  `
+	DateOfCreation  string   `json:"dateofcreation"  `
 	Seen            int      `json:"seen,omitempty"  ` // minus (-1) if not Seen ++++  1-if Seen
-	MessageData     string   `json:"messagedata,omitempty"  `
-	MessageResource []string `json:"messageresource,omitempty"  `
+	MessageData     string   `json:"messagedata"  `
+	MessageResource []string `json:"messageresource"  `
 }
 
 type Idea struct {
