@@ -74,11 +74,11 @@ func main() {
 	router.HandleFunc("/create-idea/", idearouter.CreateIdea).Methods("POST")
 	router.HandleFunc("/ws", chatrouter.ChatPage).Methods("GET")
 	router.HandleFunc("/Chat/", chatrouter.HandleChat)
-	router.HandleFunc("/", serveHome)
+	router.HandleFunc("/", ServeHome)
 	http.ListenAndServe(":8080", nil)
 }
 
-func serveHome(writer http.ResponseWriter, request *http.Request) {
+func ServeHome(writer http.ResponseWriter, request *http.Request) {
 
-	TemplateGroupUser.ExecuteTemplate(writer, "profile.html", nil)
+	TemplateGroupUser.ExecuteTemplate(writer, "reg.html", nil)
 }
