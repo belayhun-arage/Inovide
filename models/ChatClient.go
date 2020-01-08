@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
+	"github.com/jinzhu/gorm"
 )
 
 const (
@@ -69,7 +70,10 @@ func (c *Client) ReadPump() {
 			continue
 		}
 
-		c.TheDistributor.Message <- mMessage
+		year, month, day := gorm.NowFunc().Date()
+		nowIs := fmt.Sprintf("%d/%d/%d", day, month, year)
+		mMessage.Dateofcreation = nowIs
+		c.TheDistributor.Messages <- mMessage
 	}
 }
 
@@ -82,6 +86,7 @@ func (c *Client) WritePump() {
 	for {
 		select {
 		case message, ok := <-c.Send:
+			fmt.Println(message.Messagedata)
 			c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				c.Conn.WriteMessage(websocket.CloseMessage, []byte{})

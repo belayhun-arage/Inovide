@@ -3,12 +3,13 @@ package entity
 import (
 	// mongodb "github.com/Samuael/Projects/Inovide/DB"
 	"github.com/jinzhu/gorm"
+	"github.com/lib/pq"
 	// "github.com/mongodb/mongo-go-driver/mongo"
 )
 
 type Person struct {
 	gorm.Model
-	ID        uint   `gorm:"primary_key;AUTO_INCREMENT" json:"-"`                          //  bson:"_id,omitempty"`
+	ID        uint64 //`gorm:"primary_key;AUTO_INCREMENT" json:"-"`                          //  bson:"_id,omitempty"`
 	Firstname string `json:"firstname,omitempty"  gorm:"column:firstname"`                 //  bson:"firstname,omitempty"`
 	Lastname  string `json:"lastname,omitempty"  gorm:"column:lastname"`                   //  bson:"lastname,omitempty"`
 	Username  string `json:"name,omitempty" sql:"not null;unique"  gorm:"column:username"` //bson:"name,omitempty"`
@@ -27,13 +28,13 @@ type SystemMessage struct {
 	Succesful bool   `json:"succesfull,omitempty"  bson:"succesfull,omitempty"`
 }
 type Message struct {
-	Id              int      `json:"id"  `
-	SenderId        int      `json:"senderid" `
-	RecieverId      int      `json:"recieverid"  `
-	DateOfCreation  string   `json:"dateofcreation"  `
-	Seen            int      `json:"seen,omitempty"  ` // minus (-1) if not Seen ++++  1-if Seen
-	MessageData     string   `json:"messagedata"  `
-	MessageResource []string `json:"messageresource"  `
+	Id              uint64         ` sql:"DEFAULT:user_gen_id()" json:"id" gorm:"primary_key"`
+	Senderid        int            `json:"senderid" `
+	Recieverid      int            `json:"recieverid"  `
+	Dateofcreation  string         `json:"dateofcreation"  `
+	Seen            int            `json:"seen,omitempty"  ` // minus (-1) if not Seen ++++  1-if Seen
+	Messagedata     string         `json:"messagedata"  `
+	Messageresource pq.StringArray `json:"messageresource"  `
 }
 
 type Idea struct {

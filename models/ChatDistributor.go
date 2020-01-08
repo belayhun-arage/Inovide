@@ -1,8 +1,8 @@
 package entity
 
-import (
-	handler "github.com/Samuael/Projects/Inovide/controller"
-)
+import "fmt"
+
+// handler "github.com/Samuael/Projects/Inovide/controller"
 
 type Hub struct {
 	// Registered clients.
@@ -16,6 +16,7 @@ type Hub struct {
 
 	// Unregister requests from clients.
 	Unregister chan *Client
+	Messages   chan *Message
 }
 
 // writePump pumps messages from the hub to the websocket connection.
@@ -23,11 +24,11 @@ type Hub struct {
 // A goroutine running writePump is started for each connection. The
 // application ensures that there is at most one writer to a connection by
 // executing all writes from this goroutine.
-var chatHandler *handler.ChatHandler
+// var chatHandler *handler.ChatHandler
 
-func SetChatControllHandler(chatServe *handler.ChatHandler) {
-	chatHandler = chatServe
-}
+// func SetChatControllHandler(chatServe *handler.ChatHandler) {
+// 	chatHandler = chatServe
+// }
 
 func NewHub() *Hub {
 	return &Hub{
@@ -35,6 +36,7 @@ func NewHub() *Hub {
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),
 		Clients:    make(map[*Client]bool),
+		Messages:   make(chan *Message),
 	}
 }
 func (h *Hub) Run() {
@@ -51,10 +53,9 @@ func (h *Hub) Run() {
 			}
 		case message := <-h.Message:
 
-			Mesage := chatHandler.SaveMesage(message)
-			if Mesage != nil {
-				continue
-			}
+			// if message != nil {
+			// 	continue
+			// }
 			for client := range h.Clients {
 				// select client.IdentificationNumber  {
 				// 	case Mesage.SenderId:
@@ -62,11 +63,11 @@ func (h *Hub) Run() {
 				// 	close(client.Send)
 				// 	delete(h.Clients, client)
 				// }
-				if client.IdentificationNumber == message.SenderId || client.IdentificationNumber == message.RecieverId {
-
-					client.Send <- Mesage
+				fmt.Println(client.IdentificationNumber)
+				if client.IdentificationNumber == message.Senderid || client.IdentificationNumber == message.Recieverid {
+					fmt.Println("In The Hub")
+					client.Send <- message
 				}
-
 			}
 		}
 

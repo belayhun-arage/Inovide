@@ -4,48 +4,55 @@ import (
 	//	"bytes"
 	// "flag"
 	// "log"
+	"fmt"
+
 	ChatRepository "github.com/Samuael/Projects/Inovide/Chat/Repository"
 	entity "github.com/Samuael/Projects/Inovide/models"
 )
 
 /*      Instantiation of Chat        */
-
 type ChatService struct {
 	chatRepo *ChatRepository.ChatRepository
+	TheHub   *entity.Hub
 }
 
-func NewChatService(chatRepository *ChatRepository.ChatRepository) *ChatService {
-	return &ChatService{chatRepo: chatRepository}
+func NewChatService(chatRepository *ChatRepository.ChatRepository, theHub *entity.Hub) *ChatService {
+	return &ChatService{chatRepo: chatRepository, TheHub: theHub}
 }
-
 func (chatService *ChatService) CreateMessage(message *entity.Message) *entity.SystemMessage {
-	if message.SenderId == 0 || message.RecieverId == 0 || (message.MessageData == "" && message.MessageResource == nil) {
+	if message.Senderid == -1 || message.Recieverid == -1 || (message.Messagedata == "" && message.Messageresource == nil) {
 		return &entity.SystemMessage{
-			Message:   "Can't Save The Message InValid Message Body ",
+			Message:   "Can't Save The Message Invalid Message Body ",
 			Succesful: false}
 	}
-
-	err := chatService.chatRepo.SaveChat(message)
+	/*  The Service Will start serving the message to The Database Repository starting from here   */
+	err := chatService.chatRepo.SaveChat(message) // Saving the Chat to the Database Repository
 	if err != nil {
+		fmt.Println(err, "----------------------------")
 		return &entity.SystemMessage{
 			Message:   "Error While Saving The Message ",
 			Succesful: false,
 		}
 	}
+	chatService.SendMessage(message)
 	return &entity.SystemMessage{
 		Message:   "Ok",
 		Succesful: true,
 	}
 }
-func (chatService *ChatService) GetId(person *entity.Person) (*entity.SystemMessage, int) {
-	message := &entity.SystemMessage{}
+func (chatService *ChatService) SendMessage(message *entity.Message) {
+	chatService.TheHub.Message <- message
+}
 
+var unit uint
+
+func (chatService *ChatService) GetId(person *entity.Person) (*entity.SystemMessage, int64) {
+	message := &entity.SystemMessage{}
 	err := chatService.chatRepo.GetId(person)
 	if err != nil {
-		message.Message = "The  User Do Have A n Account "
-		message.Succesful = true
-		return message, person.ID
+		return message, -1
 	}
-
-	return message, -1
+	message.Message = "The  User Do Have An Account "
+	message.Succesful = true
+	return message, int64(person.ID)
 }

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	config "github.com/Samuael/Projects/Inovide/DB"
 	"github.com/gchaincl/dotsql"
 )
@@ -23,29 +22,29 @@ func main() {
 	// if err != nil {
 	// 	panic(err)
 	// }
-	_, err = dot.Exec(db, "create-users-table")
-	if err != nil {
-		panic(err)
-	}
-	_, err = dot.Exec(db, "create-Idea-table")
-	if err != nil {
-		panic(err)
-	}
-	_, err = dot.Exec(db, "create-Comment-table")
-	if err != nil {
-		panic(err)
-	}
-	_, err = dot.Exec(db, "create-following-table")
-	if err != nil {
-		panic(err)
-	}
+	// _, err = dot.Exec(db, "create-users-table")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// _, err = dot.Exec(db, "create-Idea-table")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// _, err = dot.Exec(db, "create-Comment-table")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// _, err = dot.Exec(db, "create-following-table")
+	// if err != nil {
+	// 	panic(err)
+	// }
 	_, err = dot.Exec(db, "create-message-table")
 	if err != nil {
 		panic(err)
 	}
-	_, err = dot.Exec(db, "create-alies-table")
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Sucssusfull Created Database Inovide and Table User")
+	// _, err = dot.Exec(db, "create-alies-table")
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println("Sucssusfull Created Database Inovide and Table User")
 }

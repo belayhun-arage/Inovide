@@ -4,6 +4,8 @@ import (
 	ChatRepository "github.com/Samuael/Projects/Inovide/Chat/Repository"
 	ChatService "github.com/Samuael/Projects/Inovide/Chat/Service"
 	config "github.com/Samuael/Projects/Inovide/DB"
+	IdeaRepository "github.com/Samuael/Projects/Inovide/Idea/Repository"
+	ideaService "github.com/Samuael/Projects/Inovide/Idea/Service"
 	repository "github.com/Samuael/Projects/Inovide/User/Repository"
 	service "github.com/Samuael/Projects/Inovide/User/Service"
 	handler "github.com/Samuael/Projects/Inovide/controller"
@@ -15,13 +17,15 @@ import (
 )
 
 var tpl *template.Template
-var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/home.html", "templates/footer.html", "templates/login.html"))
-
+var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/profile.html", "templates/createIdea.html", "templates/home.html", "templates/footer.html", "templates/login.html"))
 var db *gorm.DB
 var errors error
 var userRepository *repository.UserRepo
 var userservice *service.UserService
 var userrouter *handler.UserHandler
+var ideaRepository *IdeaRepository.IdeaRepo
+var ideaservice *ideaService.IdeaService
+var idearouter *handler.IdeaHandler
 
 func init() {
 	handler.SetSystemTemplate(TemplateGroupUser)
@@ -35,6 +39,11 @@ func init() {
 	/*Initializing the Chat and Related Resources */
 
 	initChatComponents()
+
+	ideaRepository = IdeaRepository.NewIdeaRepo(db)
+	ideaservice = ideaService.NewIdeaService(ideaRepository)
+	idearouter = handler.NewIdeaHandler(ideaservice)
+
 }
 
 var TheHub *entity.Hub
@@ -47,21 +56,29 @@ func initChatComponents() {
 	TheHub = entity.NewHub()
 	go TheHub.Run()
 	TheChatRepository = ChatRepository.NewChatRepository(db)
-	TheChatService = ChatService.NewChatService(TheChatRepository)
+	TheChatService = ChatService.NewChatService(TheChatRepository, TheHub)
 	chatrouter = handler.NewChatHandler(TheHub, TheChatService, userservice)
-
+	go chatrouter.MessageCoordinator()
 }
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
+	http.Handle("/", router)
 	router.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
 	router.HandleFunc("/register/", userrouter.RegistrationPage).Methods("GET")
 	router.HandleFunc("/register/", userrouter.RegisterUser).Methods("POST")
 	router.HandleFunc("/signin/", userrouter.LogInPage).Methods("GET")
 	router.HandleFunc("/signin/", userrouter.LogInRequest).Methods("POST")
-
+	router.HandleFunc("/create-idea/", idearouter.CreateIdeaPage).Methods("GET")
+	router.HandleFunc("/create-idea/", idearouter.CreateIdea).Methods("POST")
 	router.HandleFunc("/ws", chatrouter.ChatPage).Methods("GET")
 	router.HandleFunc("/Chat/", chatrouter.HandleChat)
-	http.Handle("/", router)
+	router.HandleFunc("/", serveHome)
 	http.ListenAndServe(":8080", nil)
+}
+
+func serveHome(writer http.ResponseWriter, request *http.Request) {
+
+	TemplateGroupUser.ExecuteTemplate(writer, "profile.html", nil)
 }

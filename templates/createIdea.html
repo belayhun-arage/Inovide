@@ -14,6 +14,37 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <link href="../public/css/createIdea.css" rel="stylesheet" type="text/css" />
+    <script>
+    
+function send(){
+    var yourmess=$("#editTextSend").val();
+    console.log(yourmess);
+    var container=document.getElementById("messagesArray");
+    
+    if( $("#editTextSend").val() !=""  || $("#editTextSend").val() !==null ){
+        $.ajax({
+            url:"../php/messageSave.php",
+            type:"POST",
+            data:{"yourmess":yourmess},
+            dataType:"JSON",
+            success: function(data)
+            {
+                var sendingContainer=$("#bottmBar");
+                $("#editTextSend").text("");
+                if(data.result=="yes"){
+                    document.getElementById("editTextSend").value = "";
+                }
+            },
+            error:function(rt ,re){
+            console.log(re);
+            }
+        });
+    }
+}
+    
+    </script>
+
+
 </head>
 
 <body>
@@ -27,7 +58,7 @@
                 </div> -->
 
                 <div class="col-12 form-input">
-                    <form>
+                    <form action="/create-idea/" enctype="multipart/form-data" method="POST" id="create-idea">
                         <div class="form-group">
 
                             <input type="text" class="form-control" placeholder="Title : Enter Your Title here ">
@@ -48,15 +79,16 @@
                         -->
                         <div class="form-group">
                             <select name="options">
-                            <option value="select">Select Visibility</option>
-                            <option value="private">Private</option>
-                            <option value="public">Public</option>
-                            <option value="paid">Paid</option>
+                            <input type="checkbox" value="select">Select Visibility</option>
+                            <option value="pv">private</option>
+                            <option value="pr">protected</option>
+                            <option value="pu">public</option>
                           </select>
                         </div>
-                </div>
-                <button type="submit" class="btn-btn-success">Upload</button>
+                
+                <button type="submit" onclick="upload()" class="btn-btn-success">Upload</button>
                 </form>
+            </div>
             </div>
 
         </div>

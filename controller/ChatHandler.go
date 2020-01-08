@@ -8,16 +8,11 @@ import (
 
 	chatService "github.com/Samuael/Projects/Inovide/Chat/Service"
 	service "github.com/Samuael/Projects/Inovide/User/Service"
-
-	"io"
-
 	"github.com/gorilla/websocket"
-
+	"io"
 	// "time"
-
 	"crypto/rand"
 	"encoding/base64"
-
 	entity "github.com/Samuael/Projects/Inovide/models"
 )
 
@@ -60,6 +55,7 @@ func (chathandler *ChatHandler) HandleChat(response http.ResponseWriter, request
 	person.Username = username
 	person.Password = password
 	systemMessage := chathandler.TheUserService.CheckUser(person)
+	fmt.Println(person.Username, person.Email, person.ID, "_______----------->> Samuael")
 	if !systemMessage.Succesful {
 		// 404 Page Not Found Template Here
 	}
@@ -86,36 +82,44 @@ func (chathandler *ChatHandler) CreateWS(w http.ResponseWriter, r *http.Request,
 		log.Println(err)
 		return
 	}
-	ClientId := getClientId(person)
-	client := entity.NewClient(chathandler.TheHub, conn, 0)
-
+	ClientId := chathandler.getClientId(person)
+	client := entity.NewClient(chathandler.TheHub, conn, ClientId)
 	client.TheDistributor.Register <- client
-	fmt.Println("Messagagagagagag")
-
 	go client.WritePump()
 	go client.ReadPump()
 }
-
-func (chathandler *ChatHandler) ChatPage(w http.ResponseWriter, r *http.Request) {
-
-	SystemTemplates.ExecuteTemplate(w, "home.html", nil)
-
+func (chathandler *ChatHandler) MessageCoordinator() {
+	for {
+		select {
+		case newMessage := <-chathandler.TheHub.Messages:
+			if newMessage == nil {
+				continue
+			}
+			SavedMessage := chathandler.SaveMesage(newMessage)
+			if SavedMessage != nil {
+				chathandler.TheHub.Message <- SavedMessage
+			}
+			// default:
+			// 	close(chathandler.TheHub.Messages)
+			// delete(chathandler.TheHub.Messages)
+		}
+	}
 }
-
+func (chathandler *ChatHandler) ChatPage(w http.ResponseWriter, r *http.Request) {
+	SystemTemplates.ExecuteTemplate(w, "home.html", nil)
+}
 func (chathandler *ChatHandler) SaveMesage(message *entity.Message) *entity.Message {
-
 	TheMessage := chathandler.TheChatService.CreateMessage(message)
+	fmt.Println(TheMessage.Message, " Is The Message Found From The CliendService CLass and This i The Data")
 	if TheMessage.Succesful {
 		return message
 	}
 	return nil
 }
-
 func (chathandler *ChatHandler) getClientId(person *entity.Person) int {
-
 	theServiceMesasge, id := chathandler.TheChatService.GetId(person)
 	if theServiceMesasge.Succesful {
-		return id
+		return int(id)
 	}
 	return -1
 }
