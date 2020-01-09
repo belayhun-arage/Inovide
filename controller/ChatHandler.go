@@ -10,6 +10,11 @@ import (
 	service "github.com/Projects/Inovide/User/Service"
 	"github.com/gorilla/websocket"
 	"io"
+
+	chatService "github.com/Projects/Inovide/Chat/Service"
+	service "github.com/Projects/Inovide/User/Service"
+	"github.com/gorilla/websocket"
+
 	// "time"
 	"crypto/rand"
 	"encoding/base64"
