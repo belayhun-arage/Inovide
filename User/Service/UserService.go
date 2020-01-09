@@ -57,3 +57,18 @@ func (userService *UserService) CheckUser(person *entity.Person) *entity.SystemM
 	}
 	return &message
 }
+
+func (userService *UserService) GetUser(person *entity.Person) *entity.SystemMessage {
+
+	message := &entity.SystemMessage{}
+	bools := userService.userrepo.GetUser(person)
+
+	if bools {
+		message.Message = "Succesfully Fetched "
+		message.Succesful = true
+		return message
+	}
+	message.Message = "Noooo "
+	message.Succesful = false
+	return message
+}
