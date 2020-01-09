@@ -3,27 +3,24 @@
 <head>
         <link rel="icon" type="image/png" href="logo.png">
         <link  rel = "stylesheet" href = "../public/css/profile.css">
-
         
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" 
-        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
+      
 
 </head>
 <body>
+    {{ template   "sidebarr.html"}}
 <div class="container emp-profile">
-            <form method="post">
+            
                 <div class="row">
                     <div class="col-md-4">
                         <div class="profile-img">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
+                            <img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
                             <div class="file btn btn-lg btn-primary">
                                 Change Photo
                                 <input type="file" name="file"/>
@@ -32,10 +29,10 @@
                     </div>
                     <div class="col-md-6">
                         <div class="profile-head">
-                                    <h3 style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;">
-                                        Mekdes Genetu
-                                    </h3>
-                                    <h4>
+                                    <input id="fname" style="font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;" value="{{.Username}}" readonly>
+                                       
+                                    </input>
+                                    <h4 value>
                                         Enterprenuer
                                     </h4>
                                     <p class="proile-rating">RANKINGS : <span>8/10</span></p>
@@ -50,7 +47,8 @@
                         </div>
                     </div>
                     <div class="col-md-2">
-                        <input type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile"/>
+                        <input id="editpro" type="submit" class="profile-edit-btn" name="btnAddMore" value="Edit Profile"/>
+                        
                     </div>
                 </div>
                 <div class="row">
@@ -68,7 +66,7 @@
                             <a href=""></a><br/>
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <div class="tab-content profile-tab" id="myTabContent">
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <div class="row">
@@ -76,7 +74,7 @@
                                                 <label>User Id</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <p>Kshiti123</p>
+                                                <input value="{{.ID}}" readonly></input>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -84,7 +82,15 @@
                                                 <label>Name</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <p>Mekdes</p>
+                                                <input id="name" value = "{{.Firstname}}" readonly></input>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>LastName</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input value="{{.Lastname}}" readonly></input>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -92,27 +98,47 @@
                                                 <label>Email</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <p>mekdesgenetu@gmail.com</p>
+                                                <input value="{{.Email}}" readonly></input>
                                             </div>
                                         </div>
+                                        
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>Phone</label>
+                                                <label>Biography</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <p>123 456 7890</p>
+                                                <input value="{{.Biography}}" readonly> </input>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Profession</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p>Web Developer and Designer</p>
-                                            </div>
+
+                                        
                                         </div>
+                                        <div class="col-md-6">
+                                            <input id="save" type="submit" class="profile-edit-btn" name="btnAddMore" value="save Change"/>
+                                            
                             </div>
                             
             </form>           
         </div>
         <html>
+            
+            <script>
+               // $("#save").click(function(){
+                $('#save').hide();
+                  
+                
+
+                $(document).ready(function(){
+                $("#editpro").click(function(){
+                   
+                
+               // $('input').prop('readonly' , false);
+                $('input').attr('readonly' , false);
+                $('#save').show();
+                
+               
+            });
+        });
+            
+                </script>
+                
