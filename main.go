@@ -1,24 +1,23 @@
 package main
 
 import (
-	"html/template"
-	"net/http"
-
-	ChatRepository "github.com/Samuael/Projects/Inovide/Chat/Repository"
-	ChatService "github.com/Samuael/Projects/Inovide/Chat/Service"
-	config "github.com/Samuael/Projects/Inovide/DB"
-	IdeaRepository "github.com/Samuael/Projects/Inovide/Idea/Repository"
-	ideaService "github.com/Samuael/Projects/Inovide/Idea/Service"
-	repository "github.com/Samuael/Projects/Inovide/User/Repository"
-	service "github.com/Samuael/Projects/Inovide/User/Service"
-	handler "github.com/Samuael/Projects/Inovide/controller"
-	entity "github.com/Samuael/Projects/Inovide/models"
+	ChatRepository 		"github.com/Projects/Inovide/Chat/Repository"
+	ChatService 		"github.com/Projects/Inovide/Chat/Service"
+	config 				"github.com/Projects/Inovide/DB"
+	IdeaRepository 		"github.com/Projects/Inovide/Idea/Repository"
+	ideaService 		"github.com/Projects/Inovide/Idea/Service"
+	repository 			"github.com/Projects/Inovide/User/Repository"
+	service 			"github.com/Projects/Inovide/User/Service"
+	handler 			"github.com/Projects/Inovide/controller"
+	entity 				"github.com/Projects/Inovide/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"html/template"
+	"net/http"
 )
 
 var tpl *template.Template
-var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/edit.html", "templates/createIdea.html", "templates/index.html", "templates/footer.html", "templates/login.html", "templates/sidebarr.html", "templates/four04.html"))
+var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/edit.html", "templates/createIdea.html", "templates/home.html", "templates/footer.html", "templates/login.html"))
 var db *gorm.DB
 var errors error
 var userRepository *repository.UserRepo
@@ -77,6 +76,10 @@ func main() {
 	router.HandleFunc("/idea/delete/", idearouter.DeleteIdea).Methods("POST")
 	router.HandleFunc("/idea/update/", idearouter.UpdateIdea).Methods("POST")
 	router.HandleFunc("/idea/vote/", idearouter.VoteIdea).Methods("POST")
+	router.HandleFunc("/user/chat/", userrouter.RedirectToHome).Methods("GET")
+
+	// router.HandleFunc("/user/" , )
+	// router.HandleFunc("/idea/comment/", idearouter.SaveComment).Methods("POST")
 	router.HandleFunc("/ws", chatrouter.ChatPage).Methods("GET")
 	router.HandleFunc("/Chat/", chatrouter.HandleChat)
 	router.HandleFunc("/", ServeHome)

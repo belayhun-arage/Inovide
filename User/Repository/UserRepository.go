@@ -4,7 +4,7 @@ package repository
 import (
 	"fmt"
 
-	entity "github.com/Samuael/Projects/Inovide/models"
+	entity "github.com/Projects/Inovide/models"
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
 )

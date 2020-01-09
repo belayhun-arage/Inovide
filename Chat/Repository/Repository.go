@@ -3,7 +3,7 @@ package ChatRepository
 import (
 	"fmt"
 
-	entity "github.com/Samuael/Projects/Inovide/models"
+	entity "github.com/Projects/Inovide/models"
 	"github.com/jinzhu/gorm"
 )
 

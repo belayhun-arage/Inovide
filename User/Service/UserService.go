@@ -1,8 +1,8 @@
 package service
 
 import (
-	repository "github.com/Samuael/Projects/Inovide/User/Repository"
-	entity "github.com/Samuael/Projects/Inovide/models"
+	repository "github.com/Projects/Inovide/User/Repository"
+	entity "github.com/Projects/Inovide/models"
 )
 
 var er error

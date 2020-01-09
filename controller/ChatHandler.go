@@ -6,14 +6,17 @@ import (
 	"log"
 	"net/http"
 
-	chatService "github.com/Samuael/Projects/Inovide/Chat/Service"
-	service "github.com/Samuael/Projects/Inovide/User/Service"
-	"github.com/gorilla/websocket"
 	"io"
+
+	chatService "github.com/Projects/Inovide/Chat/Service"
+	service "github.com/Projects/Inovide/User/Service"
+	"github.com/gorilla/websocket"
+
 	// "time"
 	"crypto/rand"
 	"encoding/base64"
-	entity "github.com/Samuael/Projects/Inovide/models"
+
+	entity "github.com/Projects/Inovide/models"
 )
 
 /*    Main Chat Handler Instantiation                << Begin >>           */

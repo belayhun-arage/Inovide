@@ -1,7 +1,7 @@
 package main
 
 import (
-	config "github.com/Samuael/Projects/Inovide/DB"
+	config "github.com/Projects/Inovide/DB"
 	"github.com/gchaincl/dotsql"
 )
 
