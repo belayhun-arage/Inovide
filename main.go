@@ -1,6 +1,9 @@
 package main
 
 import (
+	"html/template"
+	"net/http"
+
 	ChatRepository "github.com/Samuael/Projects/Inovide/Chat/Repository"
 	ChatService "github.com/Samuael/Projects/Inovide/Chat/Service"
 	config "github.com/Samuael/Projects/Inovide/DB"
@@ -12,12 +15,10 @@ import (
 	entity "github.com/Samuael/Projects/Inovide/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	"html/template"
-	"net/http"
 )
 
 var tpl *template.Template
-var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/edit.html", "templates/createIdea.html", "templates/home.html", "templates/footer.html", "templates/login.html"))
+var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/edit.html", "templates/createIdea.html", "templates/index.html", "templates/footer.html", "templates/login.html", "templates/sidebarr.html", "templates/four04.html"))
 var db *gorm.DB
 var errors error
 var userRepository *repository.UserRepo
