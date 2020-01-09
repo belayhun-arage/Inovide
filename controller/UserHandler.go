@@ -3,15 +3,16 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-	UsableFunctions "github.com/Samuael/Projects/Inovide/Usables"
-	service "github.com/Samuael/Projects/Inovide/User/Service"
-	entity "github.com/Samuael/Projects/Inovide/models"
-	"github.com/gorilla/sessions"
 	"html/template"
 	"io"
 	"net/http"
 	"os"
 	"strings"
+
+	UsableFunctions "github.com/Samuael/Projects/Inovide/Usables"
+	service "github.com/Samuael/Projects/Inovide/User/Service"
+	entity "github.com/Samuael/Projects/Inovide/models"
+	"github.com/gorilla/sessions"
 )
 
 var SystemTemplates *template.Template
@@ -187,6 +188,7 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 		}
 
 		writer.Write(thebinary)
+		user_controller.View(writer, request)
 	}
 
 	message := user_controller.userservice.CheckUser(&person)
@@ -205,5 +207,22 @@ func (user_controller *UserHandler) LogInPage(writer http.ResponseWriter, reques
 }
 
 func (user_controller *UserHandler) RedirectToHome(writer http.ResponseWriter, request *http.Request) {
+
+}
+func (user_controller *UserHandler) View(writer http.ResponseWriter, request *http.Request) {
+	username, password, present := ReadSession(request)
+	person := &entity.Person{Username: username, Password: password}
+	if !present {
+		//404 page no
+		SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
+		return
+	}
+
+	systemMessage := user_controller.userservice.GetUser(person)
+	fmt.Println(systemMessage.Message)
+	if systemMessage.Succesful {
+		fmt.Println(person.Email)
+		SystemTemplates.ExecuteTemplate(writer, "edit.html", person)
+	}
 
 }
