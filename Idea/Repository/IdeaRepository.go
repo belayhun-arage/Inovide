@@ -19,7 +19,7 @@ func NewIdeaRepo(sqlite *gorm.DB) *IdeaRepo {
 }
 
 func (ideas *IdeaRepo) CreateIdea(idea *entity.Idea) error {
-	err := ideas.db.Debug().Table("ideas").Model(&entity.Idea{}).Create(idea).Error
+	err := ideas.db.Debug().Table("idea").Model(&entity.Idea{}).Create(idea).Error
 	if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
 		// handle error
 	}
@@ -29,4 +29,50 @@ func (ideas *IdeaRepo) CreateIdea(idea *entity.Idea) error {
 		panic(err)
 	}
 	return nil
+}
+
+func (ideas *IdeaRepo) GetIdea(id int) (*entity.Idea, error) {
+
+	idea := &entity.Idea{}
+	err := ideas.db.Debug().Table("idea").Find(idea, id).Error
+
+	if err != nil {
+		return nil, err
+	}
+	return idea, nil
+
+}
+func (ideas *IdeaRepo) DeleteIdea(id int) error {
+
+	err := ideas.db.Debug().Table("idea").Delete(&entity.Person{}, id).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ideas *IdeaRepo) VoteIdea(ideaid, voterid int) error {
+
+	idea := &entity.Idea{}
+	err := ideas.db.Debug().Table("idea").Where(entity.Idea{}, ideaid).Find(idea).Error
+
+	fmt.Println(idea.Numberofvotes)
+	err = ideas.db.Debug().Table("idea").Where(" id=?", idea.Id).Update(&entity.Idea{Ideaownerid: idea.Ideaownerid, Title: idea.Title, Description: idea.Description, Visibility: idea.Visibility, Numberofvotes: idea.Numberofvotes + 1, Numberofcomment: idea.Numberofcomment}).Error
+
+	if err != nil {
+		return err
+	}
+
+	votee := &entity.Votee{}
+	votee.Ideaid = ideaid
+	votee.Voterid = voterid
+	err = ideas.db.Table("votee").Save(votee).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (ideas *IdeaRepo) CheckVoteIdea(ideaid, voterid int) error {
+
 }

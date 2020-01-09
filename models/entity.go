@@ -38,16 +38,15 @@ type Message struct {
 }
 
 type Idea struct {
-	Id           int    `json:"id,omitempty"  `
-	OwnerId      int    `json:"ownerid,omitempty"  `
-	CreationData string `json:"creationdate,omitempty"  `
-	Title        string `json:"title,omitempty"  `
-	Description  string `json:"description,omitempty"  `
-	Visibility   string `json:"visibility,omitempty"  `
+	Id          int    `json:"id,omitempty"  `
+	Ideaownerid int    `json:"ownerid,omitempty"  `
+	Title       string `json:"title,omitempty"  `
+	Description string `json:"description,omitempty"  `
+	Visibility  string `json:"visibility,omitempty"  `
 	//  Consider the following into consideration while Working on Ideas
 	// Use String 	"pu" --For Public  "pv" -- For Private  "pr" -- For Protected
-	NumberOfVotes   int `json:"numberofvotes,omitempty"  `
-	NumberOfComment int `json:"numberofcomment,omitempty"  `
+	Numberofvotes   int `json:"numberofvotes,omitempty"  `
+	Numberofcomment int `json:"numberofcomment,omitempty"  `
 }
 
 type Comment struct {
@@ -70,4 +69,10 @@ type Alie struct {
 	AlieId     int `json:"alieid,omitempty"  `
 	UserOnline string
 	AlieOnline string
+}
+
+type Votee struct {
+	Id      int `json:"id,omitempty"  `
+	Ideaid  int `json:"ideaid,omitempty"  `
+	Voterid int `json:"commentorid,omitempty"  `
 }

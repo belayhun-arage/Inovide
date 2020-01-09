@@ -17,29 +17,7 @@
     <script>
     
 function send(){
-    var yourmess=$("#editTextSend").val();
-    console.log(yourmess);
-    var container=document.getElementById("messagesArray");
-    
-    if( $("#editTextSend").val() !=""  || $("#editTextSend").val() !==null ){
-        $.ajax({
-            url:"../php/messageSave.php",
-            type:"POST",
-            data:{"yourmess":yourmess},
-            dataType:"JSON",
-            success: function(data)
-            {
-                var sendingContainer=$("#bottmBar");
-                $("#editTextSend").text("");
-                if(data.result=="yes"){
-                    document.getElementById("editTextSend").value = "";
-                }
-            },
-            error:function(rt ,re){
-            console.log(re);
-            }
-        });
-    }
+    var 
 }
     
     </script>
@@ -61,13 +39,13 @@ function send(){
                     <form action="/create-idea/" enctype="multipart/form-data" method="POST" id="create-idea">
                         <div class="form-group">
 
-                            <input type="text" class="form-control" placeholder="Title : Enter Your Title here ">
+                            <input type="text" name="title" class="form-control" placeholder="Title : Enter Your Title here ">
                         </div>
                         <div class="form-group">
-                            <input type="text" class="form-control" placeholder="Description : Enter Description Of Your Idea here">
+                            <input type="text" name="description" class="form-control" placeholder="Description : Enter Description Of Your Idea here">
                         </div>
                         <div class="form-group">
-                            <input type="file" class="form-control" placeholder="Attach File here">
+                            <input type="file"  name="filename" class="form-control" placeholder="Attach File here">
                         </div>
                         <!--
                         <div class="form-group">
@@ -77,14 +55,31 @@ function send(){
                             <input type="radio" name="gender" value="Default"> Default
                         </div>
                         -->
-                        <div class="form-group">
-                            <select name="options">
-                            <input type="checkbox" value="select">Select Visibility</option>
-                            <option value="pv">private</option>
-                            <option value="pr">protected</option>
-                            <option value="pu">public</option>
-                          </select>
+                        <script>
+                        
+                                document.readyState(function(){
+                                    onlyOne(document.getElementsById("el1"));
+                                })
+                                function onlyOne(checkbox) {
+                                    // var ch2 =document.getElementById("el1");
+                                    // var ch2 =document.getElementById("el2");
+                                    // var ch2 =document.getElementById("el3");
+                                    document.getElementsByName("visibility");
+                                    var checkboxes = document.getElementsByName('check');
+                                    checkboxes.forEach((item) => {
+                                        if (item !== checkbox) {item.checked = false;}
+                                    })
+                                }
+                                </script>
+                        <div>
+                            <lable ><strong > Visibility </strong> </lable>
+                            <input type="checkbox"  id="el1" name="visibility"  value="pu" onclick="onlyOne(this)">public </input>
+                            <input type="checkbox"  id="el2" name="visibility"  value="pr" onclick="onlyOne(this)">protected  </input>
+                            <input type="checkbox"  id="el3" name="visibility"  value="pv" onclick="onlyOne(this)">private</input>
                         </div>
+
+
+                        
                 
                 <button type="submit" onclick="upload()" class="btn-btn-success">Upload</button>
                 </form>

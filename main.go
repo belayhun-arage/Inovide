@@ -17,7 +17,7 @@ import (
 )
 
 var tpl *template.Template
-var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/profile.html", "templates/createIdea.html", "templates/home.html", "templates/footer.html", "templates/login.html"))
+var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/edit.html", "templates/createIdea.html", "templates/home.html", "templates/footer.html", "templates/login.html"))
 var db *gorm.DB
 var errors error
 var userRepository *repository.UserRepo
@@ -70,8 +70,12 @@ func main() {
 	router.HandleFunc("/register/", userrouter.RegisterUser).Methods("POST")
 	router.HandleFunc("/signin/", userrouter.LogInPage).Methods("GET")
 	router.HandleFunc("/signin/", userrouter.LogInRequest).Methods("POST")
-	router.HandleFunc("/create-idea/", idearouter.CreateIdeaPage).Methods("GET")
-	router.HandleFunc("/create-idea/", idearouter.CreateIdea).Methods("POST")
+	router.HandleFunc("/idea/create/", idearouter.CreateIdeaPage).Methods("GET")
+	router.HandleFunc("/idea/create/", idearouter.CreateIdea).Methods("POST")
+	router.HandleFunc("/idea/get/", idearouter.GetIdea).Methods("POST")
+	router.HandleFunc("/idea/delete/", idearouter.DeleteIdea).Methods("POST")
+	router.HandleFunc("/idea/update/", idearouter.UpdateIdea).Methods("POST")
+	router.HandleFunc("/idea/vote/", idearouter.VoteIdea).Methods("POST")
 	router.HandleFunc("/ws", chatrouter.ChatPage).Methods("GET")
 	router.HandleFunc("/Chat/", chatrouter.HandleChat)
 	router.HandleFunc("/", ServeHome)
@@ -80,5 +84,5 @@ func main() {
 
 func ServeHome(writer http.ResponseWriter, request *http.Request) {
 
-	TemplateGroupUser.ExecuteTemplate(writer, "reg.html", nil)
+	TemplateGroupUser.ExecuteTemplate(writer, "edit.html", nil)
 }
