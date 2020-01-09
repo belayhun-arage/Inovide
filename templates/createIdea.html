@@ -14,11 +14,63 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <link href="../public/css/createIdea.css" rel="stylesheet" type="text/css" />
-    <script>
-    
-function send(){
-    var 
+   
+   <style>
+   
+.js-addfileupload {
+  margin: 15px 0;
 }
+
+.file-input-wrapper input[type=file], .file-input-wrapper input[type=file]:focus, .file-input-wrapper input[type=file]:hover {
+  position: absolute;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 99;
+}
+   
+   </style>
+   
+   
+   <script>
+        var fileCount =0;
+    
+        function addOther(){
+            console.log("inside Me ");
+    var fileList = document.getElementById("files");
+    var item = document.createElement("input");
+    item.setAttribute("type" , "file");
+    item.setAttribute("class" , "form-controll");
+    item.setAttribute("class" , "form-controll");
+    item.setAttribute("placeholder" , "attach another  file here");
+    item.setAttribute("name" , ""+fileCount);
+    fileCount++;
+    fileList.appendChild(item);
+
+
+console.log("inside the method ");
+}
+
+// $(function() {
+//   // Load the plugin
+//   console.log("inside Me ");
+//   $("input[type=file]").bootstrapFileInput();
+  
+// 	$(".js-addfileupload").click( function (e) {
+// 		e.preventDefault(e);
+//     // Create unique ID for the element
+//     var elid = new Date().getTime();
+//     // Assign the id and call the plugin
+// 		$("#file").append("<input type=\"file\" id=\"js-file-" + elid + "\" name=\"attachments[]\" class=\"form-control\" accept=\"image/*\">");
+//    	$("#js-file-" + elid).bootstrapFileInput();
+// 		return false;
+// 	});
+//  }
+// );
+
+    
+
+        
+    
     
     </script>
 
@@ -36,7 +88,7 @@ function send(){
                 </div> -->
 
                 <div class="col-12 form-input">
-                    <form action="/create-idea/" enctype="multipart/form-data" method="POST" id="create-idea">
+                    <form action="/idea/create/" enctype="multipart/form-data" method="POST" id="create-idea">
                         <div class="form-group">
 
                             <input type="text" name="title" class="form-control" placeholder="Title : Enter Your Title here ">
@@ -44,8 +96,10 @@ function send(){
                         <div class="form-group">
                             <input type="text" name="description" class="form-control" placeholder="Description : Enter Description Of Your Idea here">
                         </div>
-                        <div class="form-group">
-                            <input type="file"  name="filename" class="form-control" placeholder="Attach File here">
+                        <div class="form-group" id="files" >
+                                <button type="button" onclick="addOther()" class="btn btn-primary js-addfileupload">Add File</button>
+                            <input type="file"  name="name="attachments[]" class="form-control" placeholder="Attach File here">
+
                         </div>
                         <!--
                         <div class="form-group">
@@ -55,7 +109,7 @@ function send(){
                             <input type="radio" name="gender" value="Default"> Default
                         </div>
                         -->
-                        <script>
+                        <!-- <script>
                         
                                 document.readyState(function(){
                                     onlyOne(document.getElementsById("el1"));
@@ -70,7 +124,7 @@ function send(){
                                         if (item !== checkbox) {item.checked = false;}
                                     })
                                 }
-                                </script>
+                                </script> -->
                         <div>
                             <lable ><strong > Visibility </strong> </lable>
                             <input type="checkbox"  id="el1" name="visibility"  value="pu" onclick="onlyOne(this)">public </input>

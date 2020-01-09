@@ -5,7 +5,7 @@ import (
 	//entity "github.com/Samuael/Projects/Inovide/models"
 	"fmt"
 
-	entity "github.com/Samuael/Projects/Inovide/models"
+	entity "github.com/Projects/Inovide/models"
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
 )
@@ -73,6 +73,17 @@ func (ideas *IdeaRepo) VoteIdea(ideaid, voterid int) error {
 	return nil
 }
 
-func (ideas *IdeaRepo) CheckVoteIdea(ideaid, voterid int) error {
+// func (ideas *IdeaRepo) CheckVoteIdea(ideaid, voterid int) error {
 
-}
+// }
+
+// func (ideas *IdeaRepo) SaveCommentIdea(comment *entity.Comment) error {
+// 	commento := &entity.Comment{}
+// 	err := ideas.db.Debug().Table("comment").Save(,
+// 		Commentorid: comment.Commentorid,
+// 		Commentdata: comment.Commentdata}).Error
+// 	if err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }

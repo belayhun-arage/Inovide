@@ -335,7 +335,7 @@ function debounce(func, wait, immediate) {
       timeout = null;
       if (!immediate) func.apply(context, args);
     }, wait);
-    if (immediate && !timeout) func.apply(context, args);
+    if (immediate && !timeout) func.applyServeHome(context, args);
   };
 };
 

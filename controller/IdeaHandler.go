@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	ideaService "github.com/Samuael/Projects/Inovide/Idea/Service"
-	UsableFunctions "github.com/Samuael/Projects/Inovide/Usables"
-	entity "github.com/Samuael/Projects/Inovide/models"
+	ideaService "github.com/Projects/Inovide/Idea/Service"
+	UsableFunctions "github.com/Projects/Inovide/Usables"
+	entity "github.com/Projects/Inovide/models"
 )
 
 var (
@@ -25,7 +25,6 @@ type IdeaHandler struct {
 func NewIdeaHandler(theService *ideaService.IdeaService) *IdeaHandler {
 	return &IdeaHandler{ideaservice: theService}
 }
-
 func (idea_controller *IdeaHandler) CreateIdeaPage(writer http.ResponseWriter, request *http.Request) {
 	SystemTemplates.ExecuteTemplate(writer, "createIdea.html", nil)
 }
@@ -58,7 +57,7 @@ func (idea_Admin *IdeaHandler) CreateIdea(writer http.ResponseWriter, request *h
 
 		randomStringForSavingTheFile := UsableFunctions.GenerateRandomString(LENGTH_OF_FILE_CHARACTER, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
 
-		newFullNameOfTheFileDirectory = "public/img/UsersImage/" + randomStringForSavingTheFile + "." + fileExtension
+		newFullNameOfTheFileDirectory = "public/img/IdeaResource/" + randomStringForSavingTheFile + "." + fileExtension
 
 		file, errorCreatingFile := os.Create(newFullNameOfTheFileDirectory)
 
@@ -160,3 +159,32 @@ func (idea_Admin *IdeaHandler) VoteIdea(writer http.ResponseWriter, request *htt
 	}
 	writer.Write(jsonbinary)
 }
+
+// func (idea_Admin *IdeaHandler) SaveComment(writer http.ResponseWriter, request *http.Request) {
+// 	request.ParseForm()
+// 	fmt.Println("Inside The Handler ")
+// 	ideaid, err := strconv.Atoi(request.FormValue("ideaid"))
+
+// 	if err != nil {
+// 		return
+// 	}
+// 	commentorid, err := strconv.Atoi(request.FormValue("commentorid"))
+// 	if err != nil {
+// 		return
+// 	}
+// 	commentdata := request.FormValue("commentdata")
+
+// 	if commentdata == "" {
+// 		return
+// 	}
+// comment := &entity.Comment{Ideaid: ideaid, Commentorid: commentorid, Commentdata: commentdata}
+// //systemmessage := idea_Admin.ideaservice.SaveCommentIdea(comment)
+
+// mapping := map[string]interface{}{"systemmessage": systemmessage,
+// 	"comment": comment}
+// jsonbinary, err := json.Marshal(mapping) //  can be sent for the user through  Template(The Map) or api (The Json )
+// if err != nil {
+// 	return
+// }
+// writer.Write(jsonbinary)
+// }

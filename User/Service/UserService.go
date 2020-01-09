@@ -1,8 +1,10 @@
 package service
 
 import (
-	repository "github.com/Samuael/Projects/Inovide/User/Repository"
-	entity "github.com/Samuael/Projects/Inovide/models"
+	"fmt"
+
+	repository "github.com/Projects/Inovide/User/Repository"
+	entity "github.com/Projects/Inovide/models"
 )
 
 var er error
@@ -48,6 +50,7 @@ func (userService *UserService) CheckUser(person *entity.Person) *entity.SystemM
 
 	theBool := userService.userrepo.CheckUser(person)
 
+	fmt.Println(person.ID, "The Final Time Of test")
 	if theBool {
 		message.Message = "Ok The User Exists "
 		message.Succesful = true
