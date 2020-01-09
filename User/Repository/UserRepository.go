@@ -42,3 +42,13 @@ func (users *UserRepo) CheckUser(enti *entity.Person) bool {
 	}
 	return true
 }
+func (users *UserRepo) GetUser(enti *entity.Person) bool {
+
+	geterr := users.db.Debug().Table("users").Model(&entity.Person{}).Where("UserName=? and Password=?", enti.Username, enti.Password).Find(&enti).Error
+	//updateerr := users.db.Debug().Table("users").Model(&entity.Person{}).Set("Firstname = ?Firstname").Where("id = ?id").Update(enti)
+	if geterr != nil {
+		return false
+	}
+	return true
+
+}
