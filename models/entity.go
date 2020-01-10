@@ -1,15 +1,12 @@
 package entity
 
 import (
-	// mongodb "github.com/Samuael/Projects/Inovide/DB"
-	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
 	// "github.com/mongodb/mongo-go-driver/mongo"
 )
 
 type Person struct {
-	gorm.Model
-	ID        uint64 //`gorm:"primary_key;AUTO_INCREMENT" json:"-"`                          //  bson:"_id,omitempty"`
+	ID        uint   `gorm:"primary_key;AUTO_INCREMENT" json:"-"`                          //  bson:"_id,omitempty"`
 	Firstname string `json:"firstname,omitempty"  gorm:"column:firstname"`                 //  bson:"firstname,omitempty"`
 	Lastname  string `json:"lastname,omitempty"  gorm:"column:lastname"`                   //  bson:"lastname,omitempty"`
 	Username  string `json:"name,omitempty" sql:"not null;unique"  gorm:"column:username"` //bson:"name,omitempty"`
@@ -51,10 +48,10 @@ type Idea struct {
 
 type Comment struct {
 	Id          int    `json:"id,omitempty"  `
-	IdeaId      int    `json:"ideaid,omitempty"  `
-	CommentorId int    `json:"commentorid,omitempty"  `
-	CommentDate string `json:"commentdate,omitempty"  `
-	CommentData string `json:"commentdata,omitempty"  `
+	Ideaid      int    `json:"ideaid,omitempty"  `
+	Commentorid int    `json:"commentorid,omitempty"  `
+	Commentdate string `json:"commentdate,omitempty"  `
+	Commentdata string `json:"commentdata,omitempty"  `
 }
 
 type Following struct {

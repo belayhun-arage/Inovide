@@ -1,6 +1,14 @@
 package service
 
 import (
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+	"fmt"
+
+=======
+>>>>>>> 28b047318730763d58e4348f361818a4a2655e60
+>>>>>>> b4e2693f8a0ede79081c0b335a489e939b93510f
 	repository "github.com/Projects/Inovide/User/Repository"
 	entity "github.com/Projects/Inovide/models"
 )
@@ -48,6 +56,7 @@ func (userService *UserService) CheckUser(person *entity.Person) *entity.SystemM
 
 	theBool := userService.userrepo.CheckUser(person)
 
+	fmt.Println(person.ID, "The Final Time Of test")
 	if theBool {
 		message.Message = "Ok The User Exists "
 		message.Succesful = true

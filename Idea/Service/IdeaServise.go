@@ -70,3 +70,18 @@ func (ideaServise *IdeaService) VoteIdea(ideaid, voterid int) *entity.SystemMess
 	message.Succesful = true
 	return message
 }
+
+// func (ideaServise *IdeaService) SaveCommentIdea(comment *entity.Comment) *entity.SystemMessage {
+
+// 	systemmessage := &entity.SystemMessage{}
+// 	err := ideaServise.Idearepo.SaveCommentIdea(comment)
+
+// 	if err != nil {
+// 		systemmessage.Message = "Can't Save The Message "
+// 		systemmessage.Succesful = false
+// 		return systemmessage
+// 	}
+// 	systemmessage.Message = "Succesfully Commentd "
+// 	systemmessage.Succesful = true
+// 	return systemmessage
+// }

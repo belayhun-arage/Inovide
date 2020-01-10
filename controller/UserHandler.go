@@ -3,6 +3,13 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
+<<<<<<< HEAD
+	UsableFunctions "github.com/Projects/Inovide/Usables"
+	service "github.com/Projects/Inovide/User/Service"
+	entity "github.com/Projects/Inovide/models"
+	"github.com/gorilla/sessions"
+=======
+>>>>>>> 28b047318730763d58e4348f361818a4a2655e60
 	"html/template"
 	"io"
 	"net/http"
@@ -58,6 +65,15 @@ func ReadSession(request *http.Request) (string, string, bool) {
 	password := sessional.Values[SESSION_PASSWORD].(string)
 
 	return username, password, ok
+}
+
+func DeleteSession(request *http.Request) bool {
+	sessional, err := store.Get(request, "session")
+	if err != nil {
+		return false
+	}
+	sessional.Options.MaxAge = -1
+	return true
 }
 
 /*                Session Related Datas                                 <<Begin>>     */
@@ -166,6 +182,7 @@ func (user_controller *UserHandler) RegistrationPage(w http.ResponseWriter, requ
 func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, request *http.Request) {
 
 	request.ParseForm()
+
 	username := request.PostFormValue("name")
 	password := request.PostFormValue("password")
 	fmt.Println(username, password)
@@ -194,19 +211,26 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 	message := user_controller.userservice.CheckUser(&person)
 	if message.Succesful {
 		SaveSession(username, password, writer, request)
+	} else if !message.Succesful {
+		http.Redirect(writer, request, "/signin/", 301)
 	}
 	thebinary, erro = json.Marshal(message)
 	if erro != nil {
 		panic(erro)
 	}
-	SystemTemplates.ExecuteTemplate(writer, "home.html", nil)
 
+	http.Redirect(writer, request, "/user/chat/", 301)
 }
 func (user_controller *UserHandler) LogInPage(writer http.ResponseWriter, request *http.Request) {
+	_, _, present := ReadSession(request)
+	if present {
+		http.Redirect(writer, request, "/user/chat/", 301)
+	}
 	SystemTemplates.ExecuteTemplate(writer, "login.html", nil)
 }
 
 func (user_controller *UserHandler) RedirectToHome(writer http.ResponseWriter, request *http.Request) {
+	SystemTemplates.ExecuteTemplate(writer, "home.html", nil)
 
 }
 func (user_controller *UserHandler) View(writer http.ResponseWriter, request *http.Request) {
