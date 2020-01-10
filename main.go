@@ -1,7 +1,6 @@
 package main
 
 import (
-<<<<<<< HEAD
 	"html/template"
 	"net/http"
 
@@ -14,21 +13,10 @@ import (
 	service "github.com/Projects/Inovide/User/Service"
 	handler "github.com/Projects/Inovide/controller"
 	entity "github.com/Projects/Inovide/models"
-=======
-	ChatRepository 		"github.com/Projects/Inovide/Chat/Repository"
-	ChatService 		"github.com/Projects/Inovide/Chat/Service"
-	config 				"github.com/Projects/Inovide/DB"
-	IdeaRepository 		"github.com/Projects/Inovide/Idea/Repository"
-	ideaService 		"github.com/Projects/Inovide/Idea/Service"
-	repository 			"github.com/Projects/Inovide/User/Repository"
-	service 			"github.com/Projects/Inovide/User/Service"
-	handler 			"github.com/Projects/Inovide/controller"
-	entity 				"github.com/Projects/Inovide/models"
->>>>>>> b4e2693f8a0ede79081c0b335a489e939b93510f
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	"html/template"
-	"net/http"
+	// "html/template"
+	// "net/http"
 )
 
 var tpl *template.Template

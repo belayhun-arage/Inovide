@@ -75,5 +75,5 @@ func (ideas *IdeaRepo) VoteIdea(ideaid, voterid int) error {
 
 // func (ideas *IdeaRepo) CheckVoteIdea(ideaid, voterid int) error {
 
-	return nil
-}
+// 	return nil
+// }

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Create Idea</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="../public/css/crIutil.css">
+    <link rel="stylesheet" type="text/css" href="../public/css/crImain.css">
+</head>
+
+<body>
+
+
+    <div class="container-contact100" style="background-image: url('../public/image/bg-011.jpg');">
+        <div class="wrap-contact100">
+            <form class="contact100-form validate-form">
+                <span class="contact100-form-title">
+					Create Idea Form
+				</span>
+
+                <div class="wrap-input100 rs1-wrap-input100 validate-input" data-validate="Name is required">
+                    <span class="label-input100">Title *</span>
+                    <input class="input100" type="text" name="name" placeholder="Enter Your Title Here">
+                </div>
+
+                <div class="wrap-input100 validate-input " data-validate="Message is required ">
+                    <span class="label-input100 ">Description *</span>
+                    <textarea class="input100 " name="message " placeholder="Your description here... "></textarea>
+                </div>
+
+                <div class="wrap-input100 validate-input ">
+                    <span class="label-input100 ">File To Upload *</span>
+                    <input class="input100" type="file" name="file" placeholder="Browse Here">
+                </div>
+
+                <div class="wrap-input100">
+                    <span class="label-input100">Visibility *</span>
+
+                    <div class="input100">
+                        <input type="checkbox" name="visibility" value="pu" onclick="">public</input>
+                        <input type="checkbox" name="visibility" value="pr" onclick="">protected</input>
+                        <input type="checkbox" name="visibility" value="pv" onclick="">private</input>
+                    </div>
+
+                </div>
+                <div class="container-contact100-form-btn ">
+                    <div class="wrap-contact100-form-btn ">
+                        <div class="contact100-form-bgbtn "></div>
+                        <button class="contact100-form-btn ">
+							Upload
+						</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+    </div>
+
+    <div id="dropDownSelect1 "></div>
+
+    <script src="js/mainn.js "></script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-23581568-13 "></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-23581568-13');
+    </script>
+
+</body>
+
+</html>

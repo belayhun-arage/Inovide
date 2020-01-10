@@ -1,14 +1,14 @@
 package service
 
 import (
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
+	// <<<<<<< HEAD
+	// =======
+	// <<<<<<< HEAD
 	"fmt"
 
-=======
->>>>>>> 28b047318730763d58e4348f361818a4a2655e60
->>>>>>> b4e2693f8a0ede79081c0b335a489e939b93510f
+	// =======
+	// >>>>>>> 28b047318730763d58e4348f361818a4a2655e60
+	// >>>>>>> b4e2693f8a0ede79081c0b335a489e939b93510f
 	repository "github.com/Projects/Inovide/User/Repository"
 	entity "github.com/Projects/Inovide/models"
 )

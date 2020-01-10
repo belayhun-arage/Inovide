@@ -6,12 +6,6 @@ import (
 	"log"
 	"net/http"
 
-<<<<<<< HEAD
-=======
-	chatService "github.com/Projects/Inovide/Chat/Service"
-	service "github.com/Projects/Inovide/User/Service"
-	"github.com/gorilla/websocket"
->>>>>>> b4e2693f8a0ede79081c0b335a489e939b93510f
 	"io"
 
 	chatService "github.com/Projects/Inovide/Chat/Service"
@@ -21,10 +15,6 @@ import (
 	// "time"
 	"crypto/rand"
 	"encoding/base64"
-<<<<<<< HEAD
-
-=======
->>>>>>> b4e2693f8a0ede79081c0b335a489e939b93510f
 	entity "github.com/Projects/Inovide/models"
 )
 

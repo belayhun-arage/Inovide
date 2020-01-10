@@ -3,13 +3,6 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-<<<<<<< HEAD
-	UsableFunctions "github.com/Projects/Inovide/Usables"
-	service "github.com/Projects/Inovide/User/Service"
-	entity "github.com/Projects/Inovide/models"
-	"github.com/gorilla/sessions"
-=======
->>>>>>> 28b047318730763d58e4348f361818a4a2655e60
 	"html/template"
 	"io"
 	"net/http"
