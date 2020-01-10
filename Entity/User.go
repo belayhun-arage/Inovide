@@ -1,4 +1,5 @@
 package entity
+
 // User entity
 type User struct {
 	userName   string

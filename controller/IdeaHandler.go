@@ -9,9 +9,9 @@ import (
 	"strconv"
 	"strings"
 
-	ideaService "github.com/Samuael/Projects/Inovide/Idea/Service"
-	UsableFunctions "github.com/Samuael/Projects/Inovide/Usables"
-	entity "github.com/Samuael/Projects/Inovide/models"
+	ideaService "github.com/Projects/Inovide/Idea/Service"
+	UsableFunctions "github.com/Projects/Inovide/Usables"
+	entity "github.com/Projects/Inovide/models"
 )
 
 var (

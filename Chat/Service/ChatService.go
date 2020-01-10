@@ -6,8 +6,8 @@ import (
 	// "log"
 	"fmt"
 
-	ChatRepository "github.com/Samuael/Projects/Inovide/Chat/Repository"
-	entity "github.com/Samuael/Projects/Inovide/models"
+	ChatRepository "github.com/Projects/Inovide/Chat/Repository"
+	entity "github.com/Projects/Inovide/models"
 )
 
 /*      Instantiation of Chat        */

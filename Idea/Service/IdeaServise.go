@@ -1,8 +1,8 @@
 package ideaService
 
 import (
-	IdeaRepository "github.com/Samuael/Projects/Inovide/Idea/Repository"
-	entity "github.com/Samuael/Projects/Inovide/models"
+	IdeaRepository "github.com/Projects/Inovide/Idea/Repository"
+	entity "github.com/Projects/Inovide/models"
 )
 
 type IdeaService struct {

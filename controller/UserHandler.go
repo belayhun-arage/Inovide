@@ -9,9 +9,9 @@ import (
 	"os"
 	"strings"
 
-	UsableFunctions "github.com/Samuael/Projects/Inovide/Usables"
-	service "github.com/Samuael/Projects/Inovide/User/Service"
-	entity "github.com/Samuael/Projects/Inovide/models"
+	UsableFunctions "github.com/Projects/Inovide/Usables"
+	service "github.com/Projects/Inovide/User/Service"
+	entity "github.com/Projects/Inovide/models"
 	"github.com/gorilla/sessions"
 )
 
