@@ -1,27 +1,27 @@
 <html>
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<link rel="stylesheet" href="../public/css/bviewidea.css">
+
 
 
 <head>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons">
+  <link rel="stylesheet" href="../public/css/bviewidea.css">
+
+   
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons">
     <link rel="stylesgeet" href="https://rawgit.com/creativetimofficial/material-kit/master/assets/css/material-kit.css">
 </head>
 
-<body class="profile-page">
+<body >
+  {{template "sidebarr.html"}}
     <div class="main main-raised">
 		<div class="profile-content">
             <div class="container">
                 <div class="row">
 	                <div class="col-md-6 ml-auto mr-auto">
         	           <div class="profile">
-	                        <div class="rounded-circle">
-	                            <img src="../public/image/saad.jpg"" alt="Circle Image" class="img-raised rounded-circle img-fluid>
+	                        <div>
+	                            <img src="../public/image/saad.jpg" alt="Circle Image" class="img-raised rounded-circle img-fluid">
 	                        </div>
 	                        <div class="name">
 	                            <h3 class="title">user name:<br>Followers</h3>
@@ -48,7 +48,7 @@
                 </div>
                 <div class="row">
                   <div class="col-sm-2"><a href="#" class="btn btn-info" role="button">file</a></div>            
-                  <div class="col-sm-2"">
+                  <div class="col-sm-2">
                     <a href="#" id="trigger">Pdf file</a>
                     <div id="dialog" style="display:none">
                       <div>
@@ -95,8 +95,6 @@
     </div>
     
     </div>
-    <script src="https://unpkg.com/popper.js@1.12.6/dist/umd/popper.js" integrity="sha384-fA23ZRQ3G/J53mElWqVJEGJzU0sTs+SvzG8fXVWP+kJQ1lwFAOkcUOysnlKJC33U" crossorigin="anonymous"></script>  
-    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js" integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9" crossorigin="anonymous"></script>
-
-</body>
+   
+</body >
 </html>
