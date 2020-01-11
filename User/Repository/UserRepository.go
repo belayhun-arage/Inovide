@@ -57,3 +57,10 @@ func (users *UserRepo) GetUser(enti *entity.Person) bool {
 	return true
 
 }
+func (users *UserRepo) GetUserById(enti *entity.Person) bool {
+	geterr := users.db.Debug().Table("users").Model(&entity.Person{}).Where(&entity.Person{}, enti.ID).Find(&enti).Error
+	if geterr != nil {
+		return false
+	}
+	return true
+}

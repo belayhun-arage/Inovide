@@ -32,7 +32,7 @@
    
    
    <script>
-        var fileCount =0;
+        var fileCount =1;
     
         function addOther(){
             console.log("inside Me ");
@@ -42,7 +42,7 @@
     item.setAttribute("class" , "form-controll");
     item.setAttribute("class" , "form-controll");
     item.setAttribute("placeholder" , "attach another  file here");
-    item.setAttribute("name" , ""+fileCount);
+    item.setAttribute("name" , "files");
     fileCount++;
     fileList.appendChild(item);
 
@@ -97,10 +97,11 @@ console.log("inside the method ");
                             <input type="text" name="description" class="form-control" placeholder="Description : Enter Description Of Your Idea here">
                         </div>
                         <div class="form-group" id="files" >
-                                <button type="button" onclick="addOther()" class="btn btn-primary js-addfileupload">Add File</button>
-                            <input type="file"  name="name="attachments[]" class="form-control" placeholder="Attach File here">
+                                <button type="button" onclick="addOther()" width=20px height=20px class="btn btn-primary js-addfileupload">Add File</button>
+                            <input type="file"  name="0" class="form-control" placeholder="Attach File here">
 
                         </div>
+                        
                         <!--
                         <div class="form-group">
                            <input type="text" class="form-control" placeholder="Visibility">

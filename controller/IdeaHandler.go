@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"os"
 	"strconv"
@@ -12,6 +13,8 @@ import (
 	ideaService "github.com/Projects/Inovide/Idea/Service"
 	UsableFunctions "github.com/Projects/Inovide/Usables"
 	entity "github.com/Projects/Inovide/models"
+
+	"github.com/lib/pq"
 )
 
 var (
@@ -19,11 +22,13 @@ var (
 )
 
 type IdeaHandler struct {
-	ideaservice *ideaService.IdeaService
+	ideaservice    *ideaService.IdeaService
+	commenthandler *CommentHandler
+	userrouter     *UserHandler
 }
 
-func NewIdeaHandler(theService *ideaService.IdeaService) *IdeaHandler {
-	return &IdeaHandler{ideaservice: theService}
+func NewIdeaHandler(theService *ideaService.IdeaService, commenthandle *CommentHandler, userrouters *UserHandler) *IdeaHandler {
+	return &IdeaHandler{ideaservice: theService, commenthandler: commenthandle, userrouter: userrouters}
 }
 func (idea_controller *IdeaHandler) CreateIdeaPage(writer http.ResponseWriter, request *http.Request) {
 	SystemTemplates.ExecuteTemplate(writer, "createIdea.html", nil)
@@ -31,68 +36,105 @@ func (idea_controller *IdeaHandler) CreateIdeaPage(writer http.ResponseWriter, r
 
 //CreateIdea handler
 func (idea_Admin *IdeaHandler) CreateIdea(writer http.ResponseWriter, request *http.Request) {
+	request.ParseMultipartForm(3939393939393933939)
 	idea := entity.Idea{}
 
 	ideaTitle := request.FormValue("title")
 	description := request.FormValue("description")
-	filedirectory, header, erro := request.FormFile("filename")
 	visibiitty := request.FormValue("visibility")
-
-	if erro != nil {
-		//fmt.Println(erro)
-	}
-	defer filedirectory.Close()
-
 	idea.Ideaownerid = 0
 	idea.Title = ideaTitle
 	idea.Description = description
 	idea.Visibility = visibiitty
-	var newFullNameOfTheFileDirectory string
-	var file *os.File
-	if header.Filename != "" {
 
-		stringSliceOfNameOfFile := strings.Split(header.Filename, ".")
+	resourceArray := []string{}
+	files := make([]multipart.File, 3)
 
-		fileExtension := stringSliceOfNameOfFile[len(stringSliceOfNameOfFile)-1]
+	request.ParseMultipartForm(32 << 20) // 32MB is the default used by FormFile
+	fhs := request.MultipartForm.File["files"]
+	counter := 0
+	for _, fh := range fhs {
 
-		randomStringForSavingTheFile := UsableFunctions.GenerateRandomString(LENGTH_OF_FILE_CHARACTER, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
-
-		newFullNameOfTheFileDirectory = "public/img/IdeaResource/" + randomStringForSavingTheFile + "." + fileExtension
-
-		file, errorCreatingFile := os.Create(newFullNameOfTheFileDirectory)
-
-		if errorCreatingFile != nil {
-			fmt.Println("Error While Creating the Image ", errorCreatingFile)
+		filedirectory, erro := fh.Open()
+		if erro != nil {
+			//fmt.Println(erro)
+			break
 		}
-		defer file.Close()
+		fmt.Println("Looping ")
+		defer filedirectory.Close()
+
+		var newFullNameOfTheFileDirectory string
+		// var file *os.File
+		if fh.Filename != "" {
+
+			fmt.Println("Fetching Dir")
+			stringSliceOfNameOfFile := strings.Split(fh.Filename, ".")
+
+			fileExtension := stringSliceOfNameOfFile[len(stringSliceOfNameOfFile)-1]
+
+			randomStringForSavingTheFile := UsableFunctions.GenerateRandomString(LENGTH_OF_FILE_CHARACTER, "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
+
+			newFullNameOfTheFileDirectory = "public/img/IdeaResource/" + randomStringForSavingTheFile + "." + fileExtension
+
+			fil, err := os.Create(newFullNameOfTheFileDirectory)
+			if err != nil {
+				fmt.Println("CAn't Save the Image ")
+				continue
+			}
+			defer fil.Close()
+			io.Copy(fil, filedirectory)
+
+			resourceArray[counter] = newFullNameOfTheFileDirectory
+
+			counter++
+		}
+
 	}
+
+	fmt.Println(resourceArray)
+	idea.Resources = pq.StringArray(resourceArray)
 	message := idea_Admin.ideaservice.CreateIdea(&idea)
 	if message.Succesful {
-		io.Copy(file, filedirectory)
-		//SaveSession(username, password, writer, request)
+		for index, filemultipart := range files {
+			filecreate, err := os.Create(resourceArray[index])
+			if err != nil {
+				continue
+			}
+
+			fmt.Println("Created")
+			io.Copy(filecreate, filemultipart)
+			filecreate.Close()
+
+		}
 	}
 
 	writer.Write([]byte(message.Message))
 }
 
-func (idea_Admin *IdeaHandler) GetIdea(writer http.ResponseWriter, request *http.Request) {
+func (idea_Admin *IdeaHandler) GetIdea(writer http.ResponseWriter, request *http.Request) *entity.Idea {
 	request.ParseForm()
 
 	Id := request.FormValue("ideadId")
 	id, err := strconv.Atoi(Id)
 	if err != nil {
-		return
+		return nil
 	}
 
 	idea := &entity.Idea{}
 	idea, systemMessage := idea_Admin.ideaservice.GetIdea(idea, id)
 	fmt.Println(idea.Description, idea.Id)
 	if systemMessage.Succesful {
-		json, _ := json.Marshal(idea)
-		fmt.Println(string(json))
-		writer.Header().Add("Content-type", "application/json")
-		writer.Write(json)
+		return idea
 	}
+	return nil
+}
+func (idea_Admin *IdeaHandler) TemplateGetIdea(writer http.ResponseWriter, request *http.Request) {
+
+	theidea := idea_Admin.GetIdea(writer, request)
+	if theidea == nil {
+		SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
+	}
+	SystemTemplates.ExecuteTemplate(writer, "", theidea)
 }
 
 func (idea_Admin *IdeaHandler) DeleteIdea(writer http.ResponseWriter, request *http.Request) {
@@ -158,6 +200,38 @@ func (idea_Admin *IdeaHandler) VoteIdea(writer http.ResponseWriter, request *htt
 		return
 	}
 	writer.Write(jsonbinary)
+}
+
+func (idea_Admin *IdeaHandler) GetDetailIdea(writer http.ResponseWriter, request *http.Request) *entity.IdeaPersonComments {
+	ideapersoncomment := &entity.IdeaPersonComments{}
+	idea := idea_Admin.GetIdea(writer, request)
+	comments, ok := idea_Admin.commenthandler.GetComments(idea.Id)
+	user := idea_Admin.userrouter.UserById(idea.Ideaownerid)
+
+	if !ok || idea == nil || comments == nil || user == nil {
+		ideapersoncomment.Succesful = false
+		return ideapersoncomment
+	}
+	ideapersoncomment.Succesful = true
+
+	commentwithPersons := idea_Admin.commenthandler.GetCommentWithPerson(comments)
+
+	if commentwithPersons == nil {
+		return nil
+	}
+
+	ideapersoncomment.Succesful = true
+	ideapersoncomment.CommentAndPerson = *commentwithPersons
+	ideapersoncomment.Idea = *idea
+	return ideapersoncomment
+
+}
+
+func (idea_Admin *IdeaHandler) TemplateGetDetailIdea(writer http.ResponseWriter, request *http.Request) {
+
+	listed := idea_Admin.GetDetailIdea(writer, request)
+
+	SystemTemplates.ExecuteTemplate(writer, "", listed)
 }
 
 // func (idea_Admin *IdeaHandler) SaveComment(writer http.ResponseWriter, request *http.Request) {

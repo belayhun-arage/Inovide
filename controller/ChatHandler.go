@@ -11,10 +11,6 @@ import (
 	"github.com/gorilla/websocket"
 	"io"
 
-	chatService "github.com/Projects/Inovide/Chat/Service"
-	service "github.com/Projects/Inovide/User/Service"
-	"github.com/gorilla/websocket"
-
 	// "time"
 	"crypto/rand"
 	"encoding/base64"
@@ -23,7 +19,6 @@ import (
 
 /*    Main Chat Handler Instantiation                << Begin >>           */
 /*
-
 This is the Handler package Function can be accesed in Userhandler.go and ChatHandler.go Class and
 We Will Be Using this method in the Main Method to distribute the template in the Main method and the templates are Created Once in the
 Main.go file and used in any of the Handlers of the System (<<Handlers in the controller Directory >>)
@@ -53,12 +48,13 @@ func NewChatHandler(TheHuba *entity.Hub, chatServices *chatService.ChatService, 
 /*    Main Chat Handler Instantiation             << End >>             */
 func (chathandler *ChatHandler) HandleChat(response http.ResponseWriter, request *http.Request) {
 	person := &entity.Person{}
-	username, password, present := ReadSession(request)
+	username, password, id, present := ReadSession(request)
 	if !present {
 		return
 	}
 	person.Username = username
 	person.Password = password
+	person.ID = uint(id)
 	systemMessage := chathandler.TheUserService.CheckUser(person)
 	fmt.Println(person.Username, person.Email, person.ID, "_______----------->> Samuael")
 	if !systemMessage.Succesful {

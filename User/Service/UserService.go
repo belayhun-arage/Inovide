@@ -1,11 +1,8 @@
 package service
 
 import (
-<<<<<<< HEAD
 	"fmt"
 
-=======
->>>>>>> 28b047318730763d58e4348f361818a4a2655e60
 	repository "github.com/Projects/Inovide/User/Repository"
 	entity "github.com/Projects/Inovide/models"
 )
@@ -77,4 +74,19 @@ func (userService *UserService) GetUser(person *entity.Person) *entity.SystemMes
 	message.Message = "Noooo "
 	message.Succesful = false
 	return message
+}
+
+func (userService *UserService) GetUserById(person *entity.Person) *entity.SystemMessage {
+	message := &entity.SystemMessage{}
+	bools := userService.userrepo.GetUserById(person)
+
+	if bools {
+		message.Message = "Succesfully Fetched "
+		message.Succesful = true
+		return message
+	}
+	message.Message = "Noooo "
+	message.Succesful = false
+	return message
+
 }

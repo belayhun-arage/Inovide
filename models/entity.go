@@ -44,6 +44,7 @@ type Idea struct {
 	// Use String 	"pu" --For Public  "pv" -- For Private  "pr" -- For Protected
 	Numberofvotes   int `json:"numberofvotes,omitempty"  `
 	Numberofcomment int `json:"numberofcomment,omitempty"  `
+	Resources       pq.StringArray
 }
 
 type Comment struct {
@@ -72,4 +73,16 @@ type Votee struct {
 	Id      int `json:"id,omitempty"  `
 	Ideaid  int `json:"ideaid,omitempty"  `
 	Voterid int `json:"commentorid,omitempty"  `
+}
+
+type CommentWithPerson struct {
+	Succesfull bool     `json:"succesful:omitempty"`
+	Person     *Person  `json : "person, omitempty"`
+	Comment    *Comment `json: "comment, omitempty"`
+}
+
+type IdeaPersonComments struct {
+	Succesful        bool
+	CommentAndPerson []CommentWithPerson `json:"commentandperson , omitempty"`
+	Idea             Idea                `json:"idea,omitempty"`
 }

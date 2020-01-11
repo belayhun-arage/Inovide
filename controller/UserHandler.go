@@ -3,17 +3,11 @@ package handler
 import (
 	"encoding/json"
 	"fmt"
-<<<<<<< HEAD
-	UsableFunctions "github.com/Projects/Inovide/Usables"
-	service "github.com/Projects/Inovide/User/Service"
-	entity "github.com/Projects/Inovide/models"
-	"github.com/gorilla/sessions"
-=======
->>>>>>> 28b047318730763d58e4348f361818a4a2655e60
 	"html/template"
 	"io"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	UsableFunctions "github.com/Projects/Inovide/Usables"
@@ -32,11 +26,12 @@ var SystemTemplates *template.Template
 const (
 	SESSION_USER_NAME = "username"
 	SESSION_PASSWORD  = "password"
+	SESSION_ID        = "id"
 )
 
 var store = sessions.NewCookieStore([]byte("The Top Secter ot the daya ")) // The place where to save the session Cookies on
 
-func SaveSession(username string, password string, writer http.ResponseWriter, request *http.Request) {
+func SaveSession(username string, password string, id int, writer http.ResponseWriter, request *http.Request) {
 
 	session, erro := store.Get(request, "session")
 	if erro != nil {
@@ -45,26 +40,31 @@ func SaveSession(username string, password string, writer http.ResponseWriter, r
 	}
 	session.Values[SESSION_USER_NAME] = username // session.Values is the Map Insid the sessions Package to Hold Messages
 	session.Values[SESSION_PASSWORD] = password  // session.Values is the Map Insid the sessions Package to Hold Messages
-
+	session.Values[SESSION_ID] = id
 	session.Save(request, writer) // writing the session to the ResposnseWriter
 }
 
 //  --  Use This to read The Session From The Sessio Store
-func ReadSession(request *http.Request) (string, string, bool) {
+func ReadSession(request *http.Request) (string, string, int, bool) {
 
 	sessional, err := store.Get(request, "session")
 	if err != nil {
-		return "", "", false
+		return "", "", -1, false
 	}
 
 	usernam, ok := (sessional.Values[SESSION_USER_NAME])
 	if !ok {
-		return "", "", ok
+		return "", "", -1, ok
 	}
 	username := usernam.(string)
 	password := sessional.Values[SESSION_PASSWORD].(string)
 
-	return username, password, ok
+	id, err := strconv.Atoi(sessional.Values[SESSION_ID].(string))
+
+	if err != nil {
+		return "", "", -1, false
+	}
+	return username, password, id, ok
 }
 
 func DeleteSession(request *http.Request) bool {
@@ -150,19 +150,29 @@ func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request 
 	message := user_Admin.userservice.RegisterUser(&person)
 	if message.Succesful {
 		io.Copy(file, imagedirectory)
-		SaveSession(username, password, writer, request)
+		SaveSession(username, password, int(person.ID), writer, request)
 	}
 
 	//-------------------------------
 
 	//Fetching the session From The Request
 
-	writer.Write([]byte(message.Message))
+	// SystemTemplates.ExecuteTemplate(writer , "home.hrml", person)
 
 	/*
 
 		user_Admin.ShowProfile(writer, request)
 	*/
+}
+func (user_Admin *UserHandler) UserById(id int) *entity.Person {
+
+	person := &entity.Person{}
+	person.ID = uint(id)
+	systemmessage := user_Admin.userservice.GetUserById(person)
+	if systemmessage.Succesful {
+		return person
+	}
+	return nil
 }
 
 func (user_Admin *UserHandler) RegistrationRequestRedirect(writer http.ResponseWriter, request *http.Request) {
@@ -210,7 +220,7 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 
 	message := user_controller.userservice.CheckUser(&person)
 	if message.Succesful {
-		SaveSession(username, password, writer, request)
+		SaveSession(username, password, int(person.ID), writer, request)
 	} else if !message.Succesful {
 		http.Redirect(writer, request, "/signin/", 301)
 	}
@@ -222,7 +232,7 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 	http.Redirect(writer, request, "/user/chat/", 301)
 }
 func (user_controller *UserHandler) LogInPage(writer http.ResponseWriter, request *http.Request) {
-	_, _, present := ReadSession(request)
+	_, _, _, present := ReadSession(request)
 	if present {
 		http.Redirect(writer, request, "/user/chat/", 301)
 	}
@@ -234,13 +244,13 @@ func (user_controller *UserHandler) RedirectToHome(writer http.ResponseWriter, r
 
 }
 func (user_controller *UserHandler) View(writer http.ResponseWriter, request *http.Request) {
-	username, password, present := ReadSession(request)
-	person := &entity.Person{Username: username, Password: password}
+	username, password, id, present := ReadSession(request)
 	if !present {
 		//404 page no
 		SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
 		return
 	}
+	person := &entity.Person{ID: uint(id), Username: username, Password: password}
 
 	systemMessage := user_controller.userservice.GetUser(person)
 	fmt.Println(systemMessage.Message)

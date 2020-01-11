@@ -1,19 +1,23 @@
 package main
 
 import (
-	ChatRepository 		"github.com/Projects/Inovide/Chat/Repository"
-	ChatService 		"github.com/Projects/Inovide/Chat/Service"
-	config 				"github.com/Projects/Inovide/DB"
-	IdeaRepository 		"github.com/Projects/Inovide/Idea/Repository"
-	ideaService 		"github.com/Projects/Inovide/Idea/Service"
-	repository 			"github.com/Projects/Inovide/User/Repository"
-	service 			"github.com/Projects/Inovide/User/Service"
-	handler 			"github.com/Projects/Inovide/controller"
-	entity 				"github.com/Projects/Inovide/models"
-	"github.com/gorilla/mux"
-	"github.com/jinzhu/gorm"
 	"html/template"
 	"net/http"
+
+	ChatRepository "github.com/Projects/Inovide/Chat/Repository"
+	ChatService "github.com/Projects/Inovide/Chat/Service"
+	config "github.com/Projects/Inovide/DB"
+
+	CommentRepo "github.com/Projects/Inovide/Comment/Repository"
+	CommentService "github.com/Projects/Inovide/Comment/Service"
+	IdeaRepository "github.com/Projects/Inovide/Idea/Repository"
+	ideaService "github.com/Projects/Inovide/Idea/Service"
+	repository "github.com/Projects/Inovide/User/Repository"
+	service "github.com/Projects/Inovide/User/Service"
+	handler "github.com/Projects/Inovide/controller"
+	entity "github.com/Projects/Inovide/models"
+	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
 )
 
 var tpl *template.Template
@@ -39,10 +43,11 @@ func init() {
 	/*Initializing the Chat and Related Resources */
 
 	initChatComponents()
+	initCommentComponent()
 
 	ideaRepository = IdeaRepository.NewIdeaRepo(db)
 	ideaservice = ideaService.NewIdeaService(ideaRepository)
-	idearouter = handler.NewIdeaHandler(ideaservice)
+	idearouter = handler.NewIdeaHandler(ideaservice, commentrouter, userrouter)
 
 }
 
@@ -61,6 +66,16 @@ func initChatComponents() {
 	go chatrouter.MessageCoordinator()
 }
 
+var commentrouter *handler.CommentHandler
+var commentservice *CommentService.CommentService
+var commentrepo *CommentRepo.CommentRepo
+
+func initCommentComponent() {
+	commentrepo = CommentRepo.NewCommentRepo(db)
+	commentservice = CommentService.NewCommentService(commentrepo)
+	commentrouter = handler.NewCommentHandler(commentservice, userrouter)
+}
+
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
@@ -72,12 +87,11 @@ func main() {
 	router.HandleFunc("/signin/", userrouter.LogInRequest).Methods("POST")
 	router.HandleFunc("/idea/create/", idearouter.CreateIdeaPage).Methods("GET")
 	router.HandleFunc("/idea/create/", idearouter.CreateIdea).Methods("POST")
-	router.HandleFunc("/idea/get/", idearouter.GetIdea).Methods("POST")
+	router.HandleFunc("/idea/get/", idearouter.TemplateGetIdea).Methods("POST")
 	router.HandleFunc("/idea/delete/", idearouter.DeleteIdea).Methods("POST")
 	router.HandleFunc("/idea/update/", idearouter.UpdateIdea).Methods("POST")
 	router.HandleFunc("/idea/vote/", idearouter.VoteIdea).Methods("POST")
 	router.HandleFunc("/user/chat/", userrouter.RedirectToHome).Methods("GET")
-
 	// router.HandleFunc("/user/" , )
 	// router.HandleFunc("/idea/comment/", idearouter.SaveComment).Methods("POST")
 	router.HandleFunc("/ws", chatrouter.ChatPage).Methods("GET")
@@ -87,6 +101,5 @@ func main() {
 }
 
 func ServeHome(writer http.ResponseWriter, request *http.Request) {
-
 	TemplateGroupUser.ExecuteTemplate(writer, "edit.html", nil)
 }
