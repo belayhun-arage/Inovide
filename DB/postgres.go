@@ -5,6 +5,7 @@ import (
 
 	// _ "github.com/lib/pq"
 	"database/sql"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
@@ -16,8 +17,8 @@ var postgresStatmente string
 var errors error
 
 const (
-	username = "samuael"
-	password = "samuaelfirst"
+	username = "postgres"
+	password = "faniman093864"
 	host     = "localhost"
 	dbname   = "inovide"
 )

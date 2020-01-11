@@ -18,6 +18,11 @@ import (
 	entity "github.com/Projects/Inovide/models"
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+<<<<<<< HEAD
+=======
+	// "html/template"
+	// "net/http"
+>>>>>>> b48394eb5297c0da5a10593b473bfabad6c3fa0b
 )
 
 var tpl *template.Template

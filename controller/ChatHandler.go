@@ -6,9 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	chatService "github.com/Projects/Inovide/Chat/Service"
-	service "github.com/Projects/Inovide/User/Service"
-	"github.com/gorilla/websocket"
 	"io"
 
 	// "time"

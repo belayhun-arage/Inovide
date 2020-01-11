@@ -10,9 +10,9 @@ import (
 var db *sql.DB
 
 const (
-	user     = "samuael"
-	password = "samuael"
-	dbname   = "exercise"
+	user     = "postgres"
+	password = "faniman093864"
+	dbname   = "inovide"
 	sslmode  = "disable"
 	host     = "localhost"
 	port     = 5432
