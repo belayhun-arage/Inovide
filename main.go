@@ -98,6 +98,7 @@ func main() {
 	router.POST("v1/idea/get/", idearouter.TemplateGetIdea)
 	router.GET("v1/idea/delete/", idearouter.DeleteIdea)
 	router.GET("v1/idea/search/", idearouter.SearchResult)
+	router.POST("v1/user/FollowUser/", userrouter.FollowUser)
 	/*The Comemnt Handler Related Api  */
 	router.POST("V1/Comment/Create/", commentrouter.APICreateComment)
 	router.GET("V1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
