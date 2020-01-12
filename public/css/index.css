@@ -54,7 +54,7 @@ nav>#nav ul{
 #next img {
     position: absolute;
     margin-left: 35%;
-    margin-top: -9%;
+    margin-top: 7%;
 
 
 }
@@ -75,7 +75,6 @@ nav>#nav ul{
 
 
 }
-<<<<<<< HEAD
 .container{
     position: absolute;
     margin-top: 30%;
@@ -96,6 +95,8 @@ nav>#nav ul{
 }
 .last{
     margin-left: 7%;
+
+    margin-top: 15%;
    
 }
 .container #circle{
@@ -122,12 +123,3 @@ input[type=text]:focus {
 
     }}
  
-=======
-.service .row{
-    position: absolute;
-    margin-top: 50%;
-    
-
-
-}
->>>>>>> 535f693... commit In Mex Controller

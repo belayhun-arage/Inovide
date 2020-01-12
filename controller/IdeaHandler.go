@@ -14,6 +14,7 @@ import (
 	UsableFunctions "github.com/Projects/Inovide/Usables"
 	entity "github.com/Projects/Inovide/models"
 
+	"github.com/julienschmidt/httprouter"
 	"github.com/lib/pq"
 )
 
@@ -30,15 +31,14 @@ type IdeaHandler struct {
 func NewIdeaHandler(theService *ideaService.IdeaService, commenthandle *CommentHandler, userrouters *UserHandler) *IdeaHandler {
 	return &IdeaHandler{ideaservice: theService, commenthandler: commenthandle, userrouter: userrouters}
 }
-func (idea_controller *IdeaHandler) CreateIdeaPage(writer http.ResponseWriter, request *http.Request) {
+func (idea_controller *IdeaHandler) CreateIdeaPage(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {
 	SystemTemplates.ExecuteTemplate(writer, "createIdea.html", nil)
 }
 
 //CreateIdea handler
-func (idea_Admin *IdeaHandler) CreateIdea(writer http.ResponseWriter, request *http.Request) {
+func (idea_Admin *IdeaHandler) CreateIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	request.ParseMultipartForm(3939393939393933939)
 	idea := entity.Idea{}
-
 	ideaTitle := request.FormValue("title")
 	description := request.FormValue("description")
 	visibiitty := request.FormValue("visibility")
@@ -128,7 +128,7 @@ func (idea_Admin *IdeaHandler) GetIdea(writer http.ResponseWriter, request *http
 	}
 	return nil
 }
-func (idea_Admin *IdeaHandler) TemplateGetIdea(writer http.ResponseWriter, request *http.Request) {
+func (idea_Admin *IdeaHandler) TemplateGetIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 
 	theidea := idea_Admin.GetIdea(writer, request)
 	if theidea == nil {
@@ -137,7 +137,7 @@ func (idea_Admin *IdeaHandler) TemplateGetIdea(writer http.ResponseWriter, reque
 	SystemTemplates.ExecuteTemplate(writer, "", theidea)
 }
 
-func (idea_Admin *IdeaHandler) DeleteIdea(writer http.ResponseWriter, request *http.Request) {
+func (idea_Admin *IdeaHandler) DeleteIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	request.ParseForm()
 
 	Id := request.FormValue("ideadId")
@@ -152,7 +152,7 @@ func (idea_Admin *IdeaHandler) DeleteIdea(writer http.ResponseWriter, request *h
 	writer.Write(jsonMessage)
 }
 
-func (idea_Admin *IdeaHandler) UpdateIdea(writer http.ResponseWriter, request *http.Request) {
+func (idea_Admin *IdeaHandler) UpdateIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 
 	request.ParseForm()
 
@@ -183,7 +183,7 @@ func (idea_Admin *IdeaHandler) UpdateIdea(writer http.ResponseWriter, request *h
 	}
 }
 
-func (idea_Admin *IdeaHandler) VoteIdea(writer http.ResponseWriter, request *http.Request) {
+func (idea_Admin *IdeaHandler) VoteIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	ideaid, err := strconv.Atoi(request.FormValue("id"))
 	if err != nil {
 		return
@@ -227,7 +227,7 @@ func (idea_Admin *IdeaHandler) GetDetailIdea(writer http.ResponseWriter, request
 
 }
 
-func (idea_Admin *IdeaHandler) TemplateGetDetailIdea(writer http.ResponseWriter, request *http.Request) {
+func (idea_Admin *IdeaHandler) TemplateGetDetailIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 
 	listed := idea_Admin.GetDetailIdea(writer, request)
 

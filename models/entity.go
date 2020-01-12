@@ -86,3 +86,10 @@ type IdeaPersonComments struct {
 	CommentAndPerson []CommentWithPerson `json:"commentandperson , omitempty"`
 	Idea             Idea                `json:"idea,omitempty"`
 }
+
+type GeneralIdeaPersonComments struct {
+	//we will use this struct to populate and return a data for search result searched
+	Succesful       bool
+	IdeaOwner       *Person             `json:"ideaowner,omitempty"`
+	IdeaRelatedData *IdeaPersonComments `json:"ideadatas,omitempty"`
+}

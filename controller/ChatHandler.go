@@ -11,7 +11,12 @@ import (
 	// "time"
 	"crypto/rand"
 	"encoding/base64"
+
+	ChatService "github.com/Projects/Inovide/Chat/Service"
+	service "github.com/Projects/Inovide/User/Service"
 	entity "github.com/Projects/Inovide/models"
+	"github.com/gorilla/websocket"
+	"github.com/julienschmidt/httprouter"
 )
 
 /*    Main Chat Handler Instantiation                << Begin >>           */
@@ -32,26 +37,25 @@ func generateKey() (string, error) {
 }
 
 type ChatHandler struct {
-	TheChatService *chatService.ChatService
+	TheChatService *ChatService.ChatService
 	TheUserService *service.UserService
 	TheHub         *entity.Hub
 }
 
 /*Passing the UserService and The Chat Service Returning A ChatHandler interface */
-func NewChatHandler(TheHuba *entity.Hub, chatServices *chatService.ChatService, userService *service.UserService) *ChatHandler {
+func NewChatHandler(TheHuba *entity.Hub, chatServices *ChatService.ChatService, userService *service.UserService) *ChatHandler {
 	return &ChatHandler{TheChatService: chatServices, TheUserService: userService, TheHub: TheHuba}
 }
 
 /*    Main Chat Handler Instantiation             << End >>             */
-func (chathandler *ChatHandler) HandleChat(response http.ResponseWriter, request *http.Request) {
+func (chathandler *ChatHandler) HandleChat(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	person := &entity.Person{}
-	username, password, id, present := ReadSession(request)
+	username, password, present := ReadSession(request)
 	if !present {
 		return
 	}
 	person.Username = username
 	person.Password = password
-	person.ID = uint(id)
 	systemMessage := chathandler.TheUserService.CheckUser(person)
 	fmt.Println(person.Username, person.Email, person.ID, "_______----------->> Samuael")
 	if !systemMessage.Succesful {
@@ -103,7 +107,7 @@ func (chathandler *ChatHandler) MessageCoordinator() {
 		}
 	}
 }
-func (chathandler *ChatHandler) ChatPage(w http.ResponseWriter, r *http.Request) {
+func (chathandler *ChatHandler) ChatPage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
 	SystemTemplates.ExecuteTemplate(w, "home.html", nil)
 }
 func (chathandler *ChatHandler) SaveMesage(message *entity.Message) *entity.Message {

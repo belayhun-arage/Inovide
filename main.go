@@ -6,27 +6,21 @@ import (
 
 	ChatRepository "github.com/Projects/Inovide/Chat/Repository"
 	ChatService "github.com/Projects/Inovide/Chat/Service"
-	config "github.com/Projects/Inovide/DB"
-
 	CommentRepo "github.com/Projects/Inovide/Comment/Repository"
 	CommentService "github.com/Projects/Inovide/Comment/Service"
+	config "github.com/Projects/Inovide/DB"
 	IdeaRepository "github.com/Projects/Inovide/Idea/Repository"
 	ideaService "github.com/Projects/Inovide/Idea/Service"
 	repository "github.com/Projects/Inovide/User/Repository"
 	service "github.com/Projects/Inovide/User/Service"
 	handler "github.com/Projects/Inovide/controller"
 	entity "github.com/Projects/Inovide/models"
-	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-<<<<<<< HEAD
-=======
-	// "html/template"
-	// "net/http"
->>>>>>> b48394eb5297c0da5a10593b473bfabad6c3fa0b
+	"github.com/julienschmidt/httprouter"
 )
 
 var tpl *template.Template
-var TemplateGroupUser = template.Must(template.ParseFiles("templates/reg.html", "templates/edit.html", "templates/createIdea.html", "templates/home.html", "templates/footer.html", "templates/login.html"))
+var TemplateGroupUser = template.Must(template.ParseGlob("templates/*.html"))
 var db *gorm.DB
 var errors error
 var userRepository *repository.UserRepo
@@ -44,16 +38,12 @@ func init() {
 	userservice = service.NewUserService(userRepository)
 	userrouter = handler.NewUserHandler(userservice)
 	/*    Initializing Users  Structure        <<End>>   */
-
 	/*Initializing the Chat and Related Resources */
-
 	initChatComponents()
 	initCommentComponent()
-
 	ideaRepository = IdeaRepository.NewIdeaRepo(db)
 	ideaservice = ideaService.NewIdeaService(ideaRepository)
 	idearouter = handler.NewIdeaHandler(ideaservice, commentrouter, userrouter)
-
 }
 
 var TheHub *entity.Hub
@@ -83,28 +73,33 @@ func initCommentComponent() {
 
 func main() {
 
-	router := mux.NewRouter().StrictSlash(true)
+	router := httprouter.New() //.StrictSlash(true)
 	http.Handle("/", router)
-	router.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
-	router.HandleFunc("/register/", userrouter.RegistrationPage).Methods("GET")
-	router.HandleFunc("/register/", userrouter.RegisterUser).Methods("POST")
-	router.HandleFunc("/signin/", userrouter.LogInPage).Methods("GET")
-	router.HandleFunc("/signin/", userrouter.LogInRequest).Methods("POST")
-	router.HandleFunc("/idea/create/", idearouter.CreateIdeaPage).Methods("GET")
-	router.HandleFunc("/idea/create/", idearouter.CreateIdea).Methods("POST")
-	router.HandleFunc("/idea/get/", idearouter.TemplateGetIdea).Methods("POST")
-	router.HandleFunc("/idea/delete/", idearouter.DeleteIdea).Methods("POST")
-	router.HandleFunc("/idea/update/", idearouter.UpdateIdea).Methods("POST")
-	router.HandleFunc("/idea/vote/", idearouter.VoteIdea).Methods("POST")
-	router.HandleFunc("/user/chat/", userrouter.RedirectToHome).Methods("GET")
-	// router.HandleFunc("/user/" , )
-	// router.HandleFunc("/idea/comment/", idearouter.SaveComment).Methods("POST")
-	router.HandleFunc("/ws", chatrouter.ChatPage).Methods("GET")
-	router.HandleFunc("/Chat/", chatrouter.HandleChat)
-	router.HandleFunc("/", ServeHome)
-	http.ListenAndServe(":8080", nil)
-}
+	// router.GET()
+	router.GET("/", userrouter.ServeHome)
+	// http.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
+	// router.PathPrefix("/public/").Handler(http.FileServer(http.Dir("/public/")))
+	router.NotFound = http.FileServer(http.Dir("public"))
+	router.POST("/user/register/", userrouter.RegistrationPage)
+	router.POST("/user/register/", userrouter.TemplateRegisterUser)
+	router.GET("/user/signin/", userrouter.LogInPage)
+	router.POST("/user/signin/", userrouter.LogInRequest)
+	router.POST("/idea/update/", idearouter.UpdateIdea)
+	router.POST("/idea/vote/", idearouter.VoteIdea)
+	router.GET("/user/chat/", userrouter.RedirectToHome)
+	router.GET("/chat/ws", chatrouter.ChatPage)
+	router.GET("/private/user/Chat/", chatrouter.HandleChat)
+	router.GET("/idea/create/", idearouter.CreateIdeaPage)
 
-func ServeHome(writer http.ResponseWriter, request *http.Request) {
-	TemplateGroupUser.ExecuteTemplate(writer, "edit.html", nil)
+	router.GET("v1/logout/", userrouter.LogOut)
+	router.POST("v1/user/register/", userrouter.TemplateRegisterUser)
+	router.POST("v1/user/signin/", userrouter.LogInRequest)
+	router.POST("v1/idea/create/", idearouter.CreateIdea)
+	router.POST("v1/idea/get/", idearouter.TemplateGetIdea)
+	router.GET("v1/idea/delete/", idearouter.DeleteIdea)
+	router.GET("v1/idea/search/", idearouter.SearchResult)
+	/*The Comemnt Handler Related Api  */
+	router.POST("V1/Comment/Create/", commentrouter.APICreateComment)
+	router.GET("V1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
+	http.ListenAndServe(":8080", nil)
 }

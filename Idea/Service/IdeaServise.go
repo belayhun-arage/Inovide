@@ -85,3 +85,16 @@ func (ideaServise *IdeaService) VoteIdea(ideaid, voterid int) *entity.SystemMess
 // 	systemmessage.Succesful = true
 // 	return systemmessage
 // }
+func (ideaservice *IdeaService) SearchResult(searchingtext string, person *entity.Person, searchresults *[]entity.Idea) *entity.SystemMessage {
+
+	systemmessage := &entity.SystemMessage{}
+
+	_, erro := ideaservice.Idearepo.SearchIdeas(searchingtext, person, searchresults)
+	if erro != nil {
+		systemmessage.Succesful = false
+		return systemmessage
+	}
+
+	systemmessage.Succesful = true
+	return systemmessage
+}

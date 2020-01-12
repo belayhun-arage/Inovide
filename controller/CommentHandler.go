@@ -1,11 +1,13 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
 	CommentService "github.com/Projects/Inovide/Comment/Service"
 	entity "github.com/Projects/Inovide/models"
+	"github.com/julienschmidt/httprouter"
 )
 
 type CommentHandler struct {
@@ -15,6 +17,19 @@ type CommentHandler struct {
 
 func NewCommentHandler(commentService *CommentService.CommentService, userrouter *UserHandler) *CommentHandler {
 	return &CommentHandler{CommentService: commentService, Userrouter: userrouter}
+}
+
+func (commenthandler *CommentHandler) APICreateComment(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	commentwithperson := commenthandler.CreateComment(writer, request)
+
+	jsonized, err := json.Marshal(commentwithperson)
+
+	jsonfailde, _ := json.Marshal(&entity.CommentWithPerson{})
+
+	if err != nil {
+		writer.Write(jsonfailde)
+	}
+	writer.Write(jsonized)
 }
 
 func (commentHandler *CommentHandler) CreateComment(writer http.ResponseWriter, request *http.Request) *entity.CommentWithPerson {
@@ -31,13 +46,12 @@ func (commentHandler *CommentHandler) CreateComment(writer http.ResponseWriter, 
 	}
 	commentdata := request.FormValue("commentdata")
 
-	username, password, id, present := ReadSession(request)
+	username, password, present := ReadSession(request)
 	if !present {
 		return commentWithThePerson
 	}
 
 	person.Username = username
-	person.ID = uint(id)
 	person.Password = password
 	systemmessageforuser := commentHandler.Userrouter.userservice.GetUser(person)
 	if !systemmessageforuser.Succesful {
@@ -83,6 +97,36 @@ func (commentHandler *CommentHandler) GetCommentWithPerson(comments *[]entity.Co
 
 	return &commentWithThePersons
 
+}
+
+func (commentHandler *CommentHandler) ApiGetCommentListed(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	request.ParseForm()
+	theideaid := request.FormValue("ideaid")
+	ideaid, err := strconv.Atoi(theideaid)
+
+	comments := &[]entity.Comment{}
+
+	thejson, _ := json.Marshal(comments)
+
+	if err != nil {
+		request.Header.Add("Content-Type", "application/json")
+		writer.Write(thejson)
+	}
+
+	listtofcomment, succesfull := commentHandler.GetComments(ideaid)
+	if !succesfull {
+		request.Header.Add("Content-Type", "application/json")
+		writer.Write(thejson)
+	}
+
+	request.Header.Add("Content-Type", "application/json")
+	thejsonmain, err := json.Marshal(listtofcomment)
+	if err != nil {
+		request.Header.Add("Content-Type", "application/json")
+		writer.Write(thejson)
+	}
+	request.Header.Add("Content-Type", "application/json")
+	writer.Write(thejsonmain)
 }
 
 func (commentHandler *CommentHandler) GetComments(ideaid int) (*[]entity.Comment, bool) {

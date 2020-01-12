@@ -7,13 +7,13 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"strconv"
 	"strings"
 
 	UsableFunctions "github.com/Projects/Inovide/Usables"
 	service "github.com/Projects/Inovide/User/Service"
 	entity "github.com/Projects/Inovide/models"
 	"github.com/gorilla/sessions"
+	"github.com/julienschmidt/httprouter"
 )
 
 var SystemTemplates *template.Template
@@ -45,26 +45,26 @@ func SaveSession(username string, password string, id int, writer http.ResponseW
 }
 
 //  --  Use This to read The Session From The Sessio Store
-func ReadSession(request *http.Request) (string, string, int, bool) {
+func ReadSession(request *http.Request) (string, string, bool) {
 
 	sessional, err := store.Get(request, "session")
 	if err != nil {
-		return "", "", -1, false
+		return "", "", false
 	}
 
 	usernam, ok := (sessional.Values[SESSION_USER_NAME])
 	if !ok {
-		return "", "", -1, ok
+		return "", "", ok
 	}
 	username := usernam.(string)
 	password := sessional.Values[SESSION_PASSWORD].(string)
 
-	id, err := strconv.Atoi(sessional.Values[SESSION_ID].(string))
+	// id, err := strconv.Atoi(sessional.Values[SESSION_ID].(string))
 
 	if err != nil {
-		return "", "", -1, false
+		return "", "", false
 	}
-	return username, password, id, ok
+	return username, password, ok
 }
 
 func DeleteSession(request *http.Request) bool {
@@ -76,8 +76,6 @@ func DeleteSession(request *http.Request) bool {
 	return true
 }
 
-/*                Session Related Datas                                 <<Begin>>     */
-/*                Session Related Datas                                 <<Begin>>     */
 /*                Session Related Datas                                 <<Begin>>     */
 /*                Session Related Datas                                 <<Begin>>     */
 
@@ -102,7 +100,7 @@ func NewUserHandler(theService *service.UserService) *UserHandler {
 	return &UserHandler{userservice: theService}
 }
 
-func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request *http.Request) {
+func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request *http.Request) *entity.SystemMessage {
 	person := entity.Person{}
 
 	firstname := request.FormValue("firstname")
@@ -111,14 +109,12 @@ func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request 
 	imagedirectory, header, erro := request.FormFile("image")
 
 	if erro != nil {
-		//fmt.Println(erro)
+		return nil
 	}
 	defer imagedirectory.Close()
-
 	email := request.FormValue("email")
 	password := request.FormValue("password")
 	biography := request.FormValue("biography")
-
 	person.Email = email
 	person.Username = username
 	person.Password = password
@@ -151,19 +147,44 @@ func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request 
 	if message.Succesful {
 		io.Copy(file, imagedirectory)
 		SaveSession(username, password, int(person.ID), writer, request)
+
+	}
+	return message
+
+}
+
+func (user_Admin *UserHandler) TemplateRegisterUser(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+
+	systemmessage := user_Admin.RegisterUser(writer, request)
+
+	if systemmessage.Succesful {
+		http.Redirect(writer, request, "/", 301)
+	} else {
+		http.Redirect(writer, request, "/user/register/", 301)
+	}
+}
+func (user_Admin *UserHandler) ServeHome(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	username, password, present := ReadSession(request)
+
+	var person = &entity.Person{}
+	if present {
+
+		person.Username = username
+		person.Password = password
+		// person.ID= uint(id)
+		sys := user_Admin.userservice.GetUser(person)
+
+		if !sys.Succesful {
+			person = nil
+		}
+	} else {
+		person = nil
 	}
 
-	//-------------------------------
-
-	//Fetching the session From The Request
-
-	// SystemTemplates.ExecuteTemplate(writer , "home.hrml", person)
-
-	/*
-
-		user_Admin.ShowProfile(writer, request)
-	*/
+	writer.Header().Add("Content-Type", "text/html")
+	SystemTemplates.ExecuteTemplate(writer, "index.html", person)
 }
+
 func (user_Admin *UserHandler) UserById(id int) *entity.Person {
 
 	person := &entity.Person{}
@@ -174,22 +195,13 @@ func (user_Admin *UserHandler) UserById(id int) *entity.Person {
 	}
 	return nil
 }
-
-func (user_Admin *UserHandler) RegistrationRequestRedirect(writer http.ResponseWriter, request *http.Request) {
-
-}
-
-func (user_Admin *UserHandler) ShowProfile(w http.ResponseWriter, request *http.Request) {
-
-}
-
-func (user_controller *UserHandler) RegistrationPage(w http.ResponseWriter, request *http.Request) {
+func (user_controller *UserHandler) RegistrationPage(w http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	fmt.Println("Inside Me ")
 	SystemTemplates.ExecuteTemplate(w, "reg.html", nil)
 }
 
 //CheckUser
-func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, request *http.Request) {
+func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 
 	request.ParseForm()
 
@@ -215,7 +227,7 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 		}
 
 		writer.Write(thebinary)
-		user_controller.View(writer, request)
+		user_controller.View(writer, request, nil)
 	}
 
 	message := user_controller.userservice.CheckUser(&person)
@@ -231,32 +243,36 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 
 	http.Redirect(writer, request, "/user/chat/", 301)
 }
-func (user_controller *UserHandler) LogInPage(writer http.ResponseWriter, request *http.Request) {
-	_, _, _, present := ReadSession(request)
+
+func (user_controller *UserHandler) LogInPage(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	_, _, present := ReadSession(request)
 	if present {
 		http.Redirect(writer, request, "/user/chat/", 301)
 	}
 	SystemTemplates.ExecuteTemplate(writer, "login.html", nil)
 }
 
-func (user_controller *UserHandler) RedirectToHome(writer http.ResponseWriter, request *http.Request) {
-	SystemTemplates.ExecuteTemplate(writer, "home.html", nil)
+func (user_controller *UserHandler) RedirectToHome(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {
+	SystemTemplates.ExecuteTemplate(writer, "index.html", nil)
 
 }
-func (user_controller *UserHandler) View(writer http.ResponseWriter, request *http.Request) {
-	username, password, id, present := ReadSession(request)
+func (user_controller *UserHandler) LogOut(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {
+	_ = DeleteSession(request)
+	http.Redirect(writer, request, "/", 301)
+}
+
+func (user_controller *UserHandler) View(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	username, password, present := ReadSession(request)
 	if !present {
 		//404 page no
 		SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
 		return
 	}
-	person := &entity.Person{ID: uint(id), Username: username, Password: password}
-
+	person := &entity.Person{Username: username, Password: password}
 	systemMessage := user_controller.userservice.GetUser(person)
 	fmt.Println(systemMessage.Message)
 	if systemMessage.Succesful {
 		fmt.Println(person.Email)
 		SystemTemplates.ExecuteTemplate(writer, "edit.html", person)
 	}
-
 }

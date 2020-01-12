@@ -1,37 +1,43 @@
 <html>
 
 <head>
-        <link rel="icon" type="image/png" href="logo.png">
-        <link  rel = "stylesheet" href = "../public/css/index.css">
+      <link rel="icon" type="image/png" href="logo.png">
+      <link  rel = "stylesheet" href = "../public/css/index.css">
 
         
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" 
-        integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" 
+      integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-
+   
 </head>
-<body>
-  <nav>
+<body  class="row">
+    {{with .}}
+    {{template "sidenavbar"  . }}
+    {{end}}
+    <div class="col col-lg-8 col-sm-10">
+   
     <div id="nav" style="padding-top:0px; padding-left:10px">
                     <img src="logo.png" style="width: 100; height: 100;" >
                     <ul style="width:75%" >
-                      <li ><a  href= "index.html">sinIn</a></li>
-                      <li ><a class="active" href= "#">sineUP</a></li>
-                      
+                      {{with .}}
+                      <li ><a  href= "/logout/">Log Out </a></li>
+
+                      {{else }}
+
+                      <li ><a  href= "/user/signin/">Sign In</a></li>
+                      <li ><a class="/user/register/" href= "#">Sign  UP</a></li>
+                      {{end }}
                     </ul>
                 </div>
-                
             </nav>
-
-
             <section id="next">
                 <h3>Startup Smarter</h3>
                 <p>the best place to grow , think and invest</p>
@@ -142,14 +148,6 @@
                 
                 
               </section>
-      
-
-
-
-
+            </div>
     </body>
-
-
-
-
 </html>

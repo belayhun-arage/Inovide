@@ -64,3 +64,18 @@ func (users *UserRepo) GetUserById(enti *entity.Person) bool {
 	}
 	return true
 }
+
+func (userrepo *UserRepo) FollowUser(followingid, followerid int) error {
+	person := &entity.Person{}
+	err := userrepo.db.Debug().Table("users").Where(entity.Person{}, followingid).Find(person).Error
+	fmt.Println(person.Followers)
+	err = userrepo.db.Debug().Table("users").Where(" id=?", followingid).Update(&entity.Person{ID: person.ID, Firstname: person.Firstname, Lastname: person.Lastname, Username: person.Username, Password: person.Password, Email: person.Email, Biography: person.Biography, Followers: person.Followers + 1, Ideas: person.Ideas, Paid: person.Paid}).Error
+	if err != nil {
+		return err
+	}
+	err = userrepo.db.Debug().Table("following").Create(&entity.Following{FollowerId: followerid, FollowingId: followingid}).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}

@@ -73,7 +73,17 @@ func (ideas *IdeaRepo) VoteIdea(ideaid, voterid int) error {
 	return nil
 }
 
-// func (ideas *IdeaRepo) CheckVoteIdea(ideaid, voterid int) error {
+func (ideas *IdeaRepo) SearchIdeas(text string, person *entity.Person, searchresults *[]entity.Idea) (*[]entity.Idea, error) {
+	var visibility string
+	if person.Paid == 0 {
+		visibility = "pu"
+	}
 
-// 	return nil
-// }
+	err := ideas.db.Table("idea").Debug().Where("visibility=? and title=? ", visibility, text).Find(searchresults).Error
+
+	if err != nil {
+		return searchresults, err
+	}
+
+	return searchresults, nil
+}
