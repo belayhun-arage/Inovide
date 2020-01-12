@@ -20,7 +20,7 @@ import (
 )
 
 var tpl *template.Template
-var TemplateGroupUser = template.Must(template.ParseGlob("templates/*.html"))
+var TemplateGroupUser = template.Must(template.ParseGlob("templates/*.*"))
 var db *gorm.DB
 var errors error
 var userRepository *repository.UserRepo
@@ -76,11 +76,13 @@ func main() {
 	router := httprouter.New() //.StrictSlash(true)
 	http.Handle("/", router)
 	// router.GET()
+
+	router.ServeFiles("/public/*filepath", http.Dir("/home/samuael/WorkSpace/src/github.com/Projects/Inovide/public/"))
 	router.GET("/", userrouter.ServeHome)
 	// http.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
 	// router.PathPrefix("/public/").Handler(http.FileServer(http.Dir("/public/")))
-	router.NotFound = http.FileServer(http.Dir("public"))
-	router.POST("/user/register/", userrouter.RegistrationPage)
+	// router.NotFound = http.FileServer(http.Dir("public"))
+	router.GET("/user/register/", userrouter.RegistrationPage)
 	router.POST("/user/register/", userrouter.TemplateRegisterUser)
 	router.GET("/user/signin/", userrouter.LogInPage)
 	router.POST("/user/signin/", userrouter.LogInRequest)
@@ -91,16 +93,16 @@ func main() {
 	router.GET("/private/user/Chat/", chatrouter.HandleChat)
 	router.GET("/idea/create/", idearouter.CreateIdeaPage)
 
-	router.GET("v1/logout/", userrouter.LogOut)
-	router.POST("v1/user/register/", userrouter.TemplateRegisterUser)
-	router.POST("v1/user/signin/", userrouter.LogInRequest)
-	router.POST("v1/idea/create/", idearouter.CreateIdea)
-	router.POST("v1/idea/get/", idearouter.TemplateGetIdea)
-	router.GET("v1/idea/delete/", idearouter.DeleteIdea)
-	router.GET("v1/idea/search/", idearouter.SearchResult)
-	router.POST("v1/user/FollowUser/", userrouter.FollowUser)
+	router.GET("/v1/logout/", userrouter.LogOut)
+	router.POST("/v1/user/register/", userrouter.TemplateRegisterUser)
+	router.POST("/v1/user/signin/", userrouter.LogInRequest)
+	router.POST("/v1/idea/create/", idearouter.CreateIdea)
+	router.POST("/v1/idea/get/", idearouter.TemplateGetIdea)
+	router.GET("/v1/idea/delete/", idearouter.DeleteIdea)
+	router.GET("/v1/idea/search/", idearouter.SearchResult)
+	router.POST("/v1/user/FollowUser/", userrouter.FollowUser)
 	/*The Comemnt Handler Related Api  */
-	router.POST("V1/Comment/Create/", commentrouter.APICreateComment)
-	router.GET("V1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
+	router.POST("/v1/Comment/Create/", commentrouter.APICreateComment)
+	router.GET("/v1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
 	http.ListenAndServe(":8080", nil)
 }

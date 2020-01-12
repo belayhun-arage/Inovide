@@ -79,10 +79,12 @@ func (userhandler *UserHandler) FollowUser(writer http.ResponseWriter, request *
 		writer.Write(systemmessagejson)
 	}
 
-	systemmessagejson, err := json.Marshal(person)
+	systemmessagejson, err = json.Marshal(person)
 	if err != nil {
 		writer.Write(systemmessagejson)
 	}
 	writer.Write(systemmessagejson)
 
 }
+
+// func (idearouter *IdeaHandler)

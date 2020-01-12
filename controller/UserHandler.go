@@ -16,6 +16,8 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+var indexTemplate = template.Must(template.ParseFiles("templates/login.html", "templates/headerr.html"))
+
 var SystemTemplates *template.Template
 
 /*                Session Related Datas                                 <<Begin>>     */
@@ -107,7 +109,6 @@ func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request 
 	lastname := request.FormValue("lastname")
 	username := request.FormValue("name")
 	imagedirectory, header, erro := request.FormFile("image")
-
 	if erro != nil {
 		return nil
 	}
@@ -164,25 +165,25 @@ func (user_Admin *UserHandler) TemplateRegisterUser(writer http.ResponseWriter, 
 	}
 }
 func (user_Admin *UserHandler) ServeHome(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	username, password, present := ReadSession(request)
+	// username, password, present := ReadSession(request)
 
 	var person = &entity.Person{}
-	if present {
+	// if present {
 
-		person.Username = username
-		person.Password = password
-		// person.ID= uint(id)
-		sys := user_Admin.userservice.GetUser(person)
+	// 	person.Username = username
+	// 	person.Password = password
+	// 	// person.ID= uint(id)
+	// 	sys := user_Admin.userservice.GetUser(person)
 
-		if !sys.Succesful {
-			person = nil
-		}
-	} else {
-		person = nil
-	}
+	// 	if !sys.Succesful {
+	// 		person = nil
+	// 	}
+	// } else {
+	// 	person = nil
+	// }
+	fmt.Println("Inside Me ...")
 
-	writer.Header().Add("Content-Type", "text/html")
-	SystemTemplates.ExecuteTemplate(writer, "index.html", person)
+	indexTemplate.ExecuteTemplate(writer, "index.html", person)
 }
 
 func (user_Admin *UserHandler) UserById(id int) *entity.Person {
