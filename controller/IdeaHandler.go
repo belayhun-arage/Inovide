@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	ideaService "github.com/Projects/Inovide/Idea/Service"
+	session "github.com/Projects/Inovide/Session"
 	UsableFunctions "github.com/Projects/Inovide/Usables"
 	entity "github.com/Projects/Inovide/models"
 
@@ -26,9 +27,10 @@ type IdeaHandler struct {
 	ideaservice    *ideaService.IdeaService
 	commenthandler *CommentHandler
 	userrouter     *UserHandler
+	Session        *session.Cookiehandler
 }
 
-func NewIdeaHandler(theService *ideaService.IdeaService, commenthandle *CommentHandler, userrouters *UserHandler) *IdeaHandler {
+func NewIdeaHandler(theService *ideaService.IdeaService, commenthandle *CommentHandler, userrouters *UserHandler, sessin *session.Cookiehandler) *IdeaHandler {
 	return &IdeaHandler{ideaservice: theService, commenthandler: commenthandle, userrouter: userrouters}
 }
 func (idea_controller *IdeaHandler) CreateIdeaPage(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {

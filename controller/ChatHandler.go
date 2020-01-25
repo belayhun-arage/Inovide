@@ -2,11 +2,10 @@ package handler
 
 import (
 	"fmt"
-	"html/template"
-	"log"
-	"net/http"
-
 	"io"
+	"net/http"
+	"strconv"
+	"text/template"
 
 	// "time"
 	"crypto/rand"
@@ -15,8 +14,11 @@ import (
 	ChatService "github.com/Projects/Inovide/Chat/Service"
 	service "github.com/Projects/Inovide/User/Service"
 	entity "github.com/Projects/Inovide/models"
-	"github.com/gorilla/websocket"
+
+	// "github.com/gorilla/websocket"
+	session "github.com/Projects/Inovide/Session"
 	"github.com/julienschmidt/httprouter"
+	"golang.org/x/net/websocket"
 )
 
 /*    Main Chat Handler Instantiation                << Begin >>           */
@@ -40,6 +42,7 @@ type ChatHandler struct {
 	TheChatService *ChatService.ChatService
 	TheUserService *service.UserService
 	TheHub         *entity.Hub
+	session        *session.Cookiehandler
 }
 
 /*Passing the UserService and The Chat Service Returning A ChatHandler interface */
@@ -50,46 +53,69 @@ func NewChatHandler(TheHuba *entity.Hub, chatServices *ChatService.ChatService, 
 /*    Main Chat Handler Instantiation             << End >>             */
 func (chathandler *ChatHandler) HandleChat(response http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	person := &entity.Person{}
-	username, password, present := ReadSession(request)
-	if !present {
+	// username, password, present := ReadSession(request)
+
+	id, username, ok := chathandler.session.Valid(request)
+	if !ok {
 		return
 	}
 	person.Username = username
-	person.Password = password
+	person.ID = uint(id)
 	systemMessage := chathandler.TheUserService.CheckUser(person)
 	fmt.Println(person.Username, person.Email, person.ID, "_______----------->> Samuael")
 	if !systemMessage.Succesful {
 		// 404 Page Not Found Template Here
 	}
-	chathandler.CreateWS(response, request, person)
+	// chathandler.CreateWS(response, request, person)
 }
 
 //  Upgrading and Starting the Web Socket for the Incomming  Request in the header and Starting A web Socket Connectio With it
 var keyGUID = []byte("258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
-var upgrader = websocket.Upgrader{
-	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-}
 
-func (chathandler *ChatHandler) CreateWS(w http.ResponseWriter, r *http.Request, person *entity.Person) {
-	wsKey, _ := generateKey()
-	r.Header.Add("Connection", "Upgrade")
-	r.Header.Add("Upgrade", "websocket")
-	r.Header.Add("Sec-WebSocket-Version", "13")
-	r.Header.Add("Sec-WebSocket-Key", wsKey)
-	log.Printf("ws key '%v' ----  ", wsKey)
-	conn, err := upgrader.Upgrade(w, r, nil)
-
-	if err != nil {
-		log.Println(err)
+// var upgrader = websocket.Upgrader{
+// 	ReadBufferSize:  1024,
+// 	WriteBufferSize: 1024,
+// }
+func (chathandler *ChatHandler) CreateWS(conn *websocket.Conn) {
+	person := &entity.Person{}
+	request := conn.Request() //  getting the request from the web socket COnnection
+	id, username, present := chathandler.session.Valid(request)
+	if !present {
 		return
 	}
+	person.Username = username
+	person.ID = uint(id)
+	systemMessage := chathandler.TheUserService.CheckUser(person)
+	if systemMessage.Succesful {
+
+	}
+
 	ClientId := chathandler.getClientId(person)
 	client := entity.NewClient(chathandler.TheHub, conn, ClientId)
 	client.TheDistributor.Register <- client
 	go client.WritePump()
 	go client.ReadPump()
 }
+
+// func (chathandler *ChatHandler) CeateWS(w http.ResponseWriter, r *http.Request, person *entity.Person) {
+// 	wsKey, _ := generateKey()
+// 	r.Header.Add("Connection", "Upgrade")
+// 	r.Header.Add("Upgrade", "websocket")
+// 	r.Header.Add("Sec-WebSocket-Version", "13")
+// 	r.Header.Add("Sec-WebSocket-Key", wsKey)
+// 	log.Printf("ws key '%v' ----  ", wsKey)
+// 	// conn, err := upgrader.Upgrade(w, r, nil)
+
+// 	if err != nil {
+// 		log.Println(err)
+// 		return
+// 	}
+// 	ClientId := chathandler.getClientId(person)
+// 	client := entity.NewClient(chathandler.TheHub, conn, ClientId)
+// 	client.TheDistributor.Register <- client
+// 	go client.WritePump()
+// 	go client.ReadPump()
+// }
 func (chathandler *ChatHandler) MessageCoordinator() {
 	for {
 		select {
@@ -105,6 +131,28 @@ func (chathandler *ChatHandler) MessageCoordinator() {
 			// 	close(chathandler.TheHub.Messages)
 			// delete(chathandler.TheHub.Messages)
 		}
+	}
+}
+
+func (cathandler *ChatHandler) LoadChatWith(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
+
+	r.ParseForm()
+	stringid := r.FormValue("alieid")
+	id, username, present := cathandler.session.Valid(r)
+	fmt.Println(username, id, present)
+	if !present {
+		return
+	}
+
+	// cathandler.TheChatService.
+
+	systemmessage := &entity.SystemMessage{}
+
+	alieid, err := strconv.Atoi(stringid)
+	if err != nil {
+		systemmessage.Succesful = false
+		systemmessage.Message = "Can't Load The Messaege Because of the the Id Intered is not valid " + strconv.Itoa(alieid)
+		SystemTemplates.ExecuteTemplate(w, "four04.html", nil)
 	}
 }
 func (chathandler *ChatHandler) ChatPage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {

@@ -1,8 +1,17 @@
 package entity
 
 import (
+	"github.com/dgrijalva/jwt-go"
 	"github.com/lib/pq"
 	// "github.com/mongodb/mongo-go-driver/mongo"
+)
+
+const (
+	USENAME_RESERVED  = "username"
+	PASSWORD_MISMATCH = "passwordmismatch"
+	SERVER_ERROR      = "servererror"
+	INVALID_FILE_TYPE = "invalidfiletype"
+	MISSING_DATA      = "missingdata"
 )
 
 type Person struct {
@@ -21,8 +30,9 @@ type Person struct {
 }
 
 type SystemMessage struct {
-	Message   string `json:"message,omitempty"  bson:"message,omitempty"`
-	Succesful bool   `json:"succesfull,omitempty"  bson:"succesfull,omitempty"`
+	Message   string          `json:"message,omitempty"  bson:"message,omitempty"`
+	Succesful bool            `json:"succesfull,omitempty"  bson:"succesfull,omitempty"`
+	Errors    map[string]bool `json:"errors,omitempty"`
 }
 type Message struct {
 	Id              uint64         ` sql:"DEFAULT:user_gen_id()" json:"id" gorm:"primary_key"`
@@ -63,10 +73,10 @@ type Following struct {
 
 type Alie struct {
 	Id         int `json:"id,omitempty"  `
-	UserId     int `json:"userid,omitempty"  `
-	AlieId     int `json:"alieid,omitempty"  `
-	UserOnline string
-	AlieOnline string
+	Userid     int `json:"userid,omitempty"  `
+	Alieid     int `json:"alieid,omitempty"  `
+	Useronline string
+	Alieonline string
 }
 
 type Votee struct {
@@ -92,4 +102,16 @@ type GeneralIdeaPersonComments struct {
 	Succesful       bool
 	IdeaOwner       *Person             `json:"ideaowner,omitempty"`
 	IdeaRelatedData *IdeaPersonComments `json:"ideadatas,omitempty"`
+}
+
+type Claim struct {
+	Username string `json:"username,omitempty"`
+	Id       int    `json:"id,omitempty"`
+	jwt.StandardClaims
+}
+
+type Session struct {
+	Id       int    `json:"id,omitempty"`
+	Userid   int    `json:userid,omitempty`
+	Username string `json:"username,omitempty"`
 }

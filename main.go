@@ -1,16 +1,19 @@
 package main
 
 import (
-	"html/template"
 	"net/http"
+	"strings"
+	"text/template"
 
 	ChatRepository "github.com/Projects/Inovide/Chat/Repository"
 	ChatService "github.com/Projects/Inovide/Chat/Service"
 	CommentRepo "github.com/Projects/Inovide/Comment/Repository"
 	CommentService "github.com/Projects/Inovide/Comment/Service"
 	config "github.com/Projects/Inovide/DB"
+	"github.com/Projects/Inovide/Idea"
 	IdeaRepository "github.com/Projects/Inovide/Idea/Repository"
 	ideaService "github.com/Projects/Inovide/Idea/Service"
+	session "github.com/Projects/Inovide/Session"
 	repository "github.com/Projects/Inovide/User/Repository"
 	service "github.com/Projects/Inovide/User/Service"
 	handler "github.com/Projects/Inovide/controller"
@@ -20,36 +23,41 @@ import (
 )
 
 var tpl *template.Template
-var TemplateGroupUser = template.Must(template.ParseGlob("templates/*.*"))
+var TemplateGroupUser = template.Must(template.ParseGlob("templates/*.html"))
 var db *gorm.DB
 var errors error
 var userRepository *repository.UserRepo
 var userservice *service.UserService
 var userrouter *handler.UserHandler
-var ideaRepository *IdeaRepository.IdeaRepo
+var ideaRepository Idea.IdeaRepository // *IdeaRepository.IdeaRepo
 var ideaservice *ideaService.IdeaService
 var idearouter *handler.IdeaHandler
+var sessionHandler *session.Cookiehandler
+var TheHub *entity.Hub
+var chatrouter *handler.ChatHandler
+var TheChatRepository *ChatRepository.ChatRepository
+var TheChatService *ChatService.ChatService
+var commentrouter *handler.CommentHandler
+var commentservice *CommentService.CommentService
+var commentrepo *CommentRepo.CommentRepo
 
 func init() {
+
+	sessionHandler = session.NewCookieHandler()
 	handler.SetSystemTemplate(TemplateGroupUser)
 	/*    Initializing Users  Structure        <<Begin>>   */
 	db, _ = config.InitializPostgres()
 	userRepository = repository.NewUserRepo(db)
 	userservice = service.NewUserService(userRepository)
-	userrouter = handler.NewUserHandler(userservice)
+	userrouter = handler.NewUserHandler(userservice, sessionHandler)
 	/*    Initializing Users  Structure        <<End>>   */
 	/*Initializing the Chat and Related Resources */
 	initChatComponents()
 	initCommentComponent()
 	ideaRepository = IdeaRepository.NewIdeaRepo(db)
 	ideaservice = ideaService.NewIdeaService(ideaRepository)
-	idearouter = handler.NewIdeaHandler(ideaservice, commentrouter, userrouter)
+	idearouter = handler.NewIdeaHandler(ideaservice, commentrouter, userrouter, sessionHandler)
 }
-
-var TheHub *entity.Hub
-var chatrouter *handler.ChatHandler
-var TheChatRepository *ChatRepository.ChatRepository
-var TheChatService *ChatService.ChatService
 
 /*This Method Will Initialize the Chay Component and Starts the Distributor Hub Of The Chat */
 func initChatComponents() {
@@ -61,14 +69,10 @@ func initChatComponents() {
 	go chatrouter.MessageCoordinator()
 }
 
-var commentrouter *handler.CommentHandler
-var commentservice *CommentService.CommentService
-var commentrepo *CommentRepo.CommentRepo
-
 func initCommentComponent() {
 	commentrepo = CommentRepo.NewCommentRepo(db)
 	commentservice = CommentService.NewCommentService(commentrepo)
-	commentrouter = handler.NewCommentHandler(commentservice, userrouter)
+	commentrouter = handler.NewCommentHandler(commentservice, userrouter, sessionHandler)
 }
 
 func main() {
@@ -78,11 +82,15 @@ func main() {
 	// router.GET()
 
 	router.ServeFiles("/public/*filepath", http.Dir("/home/samuael/WorkSpace/src/github.com/Projects/Inovide/public/"))
-	router.GET("/", userrouter.ServeHome)
 	// http.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
 	// router.PathPrefix("/public/").Handler(http.FileServer(http.Dir("/public/")))
 	// router.NotFound = http.FileServer(http.Dir("public"))
+
+	router.GET("/", userrouter.ServeHome)
 	router.GET("/user/register/", userrouter.RegistrationPage)
+
+	// Filtered  _________---------------------___________________---------------_____________________----------
+
 	router.POST("/user/register/", userrouter.TemplateRegisterUser)
 	router.GET("/user/signin/", userrouter.LogInPage)
 	router.POST("/user/signin/", userrouter.LogInRequest)
@@ -105,4 +113,14 @@ func main() {
 	router.POST("/v1/Comment/Create/", commentrouter.APICreateComment)
 	router.GET("/v1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
 	http.ListenAndServe(":8080", nil)
+}
+func DirectoryListener(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/") {
+			http.NotFound(w, r)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }

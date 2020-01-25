@@ -5,12 +5,21 @@ import (
 	"net/http"
 	"strconv"
 
+	session "github.com/Projects/Inovide/Session"
 	entity "github.com/Projects/Inovide/models"
 	"github.com/julienschmidt/httprouter"
 )
 
 type ApiUserHandler struct {
 	userhandler *UserHandler
+	session     *session.Cookiehandler
+}
+
+func NewApiController(userhandlers *UserHandler, sess *session.Cookiehandler) *ApiUserHandler {
+	return &ApiUserHandler{
+		userhandler: userhandlers,
+		session:     sess,
+	}
 }
 
 func (apiuserhandler *ApiUserHandler) LogIn(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
@@ -30,12 +39,12 @@ func (ideahandler *IdeaHandler) SearchResult(writer http.ResponseWriter, request
 		writer.Write(jsonNullgeneralideasearchresult)
 	}
 
-	username, password, present := ReadSession(request)
+	id, username, present := ideahandler.Session.Valid(request)
 	if !present {
 		person.Paid = 0
 	} else {
 		person.Username = username
-		person.Password = password
+		person.ID = uint(id)
 		systemmessage := ideahandler.userrouter.userservice.GetUser(person)
 		if !systemmessage.Succesful {
 			person.Paid = 0
@@ -54,7 +63,8 @@ func (ideahandler *IdeaHandler) SearchResult(writer http.ResponseWriter, request
 }
 
 func (userhandler *UserHandler) FollowUser(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	username, password, present := ReadSession(request)
+	// username, password, present := ReadSession(request)
+	id, username, present := userhandler.Sessionservice.Valid(request)
 
 	systemMessage := &entity.SystemMessage{}
 	systemmessagejson, _ := json.Marshal(systemMessage)
@@ -69,7 +79,7 @@ func (userhandler *UserHandler) FollowUser(writer http.ResponseWriter, request *
 		writer.Write(systemmessagejson)
 	}
 	person.Username = username
-	person.Password = password
+	person.ID = uint(id)
 	systemmessage := userhandler.userservice.GetUser(person)
 	if !systemmessage.Succesful {
 		writer.Write(systemmessagejson)
@@ -86,5 +96,3 @@ func (userhandler *UserHandler) FollowUser(writer http.ResponseWriter, request *
 	writer.Write(systemmessagejson)
 
 }
-
-// func (idearouter *IdeaHandler)

@@ -5,6 +5,7 @@ import (
 	//entity "github.com/Samuael/Projects/Inovide/models"
 	"fmt"
 
+	"github.com/Projects/Inovide/Idea"
 	entity "github.com/Projects/Inovide/models"
 	"github.com/jinzhu/gorm"
 	"github.com/lib/pq"
@@ -14,7 +15,7 @@ type IdeaRepo struct {
 	db *gorm.DB
 }
 
-func NewIdeaRepo(sqlite *gorm.DB) *IdeaRepo {
+func NewIdeaRepo(sqlite *gorm.DB) Idea.IdeaRepository {
 	return &IdeaRepo{db: sqlite}
 }
 
@@ -42,6 +43,7 @@ func (ideas *IdeaRepo) GetIdea(id int) (*entity.Idea, error) {
 	return idea, nil
 
 }
+
 func (ideas *IdeaRepo) DeleteIdea(id int) error {
 
 	err := ideas.db.Debug().Table("idea").Delete(&entity.Person{}, id).Error
@@ -72,7 +74,6 @@ func (ideas *IdeaRepo) VoteIdea(ideaid, voterid int) error {
 	}
 	return nil
 }
-
 func (ideas *IdeaRepo) SearchIdeas(text string, person *entity.Person, searchresults *[]entity.Idea) (*[]entity.Idea, error) {
 	var visibility string
 	if person.Paid == 0 {

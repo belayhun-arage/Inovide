@@ -40,3 +40,32 @@ func (commentservice *CommentService) GetComments(comment *[]entity.Comment, id 
 	return systemmessage
 
 }
+
+func (commentservice *CommentService) UpdateComment(comment *entity.Comment) *entity.SystemMessage {
+
+	systemmessage := &entity.SystemMessage{}
+
+	err := commentservice.CommentRepo.UpdateComment(comment)
+	if err != nil {
+		systemmessage.Succesful = false
+		systemmessage.Message = "Can't Update the Comment "
+	} else {
+		systemmessage.Succesful = true
+		systemmessage.Message = "The Comment is Updated "
+	}
+	return systemmessage
+}
+func (commentservice *CommentService) DeleteComment(comment *entity.Comment) *entity.SystemMessage {
+
+	systetemmessage := &entity.SystemMessage{}
+	erro := commentservice.CommentRepo.DeleteComment(comment)
+	if erro != nil {
+
+		systetemmessage.Message = "Can't Delete the Comment System Error "
+		systetemmessage.Succesful = false
+	} else {
+		systetemmessage.Message = "Succesfully Deleted The Comment "
+		systetemmessage.Succesful = true
+	}
+	return systetemmessage
+}

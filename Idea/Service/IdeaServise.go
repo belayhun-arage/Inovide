@@ -1,15 +1,16 @@
 package ideaService
 
 import (
-	IdeaRepository "github.com/Projects/Inovide/Idea/Repository"
+	"github.com/Projects/Inovide/Idea"
+
 	entity "github.com/Projects/Inovide/models"
 )
 
 type IdeaService struct {
-	Idearepo *IdeaRepository.IdeaRepo
+	Idearepo Idea.IdeaRepository
 }
 
-func NewIdeaService(idearep *IdeaRepository.IdeaRepo) *IdeaService {
+func NewIdeaService(idearep Idea.IdeaRepository) *IdeaService {
 	return &IdeaService{Idearepo: idearep}
 }
 func (ideaServise *IdeaService) CreateIdea(idea *entity.Idea) *entity.SystemMessage {

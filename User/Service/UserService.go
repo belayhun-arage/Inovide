@@ -27,12 +27,9 @@ func (userService *UserService) RegisterUser(person *entity.Person) *entity.Syst
 
 	} else {
 		er = userService.userrepo.CreateUser(person)
-
 		if er != nil {
 			panic(er)
-
 		}
-
 	}
 	message.Message = "Succesfully Inserted "
 	message.Succesful = true
@@ -76,6 +73,21 @@ func (userService *UserService) GetUser(person *entity.Person) *entity.SystemMes
 	return message
 }
 
+func (UserService *UserService) AdminDeleteuser(person *entity.Person) *entity.SystemMessage {
+	systemmessage := &entity.SystemMessage{}
+	errors := UserService.userrepo.DeleteUser(person)
+	if errors != nil {
+
+		systemmessage.Message = "Can't Delete The User "
+		systemmessage.Succesful = false
+
+	} else {
+		systemmessage.Message = "Succesfully Deleted The user"
+		systemmessage.Succesful = true
+	}
+	return systemmessage
+}
+
 func (userService *UserService) GetUserById(person *entity.Person) *entity.SystemMessage {
 	message := &entity.SystemMessage{}
 	bools := userService.userrepo.GetUserById(person)
@@ -99,4 +111,54 @@ func (userservice *UserService) FollowUser(followerid, followingid int) *entity.
 		return systemmessage
 	}
 	return systemmessage
+}
+func (userservice *UserService) UpdateUser(person *entity.Person) *entity.SystemMessage {
+	systemmessage := &entity.SystemMessage{}
+
+	erro := userservice.userrepo.UpdateUser(person)
+
+	if erro != nil {
+
+		systemmessage.Message = "Can't Update The Profile Of The User "
+		systemmessage.Succesful = true
+	} else {
+		systemmessage.Message = " Succesfull yupdated the user"
+		systemmessage.Succesful = true
+	}
+	return systemmessage
+}
+func (userservice *UserService) UnFollowUser(followingid, followerid int) *entity.SystemMessage {
+	systemmessage := &entity.SystemMessage{}
+
+	erro := userservice.userrepo.UnFollowUser(followingid, followerid)
+	if erro != nil {
+		systemmessage.Message = "Operation Is Not Succesfull"
+		systemmessage.Succesful = false
+	} else {
+		systemmessage.Message = "Succesfully Removed Followship "
+		systemmessage.Succesful = true
+	}
+	return systemmessage
+}
+
+func (userservice *UserService) NewIdeas(person *entity.Person) (*entity.SystemMessage, *[]entity.Idea) {
+	idArrayOFPersonsIAmFollowing, err := userservice.userrepo.ListOfFolowingId(person) // Returning []int and error
+	systemmessage := &entity.SystemMessage{}
+	if err != nil {
+		systemmessage.Message = "Can't Get The Id OF Users I Am Following "
+		systemmessage.Succesful = false
+		return systemmessage, nil
+	} else {
+		systemmessage.Succesful = true
+		systemmessage.Message = "The List of Users Id I AM Followisng Found "
+	}
+
+	listofIdeas, err := userservice.userrepo.ListOfIdeasById(idArrayOFPersonsIAmFollowing) // returning the list of ideas that for each User Id Passing the List of following
+
+	if err != nil {
+		systemmessage.Message = "Can't Get The Id OF Users I Am Following "
+		systemmessage.Succesful = false
+		return systemmessage, nil
+	}
+	return systemmessage, listofIdeas
 }

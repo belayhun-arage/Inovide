@@ -28,8 +28,15 @@ func (commentrepo *CommentRepo) GetComments(comment *[]entity.Comment, id int) e
 	}
 	return nil
 }
+func (CommentRepo *CommentRepo) UpdateComment(comment *entity.Comment) []error {
 
-func (commentrepo *CommentRepo) DeleteComment(commentid int) error {
+	erro := CommentRepo.db.Model(&entity.Comment{}).Table("comment").Save(comment).GetErrors()
 
-	return nil
+	return erro
+
+}
+
+func (commentrepo *CommentRepo) DeleteComment(comment *entity.Comment) []error {
+	err := commentrepo.db.Table("comment").Model(&entity.Comment{}).Delete(comment).GetErrors()
+	return err
 }

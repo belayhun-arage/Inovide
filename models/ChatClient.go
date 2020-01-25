@@ -1,14 +1,13 @@
 package entity
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
-	"github.com/gorilla/websocket"
+	// "github.com/gorilla/websocket"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/net/websocket" /// the Web SOcket Inmplementation usign the Built in Web Socket LIbrary of golang
 )
 
 const (
@@ -51,24 +50,26 @@ func (c *Client) ReadPump() {
 		c.TheDistributor.Unregister <- c
 		c.Conn.Close()
 	}()
-	c.Conn.SetReadLimit(maxMessageSize)
-	c.Conn.SetReadDeadline(time.Now().Add(pongWait))
-	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
+	// c.Conn.SetReadLimit(maxMessageSize)
+	// c.Conn.SetReadDeadline(time.Now().Add(pongWait))
+	// c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(pongWait)); return nil })
 	var mMessage *Message
 	for {
 		mMessage = &Message{}
-		_, message, err := c.Conn.ReadMessage()
-		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error: %v", err)
+		// _, message, err := c.Conn.ReadMessage()
+
+		erro := websocket.Message.Receive(c.Conn, &mMessage)
+
+		if erro != nil {
+			if erro.Error() == websocket.ErrBadClosingStatus.Error() || erro.Error() == websocket.ErrBadClosingStatus.ErrorString || erro.Error() == websocket.ErrBadFrame.Error() {
+				break
 			}
-			break
 		}
-		message = bytes.Replace(message, newline, space, -1)
-		err = json.Unmarshal(message, mMessage)
-		if err != nil {
-			continue
-		}
+		// message = bytes.Replace(message, newline, space, -1)
+		// err = json.Unmarshal(message, mMessage)
+		// if err != nil {
+		// continue
+		// }
 
 		year, month, day := gorm.NowFunc().Date()
 		nowIs := fmt.Sprintf("%d/%d/%d", day, month, year)
@@ -88,33 +89,44 @@ func (c *Client) WritePump() {
 		case message, ok := <-c.Send:
 			fmt.Println(message.Messagedata)
 			c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
+
 			if !ok {
-				c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+				// 	c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
-			w, err := c.Conn.NextWriter(websocket.TextMessage)
-			if err != nil {
-				return
-			}
+			// w, err := c.Conn.NextWriter(websocket.TextMessage)
+			// if err != nil {
+			// 	return
+			// }
 			jsonMessage, err := json.Marshal(message)
 			if err != nil {
 				continue
 			}
-			w.Write(jsonMessage)
-			n := len(c.Send)
-			for i := 0; i < n; i++ {
-				w.Write(newline)
-				val, _ := json.Marshal(<-c.Send)
-				w.Write(val)
+
+			if err := websocket.Message.Send(c.Conn, jsonMessage); err != nil {
+
+				fmt.Println("Can't Send the Mesage ")
+				break
 			}
-			if err := w.Close(); err != nil {
-				return
-			}
+
+			// w.Write(jsonMessage)
+			// n := len(c.Send)
+			// for i := 0; i < n; i++ {
+			// 	w.Write(newline)
+			// 	val, _ := json.Marshal(<-c.Send)
+			// 	w.Write(val)
+			// }
+			// if err := w.Close(); err != nil {
+			// 	return
+			// }
 		case <-ticker.C:
 			c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err := c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
-				return
-			}
+			// if err := c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+			// 	return
+			// // }
+			// if err := websocket.Message.Send(c.Conn  , )
+			fmt.Println("We Will Be Ticking as the time goes By   For ticking ")
+
 		}
 	}
 }
