@@ -17,44 +17,45 @@ func NewUserRepo(sqlite *gorm.DB) *UserRepo {
 	return &UserRepo{db: sqlite}
 }
 
-func (users *UserRepo) CreateUser(enti *entity.Person) error {
+func (users *UserRepo) CreateUser(enti *entity.Person) (error, int) {
 
-	err := users.db.Debug().Table("users").Model(&entity.Person{}).Create(enti).Error
+	err := users.db.Table("users").Create(enti).Error
 	if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
 		// handle error
+		fmt.Println("its ok ladies man ")
 	}
-	fmt.Println("-----------------------")
-	if err != nil {
-		return err
+	if err.Error() == gorm.ErrRecordNotFound.Error() {
+		return err, 0
 	}
-	return nil
+	defer recover()
+	if err.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
+		return err, 1
+	}
+	if err.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
+		return err, 2
+	}
+	return nil, 0
 }
 
 func (users *UserRepo) CheckUser(enti *entity.Person) bool {
 
-	person := entity.Person{}
-	err := users.db.Debug().Table("users").Where("Username=?", enti.Username).Find(person /*enti.Username, enti.Password*/).Error
-	//users.db.Table("users").Select("ID").Debug().Model(&entity.Person{}).Where("UserName=$1 AND Password=$2", enti.Username, enti.Password).Find(&person) //Select([]string{"UserName", "Email", "Password"}).Find(person  , )
-
-	if err != nil {
+	err := users.db.Table("users").Where("Username=?", enti.Username).Find(enti /*enti.Username, enti.Password*/).Error
+	if err == gorm.ErrRecordNotFound {
 		return false
 	}
-	fmt.Println(person.ID, "_______-------<< User Repo")
-	// fmt.Println(peoples.Username, peoples.Password, peoples.Email)
-	if person.Username == "" || person.Password == "" || person.Email == "" {
-		return false
-	}
-	enti = &person
+	fmt.Println(enti.ID, "_______-------<< User Repo")
+	fmt.Println(enti.Username, enti.Password, enti.ID, enti.Firstname, enti.Lastname)
 	return true
 }
-func (users *UserRepo) GetUser(enti *entity.Person) bool {
+func (users *UserRepo) GetUser(enti *entity.Person) int64 {
 
-	geterr := users.db.Debug().Table("users").Model(&entity.Person{}).Where("UserName=? and Password=?", enti.Username, enti.Password).Find(&enti).Error
+	geterr := users.db.Debug().Table("users").Where("id=?", enti.ID).Find(&enti).RowsAffected
 	//updateerr := users.db.Debug().Table("users").Model(&entity.Person{}).Set("Firstname = ?Firstname").Where("id = ?id").Update(enti)
-	if geterr != nil {
-		return false
-	}
-	return true
+	// if geterr <= {
+	// 	return false
+	// }
+	defer recover()
+	return geterr
 
 }
 func (users *UserRepo) GetUserById(enti *entity.Person) bool {
@@ -78,9 +79,30 @@ func (userrepo *UserRepo) FollowUser(followingid, followerid int) error {
 	}
 	return nil
 }
-func (Userrepo *UserRepo) UpdateUser(person *entity.Person) []error {
-	erro := Userrepo.db.Model(&entity.Person{}).Table("users").Save(person).GetErrors()
-	return erro
+func (Userrepo *UserRepo) UpdateUser(person *entity.Person) (error, int) {
+
+	perso := &entity.Person{Username: person.Username,
+		// Email:     person.Email,
+		Firstname: person.Firstname,
+		Lastname:  person.Lastname,
+		Imagedir:  person.Imagedir,
+		Paid:      person.Paid,
+		Biography: person.Biography}
+
+	erro := Userrepo.db.Table("users").Debug().Where("id=?", person.ID).Begin().Update(perso).Error
+
+	defer recover()
+
+	if person.ID > 0 {
+		return nil, 0
+	}
+	if erro.Error() == "pq: duplicate key value violates unique constraint \"users_email_key\"" {
+		return erro, 1
+	}
+	if erro.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
+		return erro, 2
+	}
+	return nil, 0
 }
 
 func (UserRepo *UserRepo) DeleteUser(person *entity.Person) []error {
@@ -123,10 +145,8 @@ func (UserRepo *UserRepo) ListOfIdeasById(idis []int) (*[]entity.Idea, []error) 
 	return &ListOfIdeas, nil
 }
 func (userrepo *UserRepo) NumberOfFollowers(person *entity.Person) []error {
-
 	return nil
 }
-
 func (userrepo *UserRepo) UploadProfilePicture(person *entity.Person) []error {
 	theerror := userrepo.db.Debug().Table("users").Save(person).Find(person).GetErrors()
 	if theerror != nil {

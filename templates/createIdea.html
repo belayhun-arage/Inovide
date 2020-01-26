@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Create Idea</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type="text/css">
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper-js/1.12.9/umd/popper.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type="text/css"> -->
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script> -->
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/popper-js/1.12.9/umd/popper.min.js"></script> -->
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/solid.css"> -->
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script> -->
     <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
     <link href="../public/css/createIdea.css" rel="stylesheet" type="text/css" />
    
@@ -50,24 +50,6 @@
 console.log("inside the method ");
 }
 
-// $(function() {
-//   // Load the plugin
-//   console.log("inside Me ");
-//   $("input[type=file]").bootstrapFileInput();
-  
-// 	$(".js-addfileupload").click( function (e) {
-// 		e.preventDefault(e);
-//     // Create unique ID for the element
-//     var elid = new Date().getTime();
-//     // Assign the id and call the plugin
-// 		$("#file").append("<input type=\"file\" id=\"js-file-" + elid + "\" name=\"attachments[]\" class=\"form-control\" accept=\"image/*\">");
-//    	$("#js-file-" + elid).bootstrapFileInput();
-// 		return false;
-// 	});
-//  }
-// );
-
-    
 
         
     
@@ -82,11 +64,6 @@ console.log("inside the method ");
     <div class="model-dialog text-center">
         <div class="col-sm-6 main-section">
             <div class="model-content">
-
-                <!-- <div class="col-12 user-img">
-                    <img src="../public/image/profile.png">
-                </div> -->
-
                 <div class="col-12 form-input">
                     <form action="/idea/create/" enctype="multipart/form-data" method="POST" id="create-idea">
                         <div class="form-group">
@@ -131,11 +108,7 @@ console.log("inside the method ");
                             <input type="checkbox"  id="el1" name="visibility"  value="pu" onclick="onlyOne(this)">public </input>
                             <input type="checkbox"  id="el2" name="visibility"  value="pr" onclick="onlyOne(this)">protected  </input>
                             <input type="checkbox"  id="el3" name="visibility"  value="pv" onclick="onlyOne(this)">private</input>
-                        </div>
-
-
-                        
-                
+                        </div>                
                 <button type="submit" onclick="upload()" class="btn-btn-success">Upload</button>
                 </form>
             </div>
@@ -146,8 +119,6 @@ console.log("inside the method ");
 
     </div>
     </div>
-
-
 </body>
 
 </html>

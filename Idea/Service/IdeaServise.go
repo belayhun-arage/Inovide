@@ -29,28 +29,27 @@ func (ideaServise *IdeaService) CreateIdea(idea *entity.Idea) *entity.SystemMess
 	return &message
 }
 
-func (ideaServise *IdeaService) GetIdea(idea *entity.Idea, id int) (*entity.Idea, *entity.SystemMessage) {
+func (ideaServise *IdeaService) GetIdea(idea *entity.Idea, id int) *entity.SystemMessage {
 	systemMessage := &entity.SystemMessage{}
 
-	ideaFromRepo, erro := ideaServise.Idearepo.GetIdea(id)
+	numberofaffected := ideaServise.Idearepo.GetIdea(idea)
 
-	if erro != nil {
+	if numberofaffected <= 0 {
 		systemMessage.Message = "No Can't Get  the Idea "
 		systemMessage.Succesful = false
-		return nil, systemMessage
+		return systemMessage
 	}
-	systemMessage.Message = "Succesfully Found "
+	systemMessage.Message = "Idea Succesfully Found"
 	systemMessage.Succesful = true
-
-	return ideaFromRepo, systemMessage
+	return systemMessage
 }
 
-func (ideaServise *IdeaService) DeleteIdea(id int) *entity.SystemMessage {
+func (ideaServise *IdeaService) DeleteIdea(idea *entity.Idea) *entity.SystemMessage {
 
 	systemMessage := &entity.SystemMessage{}
-	erro := ideaServise.Idearepo.DeleteIdea(id)
+	RowsAffected := ideaServise.Idearepo.DeleteIdea(idea)
 
-	if erro != nil {
+	if RowsAffected <= 0 {
 		systemMessage.Message = " Can't Delete The Idea "
 		systemMessage.Succesful = false
 		return systemMessage
@@ -59,6 +58,25 @@ func (ideaServise *IdeaService) DeleteIdea(id int) *entity.SystemMessage {
 	systemMessage.Succesful = true
 	return systemMessage
 }
+
+func (ideaservice *IdeaService) UpdateIdea(idea *entity.Idea) *entity.SystemMessage {
+	systemmessage := &entity.SystemMessage{}
+	val := ideaservice.Idearepo.UpdateIdea(idea)
+	if val <= 0 {
+		systemmessage.Message = "Can't Update The Idea "
+		systemmessage.Succesful = false
+		// }  else if val == 2 {
+
+	} else { // 	systemmessage.Message = "There Is No Idea By This id Owned By You"
+		// 	systemmessage.Succesful = false
+		// }
+		systemmessage.Message = "SuccesFully Updated"
+		systemmessage.Succesful = true
+
+	}
+	return systemmessage
+}
+
 func (ideaServise *IdeaService) VoteIdea(ideaid, voterid int) *entity.SystemMessage {
 	erro := ideaServise.Idearepo.VoteIdea(ideaid, voterid)
 	message := &entity.SystemMessage{}
@@ -87,15 +105,12 @@ func (ideaServise *IdeaService) VoteIdea(ideaid, voterid int) *entity.SystemMess
 // 	return systemmessage
 // }
 func (ideaservice *IdeaService) SearchResult(searchingtext string, person *entity.Person, searchresults *[]entity.Idea) *entity.SystemMessage {
-
 	systemmessage := &entity.SystemMessage{}
-
 	_, erro := ideaservice.Idearepo.SearchIdeas(searchingtext, person, searchresults)
 	if erro != nil {
 		systemmessage.Succesful = false
 		return systemmessage
 	}
-
 	systemmessage.Succesful = true
 	return systemmessage
 }

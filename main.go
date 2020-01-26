@@ -2,8 +2,10 @@ package main
 
 import (
 	"net/http"
+	"strconv"
 	"strings"
 	"text/template"
+	"time"
 
 	ChatRepository "github.com/Projects/Inovide/Chat/Repository"
 	ChatService "github.com/Projects/Inovide/Chat/Service"
@@ -14,6 +16,7 @@ import (
 	IdeaRepository "github.com/Projects/Inovide/Idea/Repository"
 	ideaService "github.com/Projects/Inovide/Idea/Service"
 	session "github.com/Projects/Inovide/Session"
+	SessionRepo "github.com/Projects/Inovide/Session/Repository"
 	repository "github.com/Projects/Inovide/User/Repository"
 	service "github.com/Projects/Inovide/User/Service"
 	handler "github.com/Projects/Inovide/controller"
@@ -26,13 +29,14 @@ var tpl *template.Template
 var TemplateGroupUser = template.Must(template.ParseGlob("templates/*.html"))
 var db *gorm.DB
 var errors error
-var userRepository *repository.UserRepo
-var userservice *service.UserService
-var userrouter *handler.UserHandler
-var ideaRepository Idea.IdeaRepository // *IdeaRepository.IdeaRepo
+var userRepository *repository.UserRepo //1
+var userservice *service.UserService    //2
+var userrouter *handler.UserHandler     //3
+var ideaRepository Idea.IdeaRepository  // *IdeaRepository.IdeaRepo
 var ideaservice *ideaService.IdeaService
 var idearouter *handler.IdeaHandler
 var sessionHandler *session.Cookiehandler
+var sessionrepo *SessionRepo.SessionRepository
 var TheHub *entity.Hub
 var chatrouter *handler.ChatHandler
 var TheChatRepository *ChatRepository.ChatRepository
@@ -40,23 +44,36 @@ var TheChatService *ChatService.ChatService
 var commentrouter *handler.CommentHandler
 var commentservice *CommentService.CommentService
 var commentrepo *CommentRepo.CommentRepo
+var apicontroller *handler.ApiUserHandler
+var apiideahandler *handler.ApiIdeaHandler
 
 func init() {
 
-	sessionHandler = session.NewCookieHandler()
 	handler.SetSystemTemplate(TemplateGroupUser)
 	/*    Initializing Users  Structure        <<Begin>>   */
 	db, _ = config.InitializPostgres()
+	sessionrepo = SessionRepo.NewSessionRepo(db)
+	sessionHandler = session.NewCookieHandler(sessionrepo)
 	userRepository = repository.NewUserRepo(db)
 	userservice = service.NewUserService(userRepository)
 	userrouter = handler.NewUserHandler(userservice, sessionHandler)
 	/*    Initializing Users  Structure        <<End>>   */
 	/*Initializing the Chat and Related Resources */
-	initChatComponents()
-	initCommentComponent()
 	ideaRepository = IdeaRepository.NewIdeaRepo(db)
 	ideaservice = ideaService.NewIdeaService(ideaRepository)
 	idearouter = handler.NewIdeaHandler(ideaservice, commentrouter, userrouter, sessionHandler)
+
+	initChatComponents()
+	initCommentComponent()
+	initApiRelatedData()
+}
+
+func initApiRelatedData() {
+	apicontroller = &handler.ApiUserHandler{}
+}
+
+func initAprIdeaHandler() {
+	apiideahandler = handler.NewApiIdeaHandler(userrouter, idearouter, commentrouter, sessionHandler)
 }
 
 /*This Method Will Initialize the Chay Component and Starts the Distributor Hub Of The Chat */
@@ -91,15 +108,22 @@ func main() {
 	// router.PathPrefix("/public/").Handler(http.FileServer(http.Dir("/public/")))
 
 	// router.NotFound = http.FileServer(http.Dir("public"))
+<<<<<<< HEAD
 
 	// fs := http.FileServer(http.Dir("public"))
 	// http.Handle("/public/", http.StripPrefix("/public/", fs))
 
+=======
+>>>>>>> b0b4cf12a963e6a734d492ea52ed37875af2f170
 	router.GET("/", userrouter.ServeHome)
 
 	//	router.GET("/", userrouter.RegistrationPage)
 	router.GET("/user/register/", userrouter.RegistrationPage)
+	router.GET("/user/signin/", userrouter.LogInPage)
+	router.POST("/user/register/", userrouter.TemplateRegistrationRequest)
+	router.GET("/user/profile/", userrouter.ViewProfile)
 
+<<<<<<< HEAD
 	//Filtered  _________---------------------___________________---------------_____________________----------
 
 	router.POST("/user/register/", userrouter.TemplateRegisterUser)
@@ -124,6 +148,47 @@ func main() {
 	router.POST("/v1/Comment/Create/", commentrouter.APICreateComment)
 	router.GET("/v1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
 
+=======
+	router.POST("/api/v1/user/register/", apicontroller.ApiRegisterUser)
+	router.POST("/user/signin/", userrouter.TemplateLogInPage)
+	router.PUT("/api/v1/user/update/", userrouter.ApiEditeProfile)
+	router.GET("/logout/", userrouter.TemplateLogOut)
+	router.GET("/idea/search/", idearouter.SearchResult)
+	router.POST("/idea/new/", idearouter.TemplateCreateIdea)
+	router.GET("/idea/new/", idearouter.CreateIdeaPage)
+	router.PATCH("/idea/votes/", idearouter.VoteIdea) // Partial Modification of the idea meaning i am Changing the Number of Vote of The Idea
+	router.PUT("/ideas/", idearouter.UpdateIdea)
+	router.DELETE("/ideas/", idearouter.DeleteIdea)
+	router.GET("/default/idea/", idearouter.ApiGetIdea)
+	//_-----------------------------------------------------Commenting related --------------------------
+	router.POST("/idea/comments/", commentrouter.CommentOnIdea)
+	router.DELETE("/comments/comment/", commentrouter.DeleteComment)
+	//---------------------------///////////////////////
+	// router.POST("/api/v1/user/signin/", apicontroller.ApiSignin)
+
+	/***************************************Idea Related*********************************/
+	// router.GET("/user/ideas/new/", idearouter.CreateIdeaPage)
+	router.POST("/api/v1/user/ideas/", apiideahandler.CreateIdea)
+	// Filtered  _________---------------------___________________---------------_____________________----------
+
+	// router.POST("/user/register/", userrouter.TemplateRegisterUser)
+	// router.POST("/idea/update/", idearouter.UpdateIdea)
+	// // router.GET("/user/chat/", userrouter.RedirectToHome)
+	// router.GET("/chat/ws", chatrouter.ChatPage)
+	// router.GET("/private/user/Chat/", chatrouter.HandleChat)
+
+	router.GET("/a/", TellMyId)
+
+	// router.POST("/v1/user/register/", userrouter.TemplateRegisterUser)
+	// // router.POST("/v1/user/signin/", userrouter.LogInRequest)
+	// router.POST("/v1/idea/get/", idearouter.TemplateGetIdea)
+	router.GET("/v1/idea/delete/", idearouter.DeleteIdea)
+	// router.GET("/v1/idea/search/", idearouter.SearchResult)
+	// router.POST("/v1/user/FollowUser/", userrouter.FollowUser)
+	// /*The Comemnt Handler Related Api  */
+	// router.POST("/v1/Comment/Create/", commentrouter.APICreateComment)
+	// router.GET("/v1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
+>>>>>>> b0b4cf12a963e6a734d492ea52ed37875af2f170
 	http.ListenAndServe(":8080", nil)
 }
 func DirectoryListener(next http.Handler) http.Handler {
@@ -135,4 +200,22 @@ func DirectoryListener(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func TellMyId(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+
+	cookie := http.Cookie{
+		Name:    "session",
+		MaxAge:  -1,
+		Expires: time.Unix(1, 0),
+		Value:   "",
+	}
+
+	http.SetCookie(writer, &cookie)
+	in, _, _ := sessionHandler.Valid(request)
+
+	//fmt.Println(in)
+
+	writer.Write([]byte(strconv.Itoa(in)))
+
 }

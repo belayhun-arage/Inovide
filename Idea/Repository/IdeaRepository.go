@@ -32,34 +32,41 @@ func (ideas *IdeaRepo) CreateIdea(idea *entity.Idea) error {
 	return nil
 }
 
-func (ideas *IdeaRepo) GetIdea(id int) (*entity.Idea, error) {
+func (ideas *IdeaRepo) UpdateIdea(idea *entity.Idea) int64 {
+	RowsAffected := ideas.db.Debug().Table("idea").Where("id=? and ideaownerid=?", idea.Id, idea.Ideaownerid).Update(idea).RowsAffected
+	// if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
+	// 	// handle error
+	// }
 
-	idea := &entity.Idea{}
-	err := ideas.db.Debug().Table("idea").Find(idea, id).Error
-
-	if err != nil {
-		return nil, err
-	}
-	return idea, nil
+	defer recover()
+	return int64(RowsAffected)
 
 }
 
-func (ideas *IdeaRepo) DeleteIdea(id int) error {
+func (ideas *IdeaRepo) GetIdea(idea *entity.Idea) int64 {
+	numberofAffected := ideas.db.Debug().Table("idea").Where(&entity.Idea{}, idea.Id).Find(idea).RowsAffected
+	defer recover()
+	return numberofAffected
+}
 
-	err := ideas.db.Debug().Table("idea").Delete(&entity.Person{}, id).Error
-	if err != nil {
-		return err
-	}
-	return nil
+func (ideas *IdeaRepo) DeleteIdea(idea *entity.Idea) int64 {
+
+	RowsAffected := ideas.db.Debug().Table("idea").Where("id=? and ideaownerid =?", idea.Id, idea.Ideaownerid).Delete(idea).RowsAffected
+	// if err != nil {
+	// 	return err
+	// }
+	defer recover()
+	return RowsAffected
 }
 
 func (ideas *IdeaRepo) VoteIdea(ideaid, voterid int) error {
 
 	idea := &entity.Idea{}
-	err := ideas.db.Debug().Table("idea").Where(entity.Idea{}, ideaid).Find(idea).Error
+	err := ideas.db.Debug().Table("idea").Where("id=?", ideaid).Find(idea).Error
 
 	fmt.Println(idea.Numberofvotes)
-	err = ideas.db.Debug().Table("idea").Where(" id=?", idea.Id).Update(&entity.Idea{Ideaownerid: idea.Ideaownerid, Title: idea.Title, Description: idea.Description, Visibility: idea.Visibility, Numberofvotes: idea.Numberofvotes + 1, Numberofcomment: idea.Numberofcomment}).Error
+	idea.Numberofvotes++
+	err = ideas.db.Debug().Table("idea").Where(" id=?", idea.Id).Update(idea).Error
 
 	if err != nil {
 		return err
@@ -79,7 +86,6 @@ func (ideas *IdeaRepo) SearchIdeas(text string, person *entity.Person, searchres
 	if person.Paid == 0 {
 		visibility = "pu"
 	}
-
 	err := ideas.db.Table("idea").Debug().Where("visibility=? and title=? ", visibility, text).Find(searchresults).Error
 
 	if err != nil {

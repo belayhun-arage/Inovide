@@ -17,24 +17,27 @@ func NewUserService(userep *repository.UserRepo) *UserService {
 	return &UserService{userrepo: userep}
 }
 
+var message *entity.SystemMessage
+
 func (userService *UserService) RegisterUser(person *entity.Person) *entity.SystemMessage {
-	var message = entity.SystemMessage{}
-
-	if person.Username == "" || person.Email == "" || person.Password == "" {
-
-		message.Message = "The Input Is Not Fully FIlled Please Submitt Again Filling The Data Appropriately"
-		message.Succesful = false
-
-	} else {
-		er = userService.userrepo.CreateUser(person)
-		if er != nil {
-			panic(er)
+	message = &entity.SystemMessage{}
+	er, val := userService.userrepo.CreateUser(person)
+	defer recover()
+	message.Message = "Can't Save The User "
+	message.Succesful = false
+	if er != nil {
+		if val == 1 {
+			message.Message = "The Username Is Reserved "
 		}
+		if val == 2 {
+			message.Message = "The Email Is Reserved Please Use Other "
+		}
+		return message
 	}
+
 	message.Message = "Succesfully Inserted "
 	message.Succesful = true
-	return &message
-
+	return message
 }
 
 //This Method Checks Whether the User Presents or Not and Populate the Person struct Pointer with the data in the database
@@ -42,20 +45,22 @@ func (userService *UserService) RegisterUser(person *entity.Person) *entity.Syst
 // this method send and Recieve a message to and from UserHandler and UserRepository Respectively
 //Returning a SystemMessage
 //            For More Info About The System Messagelook for The System Message Struct in the models Folder entity Package
+var systemmessagechu *entity.SystemMessage
+
 func (userService *UserService) CheckUser(person *entity.Person) *entity.SystemMessage {
-	var message = entity.SystemMessage{}
+	systemmessagechu = &entity.SystemMessage{}
 
 	theBool := userService.userrepo.CheckUser(person)
 
-	fmt.Println(person.ID, "The Final Time Of test")
+	fmt.Print(person.ID, " ## ChechUser\n\n")
 	if theBool {
-		message.Message = "Ok The User Exists "
-		message.Succesful = true
+		systemmessagechu.Message = "Ok The User Exists "
+		systemmessagechu.Succesful = true
 	} else {
-		message.Message = "No Can't Get The User "
-		message.Succesful = false
+		systemmessagechu.Message = "No Can't Get The User "
+		systemmessagechu.Succesful = false
 	}
-	return &message
+	return systemmessagechu
 }
 
 func (userService *UserService) GetUser(person *entity.Person) *entity.SystemMessage {
@@ -63,11 +68,14 @@ func (userService *UserService) GetUser(person *entity.Person) *entity.SystemMes
 	message := &entity.SystemMessage{}
 	bools := userService.userrepo.GetUser(person)
 
-	if bools {
+	if bools == 1 {
+
 		message.Message = "Succesfully Fetched "
 		message.Succesful = true
 		return message
 	}
+	fmt.Println("failure ... ")
+
 	message.Message = "Noooo "
 	message.Succesful = false
 	return message
@@ -115,14 +123,21 @@ func (userservice *UserService) FollowUser(followerid, followingid int) *entity.
 func (userservice *UserService) UpdateUser(person *entity.Person) *entity.SystemMessage {
 	systemmessage := &entity.SystemMessage{}
 
-	erro := userservice.userrepo.UpdateUser(person)
+	erro, val := userservice.userrepo.UpdateUser(person)
 
 	if erro != nil {
 
-		systemmessage.Message = "Can't Update The Profile Of The User "
-		systemmessage.Succesful = true
+		if val == 1 {
+			systemmessage.Message = "You Can't Use This Email "
+
+		} else if val == 2 {
+			systemmessage.Message = "There Is One By This Username! Please Make A change "
+
+		}
+		systemmessage.Succesful = false
+
 	} else {
-		systemmessage.Message = " Succesfull yupdated the user"
+		systemmessage.Message = " Succesfull updated the user"
 		systemmessage.Succesful = true
 	}
 	return systemmessage
@@ -140,7 +155,6 @@ func (userservice *UserService) UnFollowUser(followingid, followerid int) *entit
 	}
 	return systemmessage
 }
-
 func (userservice *UserService) NewIdeas(person *entity.Person) (*entity.SystemMessage, *[]entity.Idea) {
 	idArrayOFPersonsIAmFollowing, err := userservice.userrepo.ListOfFolowingId(person) // Returning []int and error
 	systemmessage := &entity.SystemMessage{}

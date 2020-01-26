@@ -26,39 +26,40 @@ func (apiuserhandler *ApiUserHandler) LogIn(writer http.ResponseWriter, request 
 
 }
 
-func (ideahandler *IdeaHandler) SearchResult(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+func (ideahandler *IdeaHandler) SearchResult(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	person := &entity.Person{}
 
 	ideas := &[]entity.Idea{}
 	jsonNullgeneralideasearchresult, _ := json.Marshal(ideas)
 
+	writer.Header().Add("Content-Type", "application/json")
 	searchtitle := request.FormValue("text")
-	request.Header.Add("Content-Type", "application/json")
-
-	if searchtitle == "" {
-		writer.Write(jsonNullgeneralideasearchresult)
-	}
-
-	id, username, present := ideahandler.Session.Valid(request)
-	if !present {
-		person.Paid = 0
-	} else {
-		person.Username = username
-		person.ID = uint(id)
-		systemmessage := ideahandler.userrouter.userservice.GetUser(person)
-		if !systemmessage.Succesful {
-			person.Paid = 0
+	if searchtitle != "" {
+		if searchtitle == "" {
+			writer.Write(jsonNullgeneralideasearchresult)
 		}
-	}
-	systemmessage := ideahandler.ideaservice.SearchResult(searchtitle, person, ideas)
+		id, username, _ := ideahandler.Session.Valid(request)
+		if id > 0 {
+			person.Paid = 0
+		} else {
+			person.Username = username
+			person.ID = uint(id)
+			systemmessage := ideahandler.userrouter.userservice.GetUser(person)
+			if !systemmessage.Succesful {
+				person.Paid = 0
+			}
+		}
+		systemmessage := ideahandler.ideaservice.SearchResult(searchtitle, person, ideas)
 
-	if !systemmessage.Succesful {
-		writer.Write(jsonNullgeneralideasearchresult)
+		if !systemmessage.Succesful {
+			writer.Write(jsonNullgeneralideasearchresult)
+		}
 	}
 	newjson, erro := json.Marshal(ideas)
 	if erro != nil {
 		writer.Write(jsonNullgeneralideasearchresult)
 	}
+
 	writer.Write(newjson)
 }
 
@@ -96,3 +97,20 @@ func (userhandler *UserHandler) FollowUser(writer http.ResponseWriter, request *
 	writer.Write(systemmessagejson)
 
 }
+
+func (apiuserhandler *ApiUserHandler) ApiRegisterUser(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	systemmessage := apiuserhandler.userhandler.RegisterUser(writer, request)
+	jsonmessage, _ := json.Marshal(systemmessage)
+	writer.Header().Add("Content-Type", "application/json")
+	writer.Write(jsonmessage)
+}
+
+func (apiuserhandler *ApiUserHandler) ApiSignin(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+
+	systemmessage, _ := apiuserhandler.userhandler.LogInRequest(writer, request, nil)
+	jsontoken, _ := json.Marshal(systemmessage)
+	writer.Header().Add("Content-Type", "application/json")
+	writer.Write(jsontoken)
+}
+
+// func
