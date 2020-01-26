@@ -6,8 +6,9 @@ import (
 
 type IdeaRepository interface {
 	CreateIdea(idea *entity.Idea) error
-	DeleteIdea(id int) error
-	GetIdea(id int) (*entity.Idea, error)
+	DeleteIdea(idea *entity.Idea) int64
+	GetIdea(idea *entity.Idea) int64
 	VoteIdea(ideaid, voterid int) error
 	SearchIdeas(text string, person *entity.Person, searchresults *[]entity.Idea) (*[]entity.Idea, error)
+	UpdateIdea(idea *entity.Idea) int64
 }

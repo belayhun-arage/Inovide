@@ -2,8 +2,10 @@ package handler
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	CommentService "github.com/Projects/Inovide/Comment/Service"
 	session "github.com/Projects/Inovide/Session"
@@ -49,28 +51,36 @@ func (commentHandler *CommentHandler) CreateComment(writer http.ResponseWriter, 
 	comment := &entity.Comment{}
 
 	// ideaid, err := strconv.Atoi(request.FormValue("ideaid"))
-	ideaid, err := strconv.Atoi(params.ByName("ideaid"))
+	ideaid, err := strconv.Atoi(request.FormValue("ideaid"))
 
 	if err != nil {
+		fmt.Println("Creating Comment ")
+
 		return commentWithThePerson, systemmessage
 	}
 	commentdata := request.FormValue("commentdata")
-	id, username, present := commentHandler.Sessionservice.Valid(request)
-	if !present {
+	id, username, _ := commentHandler.Sessionservice.Valid(request)
+	if id <= 0 {
+		fmt.Println("No The Perosn is Not valid ")
 		return commentWithThePerson, systemmessage
 	}
 	person.Username = username
 	person.ID = uint(id)
 	systemmessageforuser := commentHandler.Userrouter.userservice.GetUser(person)
 	if !systemmessageforuser.Succesful {
-		return nil, systemmessage
+		fmt.Println("UsrNot Found ")
+		commentWithThePerson.Person = person
+		return commentWithThePerson, systemmessage
 	}
 	if commentdata == "" {
+		systemmessage.Message = "The CommentData Invalid "
+		systemmessage.Succesful = false
 		return commentWithThePerson, systemmessage
 	}
 	comment.Ideaid = ideaid
 	comment.Commentdata = commentdata
 	comment.Commentorid = int(person.ID)
+	comment.Commentdate = time.Now().String()
 	systemMessage := commentHandler.CommentService.CreateComment(comment)
 
 	if systemMessage.Succesful {
@@ -86,7 +96,7 @@ func (commentHandler *CommentHandler) CreateComment(writer http.ResponseWriter, 
 	systemMessage.Succesful = false
 	return commentWithThePerson, systemmessage
 }
-func (commentHandler *CommentHandler) GetCommentWithPerson(comments *[]entity.Comment) *[]entity.CommentWithPerson {
+func (commentHandler *CommentHandler) GetCommentWithPersons(comments *[]entity.Comment) *[]entity.CommentWithPerson {
 	commentWithThePersons := []entity.CommentWithPerson{}
 	for index, comment := range *comments {
 		person := commentHandler.Userrouter.UserById(comment.Commentorid)
@@ -101,6 +111,27 @@ func (commentHandler *CommentHandler) GetCommentWithPerson(comments *[]entity.Co
 	}
 	return &commentWithThePersons
 }
+
+func (commentHandler *CommentHandler) CommentOnIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	commentwithperson := &entity.CommentWithPerson{}
+	commentwithperson.Succesfull = false
+	writer.Header().Add("Content-Type", "application/json")
+
+	jsoncommentwithperson, _ := json.Marshal(commentwithperson)
+	commentwithperson, systemmessage := commentHandler.CreateComment(writer, request, nil)
+
+	if systemmessage.Succesful {
+		jsoncommentwithperson, _ = json.Marshal(commentwithperson)
+		commentwithperson.Succesfull = false
+		writer.Write(jsoncommentwithperson)
+
+	} else {
+		jsoncommentwithperson, _ = json.Marshal(commentwithperson)
+		commentwithperson.Succesfull = true
+		writer.Write(jsoncommentwithperson)
+	}
+}
+
 func (commentHandler *CommentHandler) ApiGetCommentListed(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	request.ParseForm()
 	theideaid := request.FormValue("ideaid")
@@ -136,4 +167,34 @@ func (commentHandler *CommentHandler) GetComments(ideaid int) (*[]entity.Comment
 		return coments, true
 	}
 	return coments, false
+}
+func (commentHandler *CommentHandler) DeleteComment(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+	id, _, _ := commentHandler.Sessionservice.Valid(request)
+	comment := &entity.Comment{}
+	systemmessage := &entity.SystemMessage{}
+	systemmessage.Succesful = false
+	systemmessage.Message = "Can't Delete The Message "
+
+	jsonsystemmessage, _ := json.Marshal(systemmessage)
+	writer.Header().Add("Content-Type", "application/json")
+
+	if id <= 0 {
+		//Informing that the user is not valid
+		writer.Write(jsonsystemmessage)
+	}
+	// ideaid, err := strconv.Atoi(request.FormValue("ideaid"))
+	commentid, err := strconv.Atoi(request.FormValue("commentid"))
+	if err != nil || commentid <= 0 { //  ideaid <= 0 ||
+		writer.Write(jsonsystemmessage)
+	}
+	comment.Id = commentid
+	// comment.Ideaid= ideaid
+	comment.Commentorid = id
+	systemmessage = commentHandler.CommentService.DeleteComment(comment)
+	if systemmessage.Succesful {
+		systemmessage.Message = "Succesfully Deleted the messsage"
+		systemmessage.Succesful = true
+		jsonsystemmessage, _ = json.Marshal(systemmessage)
+	}
+	writer.Write(jsonsystemmessage)
 }

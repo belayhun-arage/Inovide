@@ -66,16 +66,11 @@ func (chathandler *ChatHandler) HandleChat(response http.ResponseWriter, request
 	if !systemMessage.Succesful {
 		// 404 Page Not Found Template Here
 	}
-	// chathandler.CreateWS(response, request, person)
 }
 
 //  Upgrading and Starting the Web Socket for the Incomming  Request in the header and Starting A web Socket Connectio With it
 var keyGUID = []byte("258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
 
-// var upgrader = websocket.Upgrader{
-// 	ReadBufferSize:  1024,
-// 	WriteBufferSize: 1024,
-// }
 func (chathandler *ChatHandler) CreateWS(conn *websocket.Conn) {
 	person := &entity.Person{}
 	request := conn.Request() //  getting the request from the web socket COnnection

@@ -12,6 +12,7 @@ const (
 	SERVER_ERROR      = "servererror"
 	INVALID_FILE_TYPE = "invalidfiletype"
 	MISSING_DATA      = "missingdata"
+	INVALID_FORM      = "invalid Form User "
 )
 
 type Person struct {
@@ -31,7 +32,7 @@ type Person struct {
 
 type SystemMessage struct {
 	Message   string          `json:"message,omitempty"  bson:"message,omitempty"`
-	Succesful bool            `json:"succesfull,omitempty"  bson:"succesfull,omitempty"`
+	Succesful bool            `json:"succesfull,omitempty"`
 	Errors    map[string]bool `json:"errors,omitempty"`
 }
 type Message struct {

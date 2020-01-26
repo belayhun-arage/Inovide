@@ -56,11 +56,9 @@ func (commentservice *CommentService) UpdateComment(comment *entity.Comment) *en
 	return systemmessage
 }
 func (commentservice *CommentService) DeleteComment(comment *entity.Comment) *entity.SystemMessage {
-
 	systetemmessage := &entity.SystemMessage{}
-	erro := commentservice.CommentRepo.DeleteComment(comment)
-	if erro != nil {
-
+	affected := commentservice.CommentRepo.DeleteComment(comment)
+	if affected <= 0 {
 		systetemmessage.Message = "Can't Delete the Comment System Error "
 		systetemmessage.Succesful = false
 	} else {

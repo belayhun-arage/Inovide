@@ -29,14 +29,12 @@ func (commentrepo *CommentRepo) GetComments(comment *[]entity.Comment, id int) e
 	return nil
 }
 func (CommentRepo *CommentRepo) UpdateComment(comment *entity.Comment) []error {
-
 	erro := CommentRepo.db.Model(&entity.Comment{}).Table("comment").Save(comment).GetErrors()
-
 	return erro
-
 }
-
-func (commentrepo *CommentRepo) DeleteComment(comment *entity.Comment) []error {
-	err := commentrepo.db.Table("comment").Model(&entity.Comment{}).Delete(comment).GetErrors()
-	return err
+func (commentrepo *CommentRepo) DeleteComment(comment *entity.Comment) int64 {
+	affecteds := commentrepo.db.Table("comment").Debug().Where("id=? and commentorid=?", comment.Id,
+		comment.Commentorid).Delete(comment).RowsAffected
+	defer recover()
+	return affecteds
 }
