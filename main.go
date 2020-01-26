@@ -78,18 +78,29 @@ func initCommentComponent() {
 func main() {
 
 	router := httprouter.New() //.StrictSlash(true)
+
 	http.Handle("/", router)
 	// router.GET()
+	//router.ServeFiles("/src/*filepath", http.Dir("/var/www"))
 
-	router.ServeFiles("/public/*filepath", http.Dir("/home/samuael/WorkSpace/src/github.com/Projects/Inovide/public/"))
+	//router.ServeFiles("/public/*filepath", http.Dir("/C:/Users/user/go%/bin/src/github.com/Projects/Inovide/public/"))
+	router.ServeFiles("/user/public/*filepath", http.Dir("public"))
+	//router.ServeFiles("/public/*filepath", http.Dir("public"))
+	//	router.ServeFiles("/public/*filepath", http.Dir("public"))
 	// http.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
 	// router.PathPrefix("/public/").Handler(http.FileServer(http.Dir("/public/")))
+
 	// router.NotFound = http.FileServer(http.Dir("public"))
 
+	// fs := http.FileServer(http.Dir("public"))
+	// http.Handle("/public/", http.StripPrefix("/public/", fs))
+
 	router.GET("/", userrouter.ServeHome)
+
+	//	router.GET("/", userrouter.RegistrationPage)
 	router.GET("/user/register/", userrouter.RegistrationPage)
 
-	// Filtered  _________---------------------___________________---------------_____________________----------
+	//Filtered  _________---------------------___________________---------------_____________________----------
 
 	router.POST("/user/register/", userrouter.TemplateRegisterUser)
 	router.GET("/user/signin/", userrouter.LogInPage)
@@ -101,8 +112,8 @@ func main() {
 	router.GET("/private/user/Chat/", chatrouter.HandleChat)
 	router.GET("/idea/create/", idearouter.CreateIdeaPage)
 
-	router.GET("/v1/logout/", userrouter.LogOut)
-	router.POST("/v1/user/register/", userrouter.TemplateRegisterUser)
+	//	router.GET("/v1/logout/", userrouter.LogOut)
+	//router.POST("/v1/user/register/", userrouter.TemplateRegisterUser)
 	router.POST("/v1/user/signin/", userrouter.LogInRequest)
 	router.POST("/v1/idea/create/", idearouter.CreateIdea)
 	router.POST("/v1/idea/get/", idearouter.TemplateGetIdea)
@@ -112,6 +123,7 @@ func main() {
 	/*The Comemnt Handler Related Api  */
 	router.POST("/v1/Comment/Create/", commentrouter.APICreateComment)
 	router.GET("/v1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
+
 	http.ListenAndServe(":8080", nil)
 }
 func DirectoryListener(next http.Handler) http.Handler {

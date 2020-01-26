@@ -236,7 +236,7 @@ func (user_controller *UserHandler) RedirectToHome(writer http.ResponseWriter, r
 	SystemTemplates.ExecuteTemplate(writer, "index.html", nil)
 
 }
-func (user_controller *UserHandler) LogOut(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {
+func (user_controller *UserHandler) LogOut(writer http.ResponseWriter, request *http.Request, param httprouter.Params, _ httprouter.Params) {
 	user_controller.Sessionservice.DeleteSession(writer, request)
 	http.Redirect(writer, request, "/", 301)
 }
