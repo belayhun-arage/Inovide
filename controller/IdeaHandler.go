@@ -356,12 +356,13 @@ func (ideahandler *IdeaHandler) ApiMyIdeas(writer http.ResponseWriter, request *
 	ideas := &[]entity.Idea{}
 	id, _, _ := ideahandler.Session.Valid(request)
 	if id <= 0 {
-		SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
+		//SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
+		SystemTemplates.ExecuteTemplate(writer, "youridea.html", nil)
 	}
 	systemmessage := ideahandler.ideaservice.MyIdeas(id, ideas)
 	if systemmessage.Succesful {
-		SystemTemplates.ExecuteTemplate(writer, "", ideas)
+		SystemTemplates.ExecuteTemplate(writer, "youridea.html", ideas)
 	} else {
-		SystemTemplates.ExecuteTemplate(writer, "", nil)
+		SystemTemplates.ExecuteTemplate(writer, "youridea.html", nil)
 	}
 }

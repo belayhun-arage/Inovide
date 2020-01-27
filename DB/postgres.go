@@ -18,9 +18,9 @@ var errors error
 
 const (
 	username = "postgres"
-	password = "joyfull"
+	password = "faniman093864"
 	host     = "localhost"
-	dbname   = "project"
+	dbname   = "inovide"
 )
 
 func InitializPosts() (*sql.DB, error) {
