@@ -1,36 +1,20 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-.main_footer_container {
-    position: relative;
-    bottom: 0px;
-    margin-bottom: 0%;
-    right: 0px;
-    left: 0px;
-}/*=-footer-=*/
 
-
-footer {
-    
-=======
 /*=-footer-=*/
 footer {
->>>>>>> 025cdf480978114e37bdbe36f8554f6469c39e58
-=======
 /*=-footer-=*/
-footer {
->>>>>>> 535f693... commit In Mex Controller
-    color: #fff;
+
+    color:white;
     background-attachment: fixed;
     background-color:#222;
-background-image: url(https://s7.postimg.org/uyf0oioaz/footer-bg.png);
+    
     background-size: cover;
     background-position: bottom;
 }
 footer p {
-    color: #ccc;				
+    color:white;				
 }
 footer a {
-    color: #ccc;				
+    color: white;				
 }
 .social-pet li {
     display: inline-block;
@@ -90,18 +74,4 @@ footer .input-group-addon {
 }
 .f-address li a {
     color: #ccc;
-}
-/*=-Copyright-=*/
-<<<<<<< HEAD
-<<<<<<< HEAD
-.main_footer_container .copyright {
-=======
-.copyright {
->>>>>>> 025cdf480978114e37bdbe36f8554f6469c39e58
-=======
-.copyright {
->>>>>>> 535f693... commit In Mex Controller
-    background-color: #111;
-    padding: 12px 0;
-font-size:14px;
 }

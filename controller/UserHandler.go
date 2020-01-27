@@ -294,12 +294,6 @@ func (user_controller *UserHandler) LogInPage(writer http.ResponseWriter, reques
 // func (user_controller *UserHandler) RedirectToHome(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {
 // 	SystemTemplates.ExecuteTemplate(writer, "index.html", nil)
 
-<<<<<<< HEAD
-}
-func (user_controller *UserHandler) LogOut(writer http.ResponseWriter, request *http.Request, param httprouter.Params, _ httprouter.Params) {
-	user_controller.Sessionservice.DeleteSession(writer, request)
-	http.Redirect(writer, request, "/", 301)
-=======
 // }
 func (user_controller *UserHandler) TemplateLogOut(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 
@@ -320,7 +314,6 @@ func (user_controller *UserHandler) TemplateLogOut(writer http.ResponseWriter, r
 	jsonmessagelogout, _ := json.Marshal(systemmessage)
 	writer.Header().Add("Content-Type", "application/json")
 	writer.Write(jsonmessagelogout)
->>>>>>> b0b4cf12a963e6a734d492ea52ed37875af2f170
 }
 
 func (user_controller *UserHandler) ViewProfile(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {

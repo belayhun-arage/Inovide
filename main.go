@@ -101,54 +101,25 @@ func main() {
 	//router.ServeFiles("/src/*filepath", http.Dir("/var/www"))
 
 	//router.ServeFiles("/public/*filepath", http.Dir("/C:/Users/user/go%/bin/src/github.com/Projects/Inovide/public/"))
-	router.ServeFiles("/user/public/*filepath", http.Dir("public"))
 	//router.ServeFiles("/public/*filepath", http.Dir("public"))
+	// router.ServeFiles("/public/*filepath", http.Dir("public"))
 	//	router.ServeFiles("/public/*filepath", http.Dir("public"))
 	// http.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
 	// router.PathPrefix("/public/").Handler(http.FileServer(http.Dir("/public/")))
 
 	// router.NotFound = http.FileServer(http.Dir("public"))
-<<<<<<< HEAD
 
-	// fs := http.FileServer(http.Dir("public"))
-	// http.Handle("/public/", http.StripPrefix("/public/", fs))
+	fs := http.FileServer(http.Dir("public/"))
+	http.Handle("/public/", http.StripPrefix("/public/", fs))
 
-=======
->>>>>>> b0b4cf12a963e6a734d492ea52ed37875af2f170
 	router.GET("/", userrouter.ServeHome)
 
-	//	router.GET("/", userrouter.RegistrationPage)
+	//router.GET("/", userrouter.RegistrationPage)
 	router.GET("/user/register/", userrouter.RegistrationPage)
 	router.GET("/user/signin/", userrouter.LogInPage)
 	router.POST("/user/register/", userrouter.TemplateRegistrationRequest)
 	router.GET("/user/profile/", userrouter.ViewProfile)
 
-<<<<<<< HEAD
-	//Filtered  _________---------------------___________________---------------_____________________----------
-
-	router.POST("/user/register/", userrouter.TemplateRegisterUser)
-	router.GET("/user/signin/", userrouter.LogInPage)
-	router.POST("/user/signin/", userrouter.LogInRequest)
-	router.POST("/idea/update/", idearouter.UpdateIdea)
-	router.POST("/idea/vote/", idearouter.VoteIdea)
-	router.GET("/user/chat/", userrouter.RedirectToHome)
-	router.GET("/chat/ws", chatrouter.ChatPage)
-	router.GET("/private/user/Chat/", chatrouter.HandleChat)
-	router.GET("/idea/create/", idearouter.CreateIdeaPage)
-
-	//	router.GET("/v1/logout/", userrouter.LogOut)
-	//router.POST("/v1/user/register/", userrouter.TemplateRegisterUser)
-	router.POST("/v1/user/signin/", userrouter.LogInRequest)
-	router.POST("/v1/idea/create/", idearouter.CreateIdea)
-	router.POST("/v1/idea/get/", idearouter.TemplateGetIdea)
-	router.GET("/v1/idea/delete/", idearouter.DeleteIdea)
-	router.GET("/v1/idea/search/", idearouter.SearchResult)
-	router.POST("/v1/user/FollowUser/", userrouter.FollowUser)
-	/*The Comemnt Handler Related Api  */
-	router.POST("/v1/Comment/Create/", commentrouter.APICreateComment)
-	router.GET("/v1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
-
-=======
 	router.POST("/api/v1/user/register/", apicontroller.ApiRegisterUser)
 	router.POST("/user/signin/", userrouter.TemplateLogInPage)
 	router.PUT("/api/v1/user/update/", userrouter.ApiEditeProfile)
@@ -188,7 +159,6 @@ func main() {
 	// /*The Comemnt Handler Related Api  */
 	// router.POST("/v1/Comment/Create/", commentrouter.APICreateComment)
 	// router.GET("/v1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
->>>>>>> b0b4cf12a963e6a734d492ea52ed37875af2f170
 	http.ListenAndServe(":8080", nil)
 }
 func DirectoryListener(next http.Handler) http.Handler {
