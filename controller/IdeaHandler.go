@@ -36,7 +36,7 @@ func NewIdeaHandler(theService *ideaService.IdeaService,
 		userrouter:     userrouters}
 }
 func (idea_controller *IdeaHandler) CreateIdeaPage(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {
-	SystemTemplates.ExecuteTemplate(writer, "createIdea.html", nil)
+	SystemTemplates.ExecuteTemplate(writer, "createIdeaMod.html", nil)
 }
 
 func (idea_controller *IdeaHandler) TemplateCreateIdea(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {

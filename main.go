@@ -95,14 +95,26 @@ func initCommentComponent() {
 func main() {
 
 	router := httprouter.New() //.StrictSlash(true)
+
 	http.Handle("/", router)
 	// router.GET()
+	//router.ServeFiles("/src/*filepath", http.Dir("/var/www"))
 
-	router.ServeFiles("/public/*filepath", http.Dir("/home/samuael/WorkSpace/src/github.com/Projects/Inovide/public/"))
+	//router.ServeFiles("/public/*filepath", http.Dir("/C:/Users/user/go%/bin/src/github.com/Projects/Inovide/public/"))
+	//router.ServeFiles("/public/*filepath", http.Dir("public"))
+	// router.ServeFiles("/public/*filepath", http.Dir("public"))
+	//	router.ServeFiles("/public/*filepath", http.Dir("public"))
 	// http.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
 	// router.PathPrefix("/public/").Handler(http.FileServer(http.Dir("/public/")))
+
 	// router.NotFound = http.FileServer(http.Dir("public"))
+
+	fs := http.FileServer(http.Dir("public/"))
+	http.Handle("/public/", http.StripPrefix("/public/", fs))
+
 	router.GET("/", userrouter.ServeHome)
+
+	//router.GET("/", userrouter.RegistrationPage)
 	router.GET("/user/register/", userrouter.RegistrationPage)
 	router.GET("/user/signin/", userrouter.LogInPage)
 	router.POST("/user/register/", userrouter.TemplateRegistrationRequest)
