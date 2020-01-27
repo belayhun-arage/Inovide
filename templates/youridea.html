@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet prefetch" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+    <link rel="stylesheet prefetch" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,700&amp;subset=latin,cyrillic">
+    <link rel="stylesheet" href="../public/css/youridea.css">
+</head>
+
+<body>
+
+    <div class="lm-tabel">
+        <div class="lm-item lm-item-2">
+            <div class="lm-item-top"><span class="lm-item-title lm-underline">Title</span>
+                <h5>Lorem ipsum Lorem ipsum Lorem</h5>
+            </div>
+            <div class="lm-item-body">
+                <div class="lm-item-desc"><strong>Description</strong>
+                    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Inventore blanditiis, ducimus reprehenderit sed saepe placeat. Facere corrupti tempora molestias, veniam voluptas quos nihil expedita animi sequi a excepturi aliquam maiores!</p>
+                </div>
+                <div class="lm-item-link">
+                    <a href="#">
+                        <svg width="152" height="52" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="lm-gr-2" x1="0" y1="0" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#7E052D"></stop>
+                                    <stop offset="100%" stop-color="#F6266B"></stop>
+                                </linearGradient>
+                            </defs>
+                            <rect x="1" y="1" width="150" height="50" rx="25" fill="#fff" stroke="url(#lm-gr-2)" stroke-width="1"></rect>
+                            <text x="23%" y="65%" fill="url(&quot;#lm-gr-2&quot;)">EDIT</text>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="lm-item-bottom"></div>
+        </div>
+        <div class="lm-item lm-item-1">
+            <div class="lm-item-top"><span class="lm-item-title lm-underline">Title</span>
+                <h5>Lorem ipsum Lorem ipsum Lorem</h5>
+            </div>
+            <div class="lm-item-body">
+                <div class="lm-item-desc"><strong>Description</strong></div>
+                 <div><p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quo, commodi dolor molestias eos aliquid provident laudantium quaerat ducimus voluptatum. Quae quidem facere illum dolores reiciendis et sed asperiores consequatur hic!</p></div>
+                <div class="lm-item-link">
+                    <a href="#">
+                        <svg width="152" height="52" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="lm-gr-1" x1="0" y1="0" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#241326"></stop>
+                                    <stop offset="100%" stop-color="#85468C"></stop>
+                                </linearGradient>
+                            </defs>
+                            <rect x="1" y="1" width="150" height="50" rx="25" fill="#fff" stroke="url(#lm-gr-1)" stroke-width="1"></rect>
+                            <text x="23%" y="65%" fill="url(&quot;#lm-gr-1&quot;)">Edit</text>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="lm-item-bottom"><span class="lm-underline"> </span></div>
+        </div>
+        <div class="lm-item lm-item-3">
+            <div class="lm-item-top"><span class="lm-item-title lm-underline">Title</span>
+                <h5>Lorem ipsum Lorem ipsum Lorem</h5>
+            </div>
+            <div class="lm-item-body">
+                <div class="lm-item-desc"><strong>Description</strong>
+                    <div><p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempora ipsum maiores temporibus obcaecati itaque ipsa, dolores recusandae molestiae repellat hic sapiente ipsam, quis modi minima tenetur vero explicabo dicta iure.</div>
+                </div>
+                <ul class="lm-item-list">
+
+                </ul>
+                <div class="lm-item-link">
+                    <a href="#">
+                        <svg width="152" height="52" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="lm-gr" x1="0" y1="0" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#1A466F"></stop>
+                                    <stop offset="100%" stop-color="#4D93D5"></stop>
+                                </linearGradient>
+                            </defs>
+                            <rect x="1" y="1" width="150" height="50" rx="25" fill="#fff" stroke="url(#lm-gr)" stroke-width="1"></rect>
+                            <text x="23%" y="65%" fill="url(&quot;#lm-gr&quot;)">Edit</text>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="lm-item-bottom"></div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script>
+        (function() {
+            $(document).ready(function() {
+                var arrItems;
+                arrItems = $('.lm-item');
+                return arrItems.hover(function() {
+                    return arrItems.addClass('blur');
+                }, function() {
+                    return arrItems.removeClass('blur');
+                });
+            });
+
+        }).call(this);
+    </script>
+</body>
+
+</html>
