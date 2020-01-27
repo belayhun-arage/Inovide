@@ -39,6 +39,26 @@ func NewHub() *Hub {
 		Messages:   make(chan *Message),
 	}
 }
+
+func (h *Hub) Exist(id int) bool {
+	for client, _ := range h.Clients {
+
+		if client.IdentificationNumber == id {
+			return true
+		}
+	}
+	return false
+}
+func (h *Hub) GetClient(id int) *Client {
+	for client, _ := range h.Clients {
+
+		if client.IdentificationNumber == id {
+			return client
+		}
+	}
+	return nil
+}
+
 func (h *Hub) Run() {
 	for {
 
@@ -57,12 +77,7 @@ func (h *Hub) Run() {
 			// 	continue
 			// }
 			for client := range h.Clients {
-				// select client.IdentificationNumber  {
-				// 	case Mesage.SenderId:
-				// 	default:
-				// 	close(client.Send)
-				// 	delete(h.Clients, client)
-				// }
+
 				fmt.Println(client.IdentificationNumber)
 				if client.IdentificationNumber == message.Senderid || client.IdentificationNumber == message.Recieverid {
 					fmt.Println("In The Hub")
@@ -70,6 +85,11 @@ func (h *Hub) Run() {
 				}
 			}
 		}
-
 	}
 }
+
+// type ChatSystemMessage struct {
+// 	Recireverid    int    `json:"reciever"`
+// 	Friend         Person `json:"friend"`
+// 	ConnectRequest bool   `json:"connectrequest"`
+// }

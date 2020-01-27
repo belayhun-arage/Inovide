@@ -115,20 +115,20 @@ func main() {
 	router.GET("/idea/search/", idearouter.SearchResult)
 	router.POST("/idea/new/", idearouter.TemplateCreateIdea)
 	router.GET("/idea/new/", idearouter.CreateIdeaPage)
-	router.PATCH("/idea/votes/", idearouter.VoteIdea) // Partial Modification of the idea meaning i am Changing the Number of Vote of The Idea
+	router.PATCH("/idea/votes/", idearouter.VoteIdea) // Partials Modification of the idea meaning i am Changing the Number of Vote of The Idea
 	router.PUT("/ideas/", idearouter.UpdateIdea)
 	router.DELETE("/ideas/", idearouter.DeleteIdea)
+	router.GET("/ideas/", idearouter.TemplateGetDetailIdea)
 	router.GET("/default/idea/", idearouter.ApiGetIdea)
-	//_-----------------------------------------------------Commenting related --------------------------
+	//_-----------------Commenting related ---------
 	router.POST("/idea/comments/", commentrouter.CommentOnIdea)
 	router.DELETE("/comments/comment/", commentrouter.DeleteComment)
-	//---------------------------///////////////////////
+	router.GET("/idea/myideas/", idearouter.ApiMyIdeas)
 	// router.POST("/api/v1/user/signin/", apicontroller.ApiSignin)
-
 	/***************************************Idea Related*********************************/
 	// router.GET("/user/ideas/new/", idearouter.CreateIdeaPage)
 	router.POST("/api/v1/user/ideas/", apiideahandler.CreateIdea)
-	// Filtered  _________---------------------___________________---------------_____________________----------
+	// Filtered  _________------------------------------------_____________________----------
 
 	// router.POST("/user/register/", userrouter.TemplateRegisterUser)
 	// router.POST("/idea/update/", idearouter.UpdateIdea)
@@ -147,6 +147,19 @@ func main() {
 	// /*The Comemnt Handler Related Api  */
 	// router.POST("/v1/Comment/Create/", commentrouter.APICreateComment)
 	// router.GET("/v1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
+
+	/**************************************  Chat Lists *******************************************************/
+
+	router.GET("/chat/connection/", chatrouter.HandleChat)
+	router.GET("/chat/ChatPage", chatrouter.ChatPage)
+	// router.GET("/chat/friend/:friendid" , chatrouter.)
+
+	router.GET("/chat/friend/", chatrouter.RecentFriends)
+	router.POST("/chat/friend/", chatrouter.ConnectFriend)
+	router.GET("/chat/message/:friendid", chatrouter.LoadMessages)
+	// router.DELETE("/chat/message/" , )
+
+	/**********************************************************************************************************/
 	http.ListenAndServe(":8080", nil)
 }
 func DirectoryListener(next http.Handler) http.Handler {

@@ -10,4 +10,5 @@ type IdeaService interface {
 	DeleteIdea(id int) *entity.SystemMessage
 	VoteIdea(ideaid, voterid int) *entity.SystemMessage
 	SearchResult(searchingtext string, person *entity.Person, searchresults *[]entity.Idea) *entity.SystemMessage
+	MyIdeas(ideaowner int, ideas *[]entity.Idea) *entity.SystemMessage
 }

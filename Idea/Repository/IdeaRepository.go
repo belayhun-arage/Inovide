@@ -49,6 +49,11 @@ func (ideas *IdeaRepo) GetIdea(idea *entity.Idea) int64 {
 	return numberofAffected
 }
 
+func (idearepo *IdeaRepo) MyIdeas(ideaowner int, ideas *[]entity.Idea) int64 {
+	rowsaffected := idearepo.db.Table("idea").Debug().Where("ideaownerid=? ", ideaowner).Debug().Find(ideas).RowsAffected
+	defer recover()
+	return rowsaffected
+}
 func (ideas *IdeaRepo) DeleteIdea(idea *entity.Idea) int64 {
 
 	RowsAffected := ideas.db.Debug().Table("idea").Where("id=? and ideaownerid =?", idea.Id, idea.Ideaownerid).Delete(idea).RowsAffected

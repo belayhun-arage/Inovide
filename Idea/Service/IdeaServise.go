@@ -29,6 +29,22 @@ func (ideaServise *IdeaService) CreateIdea(idea *entity.Idea) *entity.SystemMess
 	return &message
 }
 
+func (ideaserve *IdeaService) MyIdeas(ideaowner int, ideas *[]entity.Idea) *entity.SystemMessage {
+	systemmessage := &entity.SystemMessage{}
+	systemmessage.Succesful = false
+	systemmessage.Message = "Can't Load Any Ideas "
+	RowsAffected := ideaserve.Idearepo.MyIdeas(ideaowner, ideas)
+	if RowsAffected <= 0 {
+		systemmessage.Succesful = false
+		systemmessage.Message = "You DOn't Have Any IDea Yet "
+		return systemmessage
+	} else {
+		systemmessage.Message = "SuccesFully Fetched  Ideas "
+		systemmessage.Succesful = true
+		return systemmessage
+	}
+}
+
 func (ideaServise *IdeaService) GetIdea(idea *entity.Idea, id int) *entity.SystemMessage {
 	systemMessage := &entity.SystemMessage{}
 

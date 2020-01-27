@@ -42,6 +42,23 @@ func (chre *ChatRepository) GetId(person *entity.Person) error {
 	return nil
 }
 
+// func (chre *ChatRepository) GetFriends(friends []*entity.Person, id int) int64 {
+
+// 	ids := []int{}
+
+// 	rowsaffectd := chre.db.Debug().Table("")
+
+// }
+
+func (chre *ChatRepository) SaveAlies(alie1, alie2 int) int64 {
+	alies := &entity.Alie{}
+	alies.Userid = alie1
+	alies.Alieid = alie2
+	affectedRows := chre.db.Debug().Table("alies").Create(alies).RowsAffected
+	defer recover()
+	return affectedRows
+}
+
 func (chatrepo *ChatRepository) DeleteChat(message *entity.Message) []error {
 
 	errors := chatrepo.db.Table("massage").Debug().Delete(message).GetErrors()
@@ -58,43 +75,42 @@ func (chatrepo *ChatRepository) UpdateChat(message *entity.Message) []error {
 	errors := chatrepo.db.Table("message").Debug().Save(message).GetErrors()
 	return errors
 }
-func (chatrepo *ChatRepository) LoadAlies(person *entity.Person) ([]*entity.Person, []error) {
-	alies := []entity.Alie{}
 
-	clients := []*entity.Person{}
-	errors := chatrepo.db.Debug().Table("alies").Where("userid=? or alieid=? ", person.ID, person.ID).Find(&alies).GetErrors()
-	if errors != nil {
-		return nil, errors
+func (chatrepo *ChatRepository) GetMessages(yourid, friendid int, messages []*entity.Message) int64 {
+	rowsaffected := chatrepo.db.Debug().Table("message").Where("(senderid=? and recieverid =?) or (senderid=? and recieverid=? )", yourid, friendid, friendid, yourid).Find(messages).RowsAffected
+	defer recover()
+	return rowsaffected
+}
+func (chatrepo *ChatRepository) GetFriends(person []*entity.Person, id int) int64 {
+	alies := []entity.Alie{}
+	rowsaffectd := chatrepo.db.Debug().Table("alies").Where("userid=? or alieid=? ", id, id).Find(&alies).RowsAffected
+	if rowsaffectd <= 0 {
+		return -1
 	}
 	if len(alies) > 1 {
 		for index, alie := range alies {
 			newPerson := &entity.Person{}
-
 			switch alie.Userid {
-			case int(person.ID):
+			case int(id):
 				{
 					newPerson.ID = uint(alie.Alieid)
 				}
-
 			default:
 				{
 					newPerson.ID = uint(alie.Userid)
 				}
 			}
-			errors = chatrepo.db.Table("users").Find(newPerson).GetErrors()
-			if errors != nil {
+			rows := chatrepo.db.Table("users").Where("id=?", newPerson.ID).Find(newPerson).RowsAffected
+			if rows <= 0 {
 				continue
 			}
-			clients[index] = newPerson
-
+			person[index] = newPerson
 		}
-
 	}
-	return clients, errors
+	return rowsaffectd
 }
 
 func (chatrepo *ChatRepository) LoadMessages(alie1, alie2 int) ([]*entity.Message, []error) {
-
 	messages := []*entity.Message{}
 	errors := chatrepo.db.Table("message").Debug().Where("senderid =? or recieverid=? and senderid=? or recieverid=? ", alie1, alie1, alie2, alie2).Find(messages).GetErrors()
 	if errors != nil {
@@ -112,7 +128,6 @@ func (chatrepo *ChatRepository) LoadMessage(id int) (*entity.Message, []error) {
 	}
 	return message, nil
 }
-
 func (chatrepo *ChatRepository) DeleteMessage(message *entity.Message) []error {
 	errors := chatrepo.db.Debug().Table("message").Delete(message).GetErrors()
 	return errors

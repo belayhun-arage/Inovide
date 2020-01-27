@@ -43,6 +43,8 @@ type Message struct {
 	Seen            int            `json:"seen,omitempty"  ` // minus (-1) if not Seen ++++  1-if Seen
 	Messagedata     string         `json:"messagedata"  `
 	Messageresource pq.StringArray `json:"messageresource"  `
+	Friend          Person         `json:"friend"`
+	ConnectRequest  bool           `json:"connectrequest"`
 }
 
 type Idea struct {

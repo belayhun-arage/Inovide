@@ -11,4 +11,5 @@ type IdeaRepository interface {
 	VoteIdea(ideaid, voterid int) error
 	SearchIdeas(text string, person *entity.Person, searchresults *[]entity.Idea) (*[]entity.Idea, error)
 	UpdateIdea(idea *entity.Idea) int64
+	MyIdeas(ideaowner int, ideas *[]entity.Idea) int64
 }

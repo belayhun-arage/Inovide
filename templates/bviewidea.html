@@ -1,11 +1,7 @@
+{{define "viewidea.content"}}
 <html>
-
-
-
 <head>
   <link rel="stylesheet" href="../public/css/bviewidea.css">
-
-   
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons">
@@ -13,9 +9,7 @@
 </head>
 
 <body >
-  {{template "sidebarr.html"}}
-    <div class="main main-raised">
-		<div class="profile-content">
+  <div class="main">
             <div class="container">
                 <div class="row">
 	                <div class="col-md-6 ml-auto mr-auto">
@@ -38,13 +32,10 @@
                   <p class="text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempora assumenda sit quidem. Quos error laudantium nostrum eius adipisci dolorum a quas. Ipsa culpa perspiciatis quaerat itaque et voluptates iste placeat.</p> 
                 </div>
                 <div class="row">
-                  <h3>Description</h3>
+                  <h4>Description</h4>
                   <p class="text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempora assumenda sit quidem. Quos error laudantium nostrum eius adipisci dolorum a quas. Ipsa culpa perspiciatis quaerat itaque et voluptates iste placeat.</p> 
-                  <p class="text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempora assumenda sit quidem. Quos error laudantium nostrum eius adipisci dolorum a quas. Ipsa culpa perspiciatis quaerat itaque et voluptates iste placeat.</p> 
+                  <!--<p class="text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempora assumenda sit quidem. Quos error laudantium nostrum eius adipisci dolorum a quas. Ipsa culpa perspiciatis quaerat itaque et voluptates iste placeat.</p> -->
 
-                </div>
-                <div class="row">
-                  <div class="col-md-4"><p>description image</p><img class="rounded-sm" alt="Describing Image" src="../public/image/is.png" ></div>  
                 </div>
                 <div class="row">
                   <div class="col-sm-2"><a href="#" class="btn btn-info" role="button">file</a></div>            
@@ -60,41 +51,37 @@
                 </div>
                 <div class="row">
                   <div class="col-sm-2"><img src="../public/image/is.png" class="rounded float-left" alt="Image-one"></div>
-  
                   <div class="col-sm-2"><img src="../public/image/is.png" class="rounded float-right" alt="image-two"></div>
                </div>
+               <br>
                <div class="row">
                 <div class="col-sm-2">
                     <div class="raised-block">
-                        <p>Number of votes</p>
+                        <p>X votes</p>
                     </div>
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-2">
                     <div class="raised-block">
-                        <p>Number of comments</p>
+                        <p>Y comments</p>
                     </div>
                 </div>
             </div>
+            <form>
                 <div class="row">
                   <button type="button" class="btn btn-primary active">Vote</button>
                 </div>
-                <div class="row">
-                  <form>
-                    <div class="form-group">
-                      <textarea class="form-control" id="exampleFormControlTextarea3" rows="2" style="width: auto;" placeholder="comment area block"></textarea>
-                    </div>
-                  </form>
-                </div>
-                 
 
-                <div class="row" id="btnComment">
-                  <button type="button" class="btn btn-info">Comment</button>
+                      <div class="md-form amber-textarea active-amber-textarea">
+                        <i class="fas fa-pencil-alt prefix"></i>
+                        <textarea id="form22" class="md-textarea form-control" rows="3" placeholder="Write something here"></textarea>                 
+                    </div>
+                <div class="commentbtn">
+                  <button type="button" class="btn btn-primary active">Comment</button>
                 </div>
-             </div>
-             
-    </div>
-    
-    </div>
-   
+              </form>
+             </form> 
+            </div>  
 </body >
 </html>
+
+{{end}}

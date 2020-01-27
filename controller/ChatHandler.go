@@ -10,6 +10,7 @@ import (
 	// "time"
 	"crypto/rand"
 	"encoding/base64"
+	"encoding/json"
 
 	ChatService "github.com/Projects/Inovide/Chat/Service"
 	service "github.com/Projects/Inovide/User/Service"
@@ -55,17 +56,18 @@ func (chathandler *ChatHandler) HandleChat(response http.ResponseWriter, request
 	person := &entity.Person{}
 	// username, password, present := ReadSession(request)
 
-	id, username, ok := chathandler.session.Valid(request)
-	if !ok {
-		return
+	id, username, _ := chathandler.session.Valid(request)
+	if id <= 0 {
+		http.Redirect(response, request, "/", 301)
 	}
 	person.Username = username
 	person.ID = uint(id)
-	systemMessage := chathandler.TheUserService.CheckUser(person)
-	fmt.Println(person.Username, person.Email, person.ID, "_______----------->> Samuael")
-	if !systemMessage.Succesful {
-		// 404 Page Not Found Template Here
-	}
+	// systemMessage := chathandler.TheUserService.CheckUser(person)
+	// fmt.Println(person.Username, person.Email, person.ID, "_______----------->> Samuael")
+	// if !systemMessage.Succesful {
+	// 	// 404 Page Not Found Template Here
+	// }
+	websocket.Handler(chathandler.CreateWS).ServeHTTP(response, request)
 }
 
 //  Upgrading and Starting the Web Socket for the Incomming  Request in the header and Starting A web Socket Connectio With it
@@ -74,8 +76,8 @@ var keyGUID = []byte("258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
 func (chathandler *ChatHandler) CreateWS(conn *websocket.Conn) {
 	person := &entity.Person{}
 	request := conn.Request() //  getting the request from the web socket COnnection
-	id, username, present := chathandler.session.Valid(request)
-	if !present {
+	id, username, _ := chathandler.session.Valid(request)
+	if id <= 0 {
 		return
 	}
 	person.Username = username
@@ -92,25 +94,6 @@ func (chathandler *ChatHandler) CreateWS(conn *websocket.Conn) {
 	go client.ReadPump()
 }
 
-// func (chathandler *ChatHandler) CeateWS(w http.ResponseWriter, r *http.Request, person *entity.Person) {
-// 	wsKey, _ := generateKey()
-// 	r.Header.Add("Connection", "Upgrade")
-// 	r.Header.Add("Upgrade", "websocket")
-// 	r.Header.Add("Sec-WebSocket-Version", "13")
-// 	r.Header.Add("Sec-WebSocket-Key", wsKey)
-// 	log.Printf("ws key '%v' ----  ", wsKey)
-// 	// conn, err := upgrader.Upgrade(w, r, nil)
-
-// 	if err != nil {
-// 		log.Println(err)
-// 		return
-// 	}
-// 	ClientId := chathandler.getClientId(person)
-// 	client := entity.NewClient(chathandler.TheHub, conn, ClientId)
-// 	client.TheDistributor.Register <- client
-// 	go client.WritePump()
-// 	go client.ReadPump()
-// }
 func (chathandler *ChatHandler) MessageCoordinator() {
 	for {
 		select {
@@ -128,9 +111,7 @@ func (chathandler *ChatHandler) MessageCoordinator() {
 		}
 	}
 }
-
 func (cathandler *ChatHandler) LoadChatWith(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-
 	r.ParseForm()
 	stringid := r.FormValue("alieid")
 	id, username, present := cathandler.session.Valid(r)
@@ -138,9 +119,7 @@ func (cathandler *ChatHandler) LoadChatWith(w http.ResponseWriter, r *http.Reque
 	if !present {
 		return
 	}
-
 	// cathandler.TheChatService.
-
 	systemmessage := &entity.SystemMessage{}
 
 	alieid, err := strconv.Atoi(stringid)
@@ -151,7 +130,16 @@ func (cathandler *ChatHandler) LoadChatWith(w http.ResponseWriter, r *http.Reque
 	}
 }
 func (chathandler *ChatHandler) ChatPage(w http.ResponseWriter, r *http.Request, param httprouter.Params) {
-	SystemTemplates.ExecuteTemplate(w, "home.html", nil)
+	id, username, _ := chathandler.session.Valid(r)
+	if id <= 0 {
+		// The Use rIs Invalid
+		http.Redirect(w, r, "/", 301)
+	}
+	person := &entity.Person{}
+	person.ID = uint(id)
+	person.Username = username
+	chathandler.TheUserService.GetUser(person)
+	SystemTemplates.ExecuteTemplate(w, "home.html", person)
 }
 func (chathandler *ChatHandler) SaveMesage(message *entity.Message) *entity.Message {
 	TheMessage := chathandler.TheChatService.CreateMessage(message)
@@ -167,4 +155,92 @@ func (chathandler *ChatHandler) getClientId(person *entity.Person) int {
 		return int(id)
 	}
 	return -1
+}
+
+func (chahandler *ChatHandler) ConnectFriend(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
+	id, username, _ := chahandler.session.Valid(request)
+	systemmessage := &entity.SystemMessage{}
+	chatsystemmessage := &entity.Message{}
+	systemmessage.Succesful = false
+	systemmessage.Message = "Can't Create Connection With the User yiou have requested "
+	writer.Header().Add("Content-Type", "application/json")
+
+	jsonsystemmessage, _ := json.Marshal(systemmessage)
+
+	friendid, err := strconv.Atoi(request.FormValue("friendid"))
+	if err != nil {
+		SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
+	}
+
+	if id <= 0 {
+		writer.Write(jsonsystemmessage)
+	}
+	exist := chahandler.TheHub.Exist(id)
+	if !exist {
+		writer.Write(jsonsystemmessage)
+
+	}
+	exist = false
+
+	systemmessage = chahandler.TheChatService.SaveAlies(id, friendid)
+	if !systemmessage.Succesful {
+		writer.Write(jsonsystemmessage)
+	}
+	chatsystemmessage.Recieverid = friendid
+	person := &entity.Person{}
+	person.ID = uint(id)
+	person.Username = username
+	sys := chahandler.TheUserService.GetUser(person)
+	if !sys.Succesful {
+		writer.Write(jsonsystemmessage)
+	}
+	chatsystemmessage.Friend = *person
+	chatsystemmessage.ConnectRequest = true
+
+	exist = chahandler.TheHub.Exist(friendid)
+	if exist {
+		chahandler.TheHub.Message <- chatsystemmessage
+	}
+	systemmessage.Message = "The User Alie Created "
+	systemmessage.Succesful = true
+	jsonsystemmessage, _ = json.Marshal(systemmessage)
+	writer.Write(jsonsystemmessage)
+}
+
+func (chathandler *ChatHandler) RecentFriends(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	id, _, _ := chathandler.session.Valid(request)
+	friends := []*entity.Person{}
+	jsonlistoffriends, _ := json.Marshal(friends)
+	writer.Header().Add("Content-Type", "application/json")
+	if id <= 0 {
+		writer.Write(jsonlistoffriends)
+	}
+	systemmessage := chathandler.TheChatService.GetFriends(friends, id)
+	if !systemmessage.Succesful {
+		writer.Write(jsonlistoffriends)
+	}
+	jsonlistoffriends, _ = json.Marshal(friends)
+	writer.Write(jsonlistoffriends)
+}
+
+func (chathandler *ChatHandler) LoadMessages(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	messages := []*entity.Message{}
+	jsonlistofmessage, _ := json.Marshal(messages)
+	writer.Header().Add("Content-Type", "application/json")
+
+	friendid, err := strconv.Atoi(request.FormValue("friendid"))
+	if err != nil {
+		writer.Write(jsonlistofmessage)
+	}
+	id, _, _ := chathandler.session.Valid(request)
+	if id <= 0 {
+		writer.Write(jsonlistofmessage)
+	}
+	systemmessage := chathandler.TheChatService.GetMessages(id, friendid, messages)
+	if !systemmessage.Succesful {
+		writer.Write(jsonlistofmessage)
+	}
+	jsonlistofmessage, _ = json.Marshal(messages)
+	writer.Write(jsonlistofmessage)
+
 }

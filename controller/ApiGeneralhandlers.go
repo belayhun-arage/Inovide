@@ -112,5 +112,3 @@ func (apiuserhandler *ApiUserHandler) ApiSignin(writer http.ResponseWriter, requ
 	writer.Header().Add("Content-Type", "application/json")
 	writer.Write(jsontoken)
 }
-
-// func

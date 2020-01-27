@@ -189,7 +189,7 @@ func (idea_Admin *IdeaHandler) TemplateGetIdea(writer http.ResponseWriter, reque
 	if theidea == nil {
 		SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
 	}
-	SystemTemplates.ExecuteTemplate(writer, "", theidea)
+	SystemTemplates.ExecuteTemplate(writer, "viewidea.layout", theidea)
 }
 func (idea_Admin *IdeaHandler) DeleteIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	request.ParseForm()
@@ -320,8 +320,8 @@ func (idea_Admin *IdeaHandler) GetDetailIdea(writer http.ResponseWriter, request
 	return ideapersoncomment
 }
 func (idea_Admin *IdeaHandler) TemplateGetDetailIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	listed := idea_Admin.GetDetailIdea(writer, request)
-	SystemTemplates.ExecuteTemplate(writer, "", listed)
+	//listed := idea_Admin.GetDetailIdea(writer, request)
+	SystemTemplates.ExecuteTemplate(writer, "viewidea.layout.html", nil)
 }
 
 // func (idea_Admin *IdeaHandler) SaveComment(writer http.ResponseWriter, request *http.Request) {
@@ -352,3 +352,16 @@ func (idea_Admin *IdeaHandler) TemplateGetDetailIdea(writer http.ResponseWriter,
 // }
 // writer.Write(jsonbinary)
 // }
+func (ideahandler *IdeaHandler) ApiMyIdeas(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	ideas := &[]entity.Idea{}
+	id, _, _ := ideahandler.Session.Valid(request)
+	if id <= 0 {
+		SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
+	}
+	systemmessage := ideahandler.ideaservice.MyIdeas(id, ideas)
+	if systemmessage.Succesful {
+		SystemTemplates.ExecuteTemplate(writer, "", ideas)
+	} else {
+		SystemTemplates.ExecuteTemplate(writer, "", nil)
+	}
+}

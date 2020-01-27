@@ -418,5 +418,3 @@ func (user_controller *UserHandler) EditProfile(writer http.ResponseWriter, requ
 	systemmessage.Message = "Can't update !"
 	return person, systemmessage
 }
-
-// func (userhaneler *UserHandler)
