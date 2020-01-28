@@ -21,7 +21,9 @@
             <div class="container">
                 <div class="signup-content">
                     <form action="/user/register/" enctype="multipart/form-data" method="POST" id="signup-form" class="signup-form">
+                        <input  type="hidden"  name="CSRF"  value="{{.Token }}" >
                         <h2 class="form-title">Create account</h2>
+
                         <div class="form-group">
                             <input type="text" class="form-input" name="firstname" id="name" placeholder="First Name" required/>
                         </div>
@@ -70,7 +72,7 @@
                             <input type="submit" name="submit" id="submit" class="form-submit" value="Sign up"/>
                         </div>
                     </form>
-                    <h1  style="color: red;"><strong> {{.Message}} </strong></h1>
+                    <h1  style="color: red;"><strong> {{.System.Message}} </strong></h1>
                     <p class="loginhere">
                         Have already an account ? <a href="/user/signin/" class="loginhere-link">Login here</a>
                     </p>
