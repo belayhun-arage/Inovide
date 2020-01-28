@@ -6,7 +6,6 @@ import (
 
 	entity "github.com/Projects/Inovide/models"
 	"github.com/jinzhu/gorm"
-	"github.com/lib/pq"
 )
 
 type UserRepo struct {
@@ -17,24 +16,23 @@ func NewUserRepo(sqlite *gorm.DB) *UserRepo {
 	return &UserRepo{db: sqlite}
 }
 
-func (users *UserRepo) CreateUser(enti *entity.Person) (error, int) {
+func (users *UserRepo) CreateUser(enti *entity.Person) (error, int64) {
 
-	err := users.db.Table("users").Create(enti).Error
-	if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
+	rowsaffected := users.db.Table("users").Create(enti).RowsAffected
+	if rowsaffected <= 0 {
 		// handle error
 		fmt.Println("its ok ladies man ")
-	}
-	if err.Error() == gorm.ErrRecordNotFound.Error() {
-		return err, 0
+		fmt.Println(rowsaffected)
+
 	}
 	defer recover()
-	if err.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
-		return err, 1
-	}
-	if err.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
-		return err, 2
-	}
-	return nil, 0
+	// if err.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
+	// 	return err, 1
+	// }
+	// if err.Error() == "pq: duplicate key value violates unique constraint \"users_username_key\"" {
+	// 	return err, 2
+	// }
+	return nil, rowsaffected
 }
 
 func (users *UserRepo) CheckUser(enti *entity.Person) bool {

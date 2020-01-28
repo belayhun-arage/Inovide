@@ -3,9 +3,9 @@
 <head>
         <link rel="icon" type="image/png" href="logo.png">
         <link  rel = "stylesheet" href = "/public/css/profile.css">
+        <script></script>
         
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        
 
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,16 +14,74 @@
 
 </head>
 <body>
-    {{ template   "sidebarr.html"}}
+    <script>
+        
+        var pusername=  "{{.Username}}"
+        var pfirstname= "{{.Firstname}}"
+        var plastname = "{{.Lastname}}"
+        var pemail    = "{{.Email}}"
+        var pbio      = "{{.Biography}}"
+    
+        function changeImage(){
+
+            var ppimage = document.getElementById("ppimage");
+            ppimage.setAttribute("src" ,document.getElementById("fileinput").value );
+        }
+        function updateProfile(){
+
+            var username =document.getElementById("name").value;
+            var firstname =document.getElementById("firstname").value;
+            var lastname=document.getElementById("lastname").value;
+            var email=document.getElementById("email").value;
+            var biography=document.getElementById("biography").value;
+
+            $.ajax({
+			url:"/api/v1/user/update/",
+            type:"POST",
+            data:{name:username  , firstname:firstname  , lastname:lastname , email:email , biography:biography },
+			dataType:"JSON",
+			success: function(data)
+			{
+				
+				if (data.message.succesfull==true){
+
+                   // $('input').prop('readonly' , false);
+                    $('input').attr('readonly' , true);
+                    $('#save').show();
+                    
+				}else {
+
+                document.getElementById("name").value=pusername;
+                document.getElementById("firstname").value=pfirstname;
+                document.getElementById("lastname").value=plastname;
+                document.getElementById("email").value=pemail;
+                document.getElementById("biography").value=pbio;
+                $('input').attr('readonly' , true);
+                        $('#save').show();
+                }
+			},
+			error:function(rt ,re){
+				console.log(data);
+			}
+		});
+
+
+        }
+
+        </script>
+    {{ template   "sidebarr.html" .}}
+        
+
+
 <div class="container emp-profile">
             
                 <div class="row">
                     <div class="col-md-4">
                         <div class="profile-img">
-                            <img  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog" alt=""/>
+                            <img id="ppimage"  src="http://localhost:8080/{{.Imagedir}}" alt=""/>
                             <div class="file btn btn-lg btn-primary">
                                 Change Photo
-                                <input type="file" name="file"/>
+                                <input id="fileinput" onchange="changeImage()" type="file" accept="image/*" type="image" name="file"/>
                             </div>
                         </div>
                     </div>
@@ -62,7 +120,7 @@
                             <a href="">Web Designer</a><br/>
                             <a href="">Web Developer</a><br/>
                             <a href="">likes</a><br/>
-                            <a href="">followers</a><br/>
+                            <a href="">followers</a> " " + {{.Followers}}<br/>
                             <a href=""></a><br/>
                         </div>
                     </div>
@@ -71,26 +129,34 @@
                             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>User Id</label>
+                                                <!-- <p>User Id</p> -->
                                             </div>
                                             <div class="col-md-6">
-                                                <input value="{{.ID}}" readonly></input>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>Name</label>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <input id="name" value = "{{.Firstname}}" readonly></input>
+                                                <p value="{{.ID}}" readonly></p>
                                             </div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <label>LastName</label>
+                                                <label><strrong>User Name </strrong></label>
                                             </div>
                                             <div class="col-md-6">
-                                                <input value="{{.Lastname}}" readonly></input>
+                                                <input id="name" value ="{{.Username}}" readonly></input>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label><strrong>First Name  </strrong></label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="firstname" value ="{{.Firstname}}" readonly></input>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label>Last Name</label>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input id="lastname" value="{{.Lastname}}" readonly></input>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -98,7 +164,7 @@
                                                 <label>Email</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <input value="{{.Email}}" readonly></input>
+                                                <input id="email" value="{{.Email}}" readonly></input>
                                             </div>
                                         </div>
                                         
@@ -107,14 +173,14 @@
                                                 <label>Biography</label>
                                             </div>
                                             <div class="col-md-6">
-                                                <input value="{{.Biography}}" readonly> </input>
+                                                <input id="biography" value="{{.Biography}}" readonly> </input>
                                             </div>
                                         </div>
 
                                         
                                         </div>
                                         <div class="col-md-6">
-                                            <input id="save" type="submit" class="profile-edit-btn" name="btnAddMore" value="save Change"/>
+                                            <input id="save" onclick="updateProfile()" type="submit" class="profile-edit-btn" name="btnAddMore" value="save Change"/>
                                             
                             </div>
                             
@@ -142,3 +208,10 @@
             
                 </script>
                 
+<script src="/public/js/jquery-3.2.1.min.js"></script>
+<script src="/public/css/bootstrap4/popper.js"></script>
+<script src="/public/css/bootstrap4/bootstrap.min.js"></script>
+<script src="/public/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>
+<script src="/public/plugins/easing/easing.js"></script>
+<script src="/public/plugins/parallax-js-master/parallax.min.js"></script>
+<script src="/public/js/custom.js"></script>

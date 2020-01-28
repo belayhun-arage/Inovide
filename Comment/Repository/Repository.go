@@ -21,12 +21,10 @@ func (commentrepo *CommentRepo) CreateComment(comment *entity.Comment) error {
 	return nil
 }
 
-func (commentrepo *CommentRepo) GetComments(comment *[]entity.Comment, id int) error {
-	err := commentrepo.db.Table("comment").Where(&entity.Comment{}, id).Debug().Find(comment).Error
-	if err != nil {
-		return err
-	}
-	return nil
+func (commentrepo *CommentRepo) GetComments(comment *[]entity.Comment, id int) int64 {
+	err := commentrepo.db.Table("comment").Where("ideaid=?", id).Debug().Find(comment).RowsAffected
+	defer recover()
+	return err
 }
 func (CommentRepo *CommentRepo) UpdateComment(comment *entity.Comment) []error {
 	erro := CommentRepo.db.Model(&entity.Comment{}).Table("comment").Save(comment).GetErrors()

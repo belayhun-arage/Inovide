@@ -44,7 +44,7 @@ func (ideas *IdeaRepo) UpdateIdea(idea *entity.Idea) int64 {
 }
 
 func (ideas *IdeaRepo) GetIdea(idea *entity.Idea) int64 {
-	numberofAffected := ideas.db.Debug().Table("idea").Where(&entity.Idea{}, idea.Id).Find(idea).RowsAffected
+	numberofAffected := ideas.db.Debug().Table("idea").Find(idea).RowsAffected
 	defer recover()
 	return numberofAffected
 }

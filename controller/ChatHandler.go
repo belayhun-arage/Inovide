@@ -74,6 +74,8 @@ func (chathandler *ChatHandler) HandleChat(response http.ResponseWriter, request
 var keyGUID = []byte("258EAFA5-E914-47DA-95CA-C5AB0DC85B11")
 
 func (chathandler *ChatHandler) CreateWS(conn *websocket.Conn) {
+
+	fmt.Println("Pne Person Connecte")
 	person := &entity.Person{}
 	request := conn.Request() //  getting the request from the web socket COnnection
 	id, username, _ := chathandler.session.Valid(request)
@@ -139,7 +141,7 @@ func (chathandler *ChatHandler) ChatPage(w http.ResponseWriter, r *http.Request,
 	person.ID = uint(id)
 	person.Username = username
 	chathandler.TheUserService.GetUser(person)
-	SystemTemplates.ExecuteTemplate(w, "home.html", person)
+	SystemTemplates.ExecuteTemplate(w, "chatMain.html", person)
 }
 func (chathandler *ChatHandler) SaveMesage(message *entity.Message) *entity.Message {
 	TheMessage := chathandler.TheChatService.CreateMessage(message)

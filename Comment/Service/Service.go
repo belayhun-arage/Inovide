@@ -31,7 +31,7 @@ func (commentservice *CommentService) GetComments(comment *[]entity.Comment, id 
 	systemmessage := &entity.SystemMessage{}
 
 	err := commentservice.CommentRepo.GetComments(comment, id)
-	if err != nil {
+	if err <= 0 {
 		systemmessage.Message = "Can't et The Messages in the specified Id "
 		systemmessage.Succesful = true
 	}

@@ -14,8 +14,68 @@
 	</head>
 	<!--Coded With Love By Mutiullah Samim-->
 	<body>
+		<script type="text/javascript">
+			window.onload = function () {
+				var conn;
+				var msg = document.getElementById("msg");
+				var log = document.getElementById("log");
+			
+				function appendLog(item) {
+					var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
+					log.appendChild(item);
+					if (doScroll) {
+						log.scrollTop = log.scrollHeight - log.clientHeight;
+					}
+				}
+			
+				document.getElementById("form_sending_message").onsubmit = function () {
+					if (!conn) {
+						return false;
+					}
+					if (!msg.value) {
+						return false;
+					}
+					var Message = {
+						senderid :2,
+						recieverid : 1,
+						seen :0,
+						messagedata : msg.value
+			
+					}
+					var stringified = JSON.stringify(Message)
+					console.log(stringified)
+					conn.send(stringified);
+					msg.value = "";
+					return false;
+				};
+			
+				if (window["WebSocket"]) {
+					conn = new WebSocket("ws://" + document.location.host + "/chat/connection/");
+					conn.onclose = function (evt) {
+						var item = document.createElement("div");
+						item.innerHTML = "<b>Connection closed.</b>";
+						appendLog(item);
+					};
+					conn.onmessage = function (evt) {
+						var messages = evt.data;
+						var jesonized = JSON.parse(messages);
+						console.log(messages);
+						// for (var i = 0; i < messages.length; i++) {
+						var item = document.createElement("div");
+						item.innerText = jesonized.messagedata  +" : "+ jesonized.senderid+ " : " + jesonized.recieverid;
+						appendLog(item);
+						// }
+					};
+				} else {
+					var item = document.createElement("div");
+					item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
+					appendLog(item);
+				}
+			};
+			</script>
+			
 		{{template "sidebarr.html"}}
-		<div class="container-fluid h-100">
+		<div height="100%" class="container-fluid h-100">
 			<div class="row justify-content-center h-100">
 				<div class="col-md-4 col-xl-3 chat"><div class="card mb-sm-3 mb-md-0 contacts_card">
 					<div class="card-header">
@@ -190,8 +250,8 @@
 								<div class="input-group-append">
 									<span class="input-group-text attach_btn"><i class="fas fa-paperclip"></i></span>
 								</div>
-								<textarea name="" class="form-control type_msg" placeholder="Type your message..."></textarea>
-								<div class="input-group-append">
+								<textarea name="msg" id="msg" class="form-control type_msg" placeholder="Type your message..."></textarea>
+								<div id="form_sending_message" class="input-group-append">
 									<span class="input-group-text send_btn"><i class="fas fa-location-arrow"></i></span>
 								</div>
 							</div>

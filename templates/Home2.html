@@ -6,18 +6,6 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="Invest project">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<<<<<<< HEAD
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
-<link rel="stylesheet" type="text/css" href="../public/css/bootstrap4/bootstrap.min.css">
-<link href="../public/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
-<link rel="stylesheet" type="text/css" href="../public/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
-<link rel="stylesheet" type="text/css" href="../public/plugins/OwlCarousel2-2.2.1/owl.theme.default.css">
-<link rel="stylesheet" type="text/css" href="../public/plugins/OwlCarousel2-2.2.1/animate.css">
-<link rel="stylesheet" type="text/css" href="../public/css/main_styles.css">
-<link rel="stylesheet" type="text/css" href="../public/css/responsive.css">
-=======
 <link rel="stylesheet" type="text/css" href="/public/css/bootstrap4/bootstrap.min.css">
 <link href="/public/plugins/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="/public/plugins/OwlCarousel2-2.2.1/owl.carousel.css">
@@ -25,7 +13,6 @@
 <link rel="stylesheet" type="text/css" href="/public/plugins/OwlCarousel2-2.2.1/animate.css">
 <link rel="stylesheet" type="text/css" href="/public/css/main_styles.css">
 <link rel="stylesheet" type="text/css" href="/public/css/responsive.css">
->>>>>>> 219c6cc0a81f38b2a75f81c2ff3691a4bf27b64a
 </head>
 <body>
 
@@ -86,6 +73,7 @@ function searchIdea(){
 	// subcontainer.setAttribute("style" , "margin:20px");
 
 	$("div").remove("#To_bo_removed");
+	var reciever = document.getElementById("To_bo_added");
 	console.log(text);
   $.ajax({
 	  url:"/idea/search/",
@@ -111,22 +99,23 @@ function searchIdea(){
             // console.log(data);
 			var owl_item = document.createElement("div");
 			owl_item.setAttribute("class" , "owl-item");
-            var service_item = document.createElement("div");
-
-			owl_item.innerHTML=`
-			<a href="`+"#"+`"><div class="owl-item col col-lg-3 col-sm-12 col-md-5">
-								<div class="services_item d-flex flex-column align-items-center justify-content-center">
-									<div class="services_item_bg"></div>
-									<div class="services_icon"><img class="svg" src="`+idea.Resources[0]+`" alt=""></div>
-									<div class="services_title">`+titile+`</div>
-									<p class="services_text">`+description+`</p>
-									<div class="services_link"><a href="#">Read More</a></div>
-								</div>
-							</div>
-							</a>`;
+			var service_item = document.createElement("div");
 			
 
-			subcontainer.appendChild(owl_item);
+			owl_item.innerHTML=`
+			<div style="background-img:url(`+idea.Resources[0]+`)" id="owl-1" class="owl-item">
+								<div class="services_item d-flex flex-column align-items-center justify-content-center">
+									<div class="services_item_bg"></div>
+									<div class="services_icon"><img class="svg" src="../public/image/services_1.svg" alt=""></div>
+									<div class="services_title">`+titile+`</div>
+									<p class="services_text">`+description+`</p>
+									
+									<div class="services_link"><a href="/ideas/new/">Read More</a></div>
+								</div>
+			</div>`;
+			
+
+			reciever.appendChild(owl_item);
         }
 		amount++;
 		
@@ -227,13 +216,8 @@ function searchIdea(){
 									
 									{{else }}
 									<div class="register_login">
-<<<<<<< HEAD
-										<div class="register"><a href="/user/register/">register</a></div>
-										<div class="login"><a href="/user/signin/">Log In</a></div>
-=======
 										<div class="register"><a href="user/register/">register</a></div>
 										<div class="login"><a href="user/signin/">login</a></div>
->>>>>>> 219c6cc0a81f38b2a75f81c2ff3691a4bf27b64a
 									</div>
 									{{end}}
 
@@ -275,7 +259,7 @@ function searchIdea(){
 											</svg>
 										</a></li>
 										<li class="hassubs">
-											<a href="services.html">View Idea
+											<a href="/idea/myideas/">View Idea
 												<svg version="1.1" id="Layer_5" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 													 width="9px" height="5px" viewBox="0 0 9 5" enable-background="new 0 0 9 5" xml:space="preserve">
 													<g>
@@ -398,6 +382,9 @@ function searchIdea(){
 					<div  id="services_slider_container" class="services_slider_container">
 						<div  id="ideas_search_result" class="owl-carousel owl-theme services_slider">
 
+							<div id="To_bo_added" >
+
+							</div>
 							<div id="To_bo_removed" >
 							<!-- Services Item -->
 							<div  id="owl-1" class="owl-item">
@@ -432,38 +419,7 @@ function searchIdea(){
 								</div>
 							</div>
 
-							<!-- Services Item -->
-							<div class="owl-item">
-								<div class="services_item d-flex flex-column align-items-center justify-content-center">
-									<div class="services_item_bg"></div>
-									<div class="services_icon"><img class="svg" src="../public/image/services_1.svg" alt=""></div>
-									<div class="services_title">investing on ides</div>
-									<p class="services_text">Investing is the act of allocating funds to an asset or committing capital to an endeavor (a business, project, real estate, etc.), with the expectation of generating an income or profit. In colloquial terms, investing can also mean putting in time or effort </p>
-									<div class="services_link"><a href="#">Read More</a></div>
-								</div>
-							</div>
-
-							<!-- Services Item -->
-							<div class="owl-item">
-								<div class="services_item d-flex flex-column align-items-center justify-content-center">
-									<div class="services_item_bg"></div>
-									<div class="services_icon"><img class="svg" src="../public/image/services_2.svg" alt=""></div>
-									<div class="services_title">investing on ideas</div>
-									<p class="services_text">Investing is the act of allocating funds to an asset or committing capital to an endeavor (a business, project, real estate, etc.), with the expectation of generating an income or profit. In colloquial terms, investing can also mean putting in time or effort .</p>
-									<div class="services_link"><a href="#">Read More</a></div>
-								</div>
-							</div>
-
-							<!-- Services Item -->
-							<div class="owl-item">
-								<div class="services_item d-flex flex-column align-items-center justify-content-center">
-									<div class="services_item_bg"></div>
-									<div class="services_icon"><img class="svg" src="../public/image/services_3.svg" alt=""></div>
-									<div class="services_title">investing on ideas</div>
-									<p class="services_text">Investing is the act of allocating funds to an asset or committing capital to an endeavor (a business, project, real estate, etc.), with the expectation of generating an income or profit. In colloquial terms, investing can also mean putting in time or effort .</p>
-									<div class="services_link"><a href="#">Read More</a></div>
-								</div>
-							</div>
+							
 						</div>
 
 						</div>

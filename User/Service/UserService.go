@@ -21,17 +21,13 @@ var message *entity.SystemMessage
 
 func (userService *UserService) RegisterUser(person *entity.Person) *entity.SystemMessage {
 	message = &entity.SystemMessage{}
-	er, val := userService.userrepo.CreateUser(person)
+	_, val := userService.userrepo.CreateUser(person)
 	defer recover()
 	message.Message = "Can't Save The User "
 	message.Succesful = false
-	if er != nil {
-		if val == 1 {
-			message.Message = "The Username Is Reserved "
-		}
-		if val == 2 {
-			message.Message = "The Email Is Reserved Please Use Other "
-		}
+	// if er != nil {
+	if val == 0 {
+		message.Message = "Invalid Username Or Email "
 		return message
 	}
 

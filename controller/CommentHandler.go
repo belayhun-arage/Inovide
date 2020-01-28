@@ -96,20 +96,22 @@ func (commentHandler *CommentHandler) CreateComment(writer http.ResponseWriter, 
 	systemMessage.Succesful = false
 	return commentWithThePerson, systemmessage
 }
-func (commentHandler *CommentHandler) GetCommentWithPersons(comments *[]entity.Comment) *[]entity.CommentWithPerson {
-	commentWithThePersons := []entity.CommentWithPerson{}
+func (commentHandler *CommentHandler) GetCommentWithPersons(commentwithpersons *[]entity.CommentWithPerson, comments *[]entity.Comment) *[]entity.CommentWithPerson {
+	commentos := []entity.CommentWithPerson{}
 	for index, comment := range *comments {
 		person := commentHandler.Userrouter.UserById(comment.Commentorid)
 		if person == nil {
-			return nil
+			return commentwithpersons
 		}
 		commentwithperson := entity.CommentWithPerson{}
 		commentwithperson.Person = person
 		commentwithperson.Comment = &comment
 		commentwithperson.Succesfull = true
-		commentWithThePersons[index] = commentwithperson
+
+		commentos[index] = commentwithperson
 	}
-	return &commentWithThePersons
+	commentwithpersons = &commentos
+	return commentwithpersons
 }
 
 func (commentHandler *CommentHandler) CommentOnIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
@@ -137,16 +139,16 @@ func (commentHandler *CommentHandler) ApiGetCommentListed(writer http.ResponseWr
 	theideaid := request.FormValue("ideaid")
 	ideaid, err := strconv.Atoi(theideaid)
 
-	comments := &[]entity.Comment{}
+	listtofcomment := &[]entity.Comment{}
 
-	thejson, _ := json.Marshal(comments)
+	thejson, _ := json.Marshal(listtofcomment)
 
 	if err != nil {
 		request.Header.Add("Content-Type", "application/json")
 		writer.Write(thejson)
 	}
 
-	listtofcomment, succesfull := commentHandler.GetComments(ideaid)
+	succesfull := commentHandler.GetComments(listtofcomment, ideaid)
 	if !succesfull {
 		request.Header.Add("Content-Type", "application/json")
 		writer.Write(thejson)
@@ -160,13 +162,13 @@ func (commentHandler *CommentHandler) ApiGetCommentListed(writer http.ResponseWr
 	request.Header.Add("Content-Type", "application/json")
 	writer.Write(thejsonmain)
 }
-func (commentHandler *CommentHandler) GetComments(ideaid int) (*[]entity.Comment, bool) {
+func (commentHandler *CommentHandler) GetComments(comment *[]entity.Comment, ideaid int) bool {
 	coments := &[]entity.Comment{}
 	systemmessage := commentHandler.CommentService.GetComments(coments, ideaid)
 	if systemmessage.Succesful {
-		return coments, true
+		return true
 	}
-	return coments, false
+	return false
 }
 func (commentHandler *CommentHandler) DeleteComment(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
 	id, _, _ := commentHandler.Sessionservice.Valid(request)

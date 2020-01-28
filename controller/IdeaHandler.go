@@ -47,7 +47,7 @@ func (idea_controller *IdeaHandler) TemplateCreateIdea(writer http.ResponseWrite
 	}
 
 	// for test only
-	http.Redirect(writer, request, "/", 301)
+	http.Redirect(writer, request, "/idea/myideas/", 301)
 
 }
 
@@ -66,6 +66,9 @@ func (idea_Admin *IdeaHandler) CreateIdea(writer http.ResponseWriter, request *h
 	idea.Ideaownerid = id
 	idea.Title = ideaTitle
 	idea.Description = description
+	if visibiitty == "" {
+		visibiitty = "pu"
+	}
 	idea.Visibility = visibiitty
 	resourceArray := [5]string{}
 	//files := make([]multipart.File, 3)
@@ -302,26 +305,28 @@ func (idea_Admin *IdeaHandler) VoteIdea(writer http.ResponseWriter, request *htt
 func (idea_Admin *IdeaHandler) GetDetailIdea(writer http.ResponseWriter, request *http.Request) *entity.IdeaPersonComments {
 	ideapersoncomment := &entity.IdeaPersonComments{}
 	idea := idea_Admin.GetIdea(writer, request)
-	comments, ok := idea_Admin.commenthandler.GetComments(idea.Id)
+	commentsList := &[]entity.Comment{}
+	commentwithpersons := &[]entity.CommentWithPerson{}
+	ok := idea_Admin.commenthandler.GetComments(commentsList, idea.Id)
 	user := idea_Admin.userrouter.UserById(idea.Ideaownerid)
 
-	if !ok || idea == nil || comments == nil || user == nil {
+	if !ok || idea == nil || user == nil {
 		ideapersoncomment.Succesful = false
 		return ideapersoncomment
 	}
 	ideapersoncomment.Succesful = true
-	commentwithPersons := idea_Admin.commenthandler.GetCommentWithPersons(comments)
-	if commentwithPersons == nil {
+	idea_Admin.commenthandler.GetCommentWithPersons(commentwithpersons, commentsList)
+	if commentwithpersons == nil {
 		return nil
 	}
 	ideapersoncomment.Succesful = true
-	ideapersoncomment.CommentAndPerson = *commentwithPersons
+	ideapersoncomment.CommentAndPerson = *commentwithpersons
 	ideapersoncomment.Idea = *idea
 	return ideapersoncomment
 }
 func (idea_Admin *IdeaHandler) TemplateGetDetailIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	//listed := idea_Admin.GetDetailIdea(writer, request)
-	SystemTemplates.ExecuteTemplate(writer, "viewidea.layout.html", nil)
+	listed := idea_Admin.GetDetailIdea(writer, request)
+	SystemTemplates.ExecuteTemplate(writer, "viewidea.layout.html", listed)
 }
 
 // func (idea_Admin *IdeaHandler) SaveComment(writer http.ResponseWriter, request *http.Request) {
@@ -360,8 +365,8 @@ func (ideahandler *IdeaHandler) ApiMyIdeas(writer http.ResponseWriter, request *
 	}
 	systemmessage := ideahandler.ideaservice.MyIdeas(id, ideas)
 	if systemmessage.Succesful {
-		SystemTemplates.ExecuteTemplate(writer, "", ideas)
+		SystemTemplates.ExecuteTemplate(writer, "youridea.html", ideas)
 	} else {
-		SystemTemplates.ExecuteTemplate(writer, "", nil)
+		SystemTemplates.ExecuteTemplate(writer, "youridea.html", nil)
 	}
 }

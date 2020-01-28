@@ -394,7 +394,6 @@ func (user_controller *UserHandler) EditProfile(writer http.ResponseWriter, requ
 			person.Imagedir = "/" + newFullNameOfTheImageDirectory
 		}
 	}
-
 	systemmessage = user_controller.userservice.UpdateUser(&person)
 	if systemmessage.Succesful {
 		systemmessage.Message = "Succesfully Registered "

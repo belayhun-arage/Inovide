@@ -17,10 +17,10 @@ var postgresStatmente string
 var errors error
 
 const (
-	username = "postgres"
-	password = "joyfull"
+	username = "samuael"
+	password = "samuaelfirst"
 	host     = "localhost"
-	dbname   = "project"
+	dbname   = "inovide"
 )
 
 func InitializPosts() (*sql.DB, error) {
