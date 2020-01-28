@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bootstrap 4 Navbar with Search Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .bs-example {
+            margin: 20px;
+        }
+
+        .navbar-brand {
+            width: 10rem;
+            color: aliceblue;
+            margin: 10 0 0 0;
+        }
+
+        .info {
+            height: 15px;
+            width: 15px;
+            color: aliceblue;
+            margin: 5px 0 0 60px;
+        }
+
+        .homee {
+            margin: 0 30px 0 0;
+        }
+
+        .searchh {
+            /* border-radius: 15px 0 0 15px !important;
+         */
+            border: 0 !important;
+            color: black;
+        }
+
+        .input {
+            width: 50px;
+        }
+
+        .icon {
+            margin: 0 0 0 20px;
+           
+           
+            /* Remove borders */
+            cursor: pointer;
+            /* Mouse pointer on hover */
+            color: white;
+            /* White text */
+            width: 24px !important;
+            height: 24px !important;
+        }
+        .row{
+            
+            margin-left: 15rem ;
+        }
+        .col-sm h5{
+            margin-top: 0.7rem ;
+            color: blanchedalmond;
+        }
+        .col-sm img{
+            margin-top: 0.3rem ;
+        }
+        .navbar-brand{
+            margin-left: 1rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bs-example">
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <a href="#" class="navbar-brand">
+                <img src="../public/image/logo.png" width="40" height="40" alt="CoolBrand">
+            </a>
+            <label class="navbar-toggler" title="Inovide">
+                <span class="navbar-toggler-icon"></span>
+            </label>
+
+            <div class="collapse navbar-collapse" id="navbarCollapse">
+                <div class="navbar-nav">
+                    <a href="#" class="nav-item nav-link active homee">Home</a>
+                    <form class="form-inline ml-auto">
+                        <input type="text" class="form-control mr-sm-2 searchh" size="50" placeholder="search here...">
+                        <button type="submit" class="btn btn-outline-light">Search</button>
+                    </form>
+                    <button class="btn icon"><i class="fa fa-plus-circle" style="font-size: 2rem;"></i></button>
+
+                    <div class="row">
+                        <div class="col-sm">
+                            <h5>{{.Username}}</h5>
+                        </div>
+                        <div class="col-sm img">
+                            <img src="../public/image/profile.png" class="rounded-circle img" width="40px" height="40px"
+                            alt="Cinque Terre">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </nav>
+    </div>
+</body>
+
+</html>
