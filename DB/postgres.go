@@ -17,8 +17,8 @@ var postgresStatmente string
 var errors error
 
 const (
-	username = "samuael"
-	password = "samuaelfirst"
+	username = "postgres"
+	password = "joyfull"
 	host     = "localhost"
 	dbname   = "inovide"
 )
