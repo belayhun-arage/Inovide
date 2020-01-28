@@ -30,16 +30,16 @@
         function updateProfile(){
 
             var username =document.getElementById("name").value;
-            var firstname =document.getElementById("firstname").value;
-            var lastname=document.getElementById("lastname").value;
-            var email=document.getElementById("email").value;
-            var biography=document.getElementById("biography").value;
-
+            var firstname =document.getElementById("firstname").value;                                                                                                                                                                                      
+            var lastname=document.getElementById("lastname").value;                                                                                                                           
+            var email=document.getElementById("email").value;                                                                                                                           
+            var biography=document.getElementById("biography").value;                                                                                                                           
+                                                                                                                           
             $.ajax({
 			url:"/api/v1/user/update/",
             type:"POST",
-            data:{name:username  , firstname:firstname  , lastname:lastname , email:email , biography:biography },
-			dataType:"JSON",
+            data:{"name":username  , "firstname":firstname  , "lastname":lastname , "email":email , "biography":biography },
+			dataType:JSON,
 			success: function(data)
 			{
 				
@@ -61,9 +61,10 @@
                 }
 			},
 			error:function(rt ,re){
-				console.log(data);
+				console.log(re);
 			}
-		});
+        });
+        
 
 
         }
@@ -208,7 +209,7 @@
             
                 </script>
                 
-<script src="/public/js/jquery-3.2.1.min.js"></script>
+<!-- <script src="/public/js/jquery-3.2.1.min.js"></script> -->
 <script src="/public/css/bootstrap4/popper.js"></script>
 <script src="/public/css/bootstrap4/bootstrap.min.js"></script>
 <script src="/public/plugins/OwlCarousel2-2.2.1/owl.carousel.js"></script>

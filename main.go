@@ -2,10 +2,8 @@ package main
 
 import (
 	"net/http"
-	"strconv"
 	"strings"
 	"text/template"
-	"time"
 
 	AdminRepository "github.com/Projects/Inovide/Admin/Repository"
 
@@ -70,6 +68,7 @@ func init() {
 	initApiRelatedData()
 	initAdmin()
 	idearouter.SetCommentRepo(commentrepo)
+	// router.DELETE("/chat/message/" , )
 }
 
 func initApiRelatedData() {
@@ -101,29 +100,26 @@ func initCommentComponent() {
 	commentrouter = handler.NewCommentHandler(commentservice, userrouter, sessionHandler)
 }
 
+func neuter(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.HasSuffix(r.URL.Path, "/") {
+			TemplateGroupUser.ExecuteTemplate(w, "four04.html", nil)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
 func main() {
 
 	router := httprouter.New() //.StrictSlash(true)
 
 	http.Handle("/", router)
-	// router.GET()
-	//router.ServeFiles("/src/*filepath", http.Dir("/var/www"))
-
-	//router.ServeFiles("/public/*filepath", http.Dir("/C:/Users/user/go%/bin/src/github.com/Projects/Inovide/public/"))
-	//router.ServeFiles("/public/*filepath", http.Dir("public"))
-	// router.ServeFiles("/public/*filepath", http.Dir("public"))
-	//	router.ServeFiles("/public/*filepath", http.Dir("public"))
-	// http.PathPrefix("/public/").Handler(http.StripPrefix("/public/", http.FileServer(http.Dir("./public/"))))
-	// router.PathPrefix("/public/").Handler(http.FileServer(http.Dir("/public/")))
-
-	// router.NotFound = http.FileServer(http.Dir("public"))
-
 	fs := http.FileServer(http.Dir("public/"))
-	http.Handle("/public/", http.StripPrefix("/public/", fs))
+	http.Handle("/public/", http.StripPrefix("/public/", neuter(fs)))
 
 	router.GET("/", userrouter.ServeHome)
 
-	//router.GET("/", userrouter.RegistrationPage)
 	router.GET("/user/register/", userrouter.RegistrationPage)
 	router.GET("/user/signin/", userrouter.LogInPage)
 	router.POST("/user/register/", userrouter.TemplateRegistrationRequest)
@@ -142,7 +138,7 @@ func main() {
 	router.GET("/idea/search/", idearouter.SearchResult)
 	router.POST("/idea/new/", idearouter.TemplateCreateIdea)
 	router.GET("/idea/new/", idearouter.CreateIdeaPage)
-	router.PATCH("/idea/votes/", idearouter.VoteIdea) // Partials Modification of the idea meaning i am Changing the Number of Vote of The Idea
+	router.PATCH("/idea/votes/", idearouter.VoteIdea) //\\ Partials Modification of the idea meaning i am Changing the Number of Vote of The Idea
 	router.PUT("/ideas/", idearouter.UpdateIdea)
 	router.DELETE("/ideas/", idearouter.DeleteIdea)
 	router.GET("/ideas/", idearouter.TemplateGetDetailIdea)
@@ -152,42 +148,13 @@ func main() {
 	router.POST("/idea/comments/", commentrouter.CommentOnIdea)
 	router.DELETE("/comments/comment/", commentrouter.DeleteComment)
 	router.GET("/idea/myideas/", idearouter.ApiMyIdeas)
-	// router.POST("/api/v1/user/signin/", apicontroller.ApiSignin)
-	/***************************************Idea Related*********************************/
-	// router.GET("/user/ideas/new/", idearouter.CreateIdeaPage)
 	router.POST("/api/v1/user/ideas/", apiideahandler.CreateIdea)
-	// Filtered  _________------------------------------------_____________________----------
-
-	// router.POST("/user/register/", userrouter.TemplateRegisterUser)
-	// router.POST("/idea/update/", idearouter.UpdateIdea)
-	// // router.GET("/user/chat/", userrouter.RedirectToHome)
-	// router.GET("/chat/ws", chatrouter.ChatPage)
-	// router.GET("/private/user/Chat/", chatrouter.HandleChat)
-
-	router.GET("/a/", TellMyId)
-
-	// router.POST("/v1/user/register/", userrouter.TemplateRegisterUser)
-	// // router.POST("/v1/user/signin/", userrouter.LogInRequest)
-	// router.POST("/v1/idea/get/", idearouter.TemplateGetIdea)
 	router.GET("/v1/idea/delete/", idearouter.DeleteIdea)
-	// router.GET("/v1/idea/search/", idearouter.SearchResult)
-	// router.POST("/v1/user/FollowUser/", userrouter.FollowUser)
-	// /*The Comemnt Handler Related Api  */
-	// router.POST("/v1/Comment/Create/", commentrouter.APICreateComment)
-	// router.GET("/v1/Comment/GetComments/", commentrouter.ApiGetCommentListed)
-
-	/**************************************  Chat Lists *******************************************************/
-
 	router.GET("/chat/connection/", chatrouter.HandleChat)
 	router.GET("/chat/ChatPage", chatrouter.ChatPage)
-	// router.GET("/chat/friend/:friendid" , chatrouter.)
-
 	router.GET("/chat/friend/", chatrouter.RecentFriends)
 	router.POST("/chat/friend/", chatrouter.ConnectFriend)
 	router.GET("/chat/message/:friendid", chatrouter.LoadMessages)
-	// router.DELETE("/chat/message/" , )
-
-	/**********************************************************************************************************/
 	http.ListenAndServe(":8080", nil)
 }
 func DirectoryListener(next http.Handler) http.Handler {
@@ -199,22 +166,4 @@ func DirectoryListener(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
-}
-
-func TellMyId(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-
-	cookie := http.Cookie{
-		Name:    "session",
-		MaxAge:  -1,
-		Expires: time.Unix(1, 0),
-		Value:   "",
-	}
-
-	http.SetCookie(writer, &cookie)
-	in, _, _ := sessionHandler.Valid(request)
-
-	//fmt.Println(in)
-
-	writer.Write([]byte(strconv.Itoa(in)))
-
 }

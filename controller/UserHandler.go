@@ -57,6 +57,13 @@ func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request 
 		missingdata = true
 	}
 	lastname := request.FormValue("lastname")
+
+	valid := user_Admin.Sessionservice.ValidateForm(request.FormValue("CSRF"))
+	if !valid {
+		missingdata = true
+		systemmessage.Message = "unknown User "
+	}
+
 	if lastname == "" {
 		missingdata = true
 	}
@@ -158,8 +165,18 @@ func (user_Admi *UserHandler) TemplateRegistrationRequest(writer http.ResponseWr
 	if systemmessage.Succesful {
 		http.Redirect(writer, request, "/", 301)
 	} else {
-		SystemTemplates.ExecuteTemplate(writer, "reg.html", systemmessage)
+
+		CSRFMESSAGE := struct {
+			Token  string
+			System *entity.SystemMessage
+		}{
+			user_Admi.Sessionservice.RandomToken(),
+			systemmessage,
+		}
+		SystemTemplates.ExecuteTemplate(writer, "reg.html", CSRFMESSAGE)
+
 	}
+
 }
 func (user_Admin *UserHandler) TemplateRegisterUser(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 

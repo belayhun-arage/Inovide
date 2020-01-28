@@ -56,7 +56,7 @@ function searchIdea(){
 	// subcontainer.setAttribute("style" , "margin:20px");
 
 	$("div").remove("#To_bo_removed");
-	var reciever = document.getElementById("To_bo_added");
+	var reciever = document.getElementById("headerrr");
 	console.log(text);
   $.ajax({
 	  url:"/idea/search/",
@@ -80,21 +80,31 @@ function searchIdea(){
             var visibility= idea.visibility; 
             // console.log(data);
 			var owl_item = document.createElement("div");
-			owl_item.setAttribute("class" , "owl-item");
-			var service_item = document.createElement("div");
+			// owl_item.setAttribute("class" , "owl-item");
+			// var service_item = document.createElement("div");
 			
 
-			owl_item.innerHTML=`
-			<div style="background-img:url(`+idea.Resources[0]+`)" id="owl-1" class="owl-item">
-								<div class="services_item d-flex flex-column align-items-center justify-content-center">
-									<div class="services_item_bg"></div>
-									<div class="services_icon"><img class="svg" src="../public/image/services_1.svg" alt=""></div>
-									<div class="services_title">`+titile+`</div>
-									<p class="services_text">`+description+`</p>
-									
-									<div class="services_link"><a href="/ideas/new/">Read More</a></div>
-								</div>
-			</div>`;
+			owl_item.innerHTML=`	
+			<div class="col col-lg-5 col-sm-8 col-md-7">
+                <div><img
+                        src="../public/image/profile.png"
+                         class="rounded-circle img" width="100px" height="100px" alt="Cinque Terre"></div>
+                <div class="info">
+                    <div>
+                        <h2>`+titile+`</h2>
+                    </div>
+                    <div>
+                       <p>`+description+`</p> 
+                    </div>
+                </div>
+
+                <span class="btns">
+                        <button class="btn btn-primary btn1" type="submit">vote</button>
+                        <button class="btn btn-primary" href="#commentmodal"
+                        data-toggle="modal" type="submit">comment</button>
+                    </span>
+            </div>
+			`;
 			
 
 			reciever.appendChild(owl_item);
@@ -166,7 +176,7 @@ function searchIdea(){
 		
 		<!-- Header -->
 
-		<header class="header">
+		<header  class="header">
 
 			<!-- Top Bar -->
 			<div class="top_bar">
@@ -214,7 +224,7 @@ function searchIdea(){
 			</div>
 
 			<!-- Main Menu -->
-			<div class="main_menu">
+			<div  class="main_menu">
 				<div class="container">
 					<div class="row">
 						<div class="col">
@@ -298,8 +308,9 @@ function searchIdea(){
 			</div>
 
 			<!-- Menu -->
+			
 
-			<div class="menu">
+			<div    class="menu  row ">
 				<div class="menu_register_login">
 					<div class="container">
 						<div class="row">
@@ -331,6 +342,12 @@ function searchIdea(){
 	
 	<!-- Intro -->
 
+	<div class="row" style="  position: absolute;       margin: 30px; box-shadow: 10px 10px 10px; border-radius:5%; " id="headerrr" >
+	</div>
+
+	<div  class="javascriptu" >
+
+	</div>
 	<div class="intro">
 		<div class="container">
 			<div class="row">

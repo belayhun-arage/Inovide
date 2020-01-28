@@ -15,21 +15,6 @@ const (
 	INVALID_FORM      = "invalid Form User "
 )
 
-type Person struct {
-	ID        uint   `gorm:"primary_key;AUTO_INCREMENT" json:"-"`                          //  bson:"_id,omitempty"`
-	Firstname string `json:"firstname,omitempty"  gorm:"column:firstname"`                 //  bson:"firstname,omitempty"`
-	Lastname  string `json:"lastname,omitempty"  gorm:"column:lastname"`                   //  bson:"lastname,omitempty"`
-	Username  string `json:"name,omitempty" sql:"not null;unique"  gorm:"column:username"` //bson:"name,omitempty"`
-	Password  string `json:"password,omitempty" gorm:"column:password"`                    // bson:"password,omitempty"`
-	Email     string `json:"email,omitempty"  gorm:"column:email"`                         //bson:"email,omitempty"`
-	Biography string `json:"biography,omitempty" gorm:"column:biography"`                  // bson:"biography,omitempty"`
-	Followers int    `json:"followers,omitempty" gorm:"column:followers" `                 //bson:"followers,omitempty"`
-	Ideas     int    `json:"idea,omitempty"  gorm:"column:ideas"`                          // bson:"idea,omitempty"`
-	Imagedir  string `json:"imagdire,omitempty" gorm:"column:imagedir"`                    //  bson:"imagedirectory,omitempty"`
-	Paid      int    `json:"paid,omitempty"  `                                             // bson:"paid,omitempty"`
-	IsAdmin   bool   `json:"IsAdmin,omitempty"`
-}
-
 type Admin struct {
 	Person
 	IsAdmin bool `json:"IsAdmin"`
@@ -50,19 +35,6 @@ type Message struct {
 	Messageresource pq.StringArray `json:"messageresource"  `
 	Friend          Person         `json:"friend"`
 	ConnectRequest  bool           `json:"connectrequest"`
-}
-
-type Idea struct {
-	Id          int    `json:"id,omitempty"  `
-	Ideaownerid int    `json:"ownerid,omitempty"  `
-	Title       string `json:"title,omitempty"  `
-	Description string `json:"description,omitempty"  `
-	Visibility  string `json:"visibility,omitempty"  `
-	//  Consider the following into consideration while Working on Ideas
-	// Use String 	"pu" --For Public  "pv" -- For Private  "pr" -- For Protected
-	Numberofvotes   int `json:"numberofvotes,omitempty"  `
-	Numberofcomment int `json:"numberofcomment,omitempty"  `
-	Resources       pq.StringArray
 }
 
 type Comment struct {
@@ -131,4 +103,31 @@ type FullIdeaView struct {
 	Person            Person
 	Idea              Idea
 	CommentWithPerson []CommentWithPerson
+}
+
+type Person struct {
+	ID        uint   `gorm:"primary_key;AUTO_INCREMENT" json:"-"`                          //  bson:"_id,omitempty"`
+	Firstname string `json:"firstname,omitempty"  gorm:"column:firstname"`                 //  bson:"firstname,omitempty"`
+	Lastname  string `json:"lastname,omitempty"  gorm:"column:lastname"`                   //  bson:"lastname,omitempty"`
+	Username  string `json:"name,omitempty" sql:"not null;unique"  gorm:"column:username"` //bson:"name,omitempty"`
+	Password  string `json:"password,omitempty" gorm:"column:password"`                    // bson:"password,omitempty"`
+	Email     string `json:"email,omitempty"  gorm:"column:email"`                         //bson:"email,omitempty"`
+	Biography string `json:"biography,omitempty" gorm:"column:biography"`                  // bson:"biography,omitempty"`
+	Followers int    `json:"followers,omitempty" gorm:"column:followers" `                 //bson:"followers,omitempty"`
+	Ideas     int    `json:"idea,omitempty"  gorm:"column:ideas"`                          // bson:"idea,omitempty"`
+	Imagedir  string `json:"imagdire,omitempty" gorm:"column:imagedir"`                    //  bson:"imagedirectory,omitempty"`
+	Paid      int    `json:"paid,omitempty"  `                                             // bson:"paid,omitempty"`
+	IsAdmin   bool   `json:"IsAdmin,omitempty"`
+}
+type Idea struct {
+	Id          int    `json:"id,omitempty"  `
+	Ideaownerid int    `json:"ownerid,omitempty"  `
+	Title       string `json:"title,omitempty"  `
+	Description string `json:"description,omitempty"  `
+	Visibility  string `json:"visibility,omitempty"  `
+	//  Consider the following into consideration while Working on Ideas
+	// Use String 	"pu" --For Public  "pv" -- For Private  "pr" -- For Protected
+	Numberofvotes   int `json:"numberofvotes,omitempty"  `
+	Numberofcomment int `json:"numberofcomment,omitempty"  `
+	Resources       pq.StringArray
 }

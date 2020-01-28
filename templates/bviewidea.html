@@ -9,6 +9,79 @@
 </head>
 
 <body >
+
+
+  <script>
+
+document.onreadystatechange= function(){
+        var id = document.getElementById("ideaid").nodeName;
+        var idint = parseInt(id);
+        $.ajax({
+          url:"/idea/commentandpersons/",
+          type:"GET",
+          data : {ideaid , idint },
+          dataType:JSON,
+          success: function(data)
+          {
+            var Container = document.getElementById("Comments");
+            for(var i = 0; i < data.length; i++) {
+                var  comment = data.Comment;
+                var service_item = document.createElement("div");
+                service_item.setAttribute("class"  , "col col-lg-8 col-sm-10 col-md-10");
+
+                service_item.innerHTML=`
+                <div style="background-img:url(`+idea.Resources[0]+`); margin:40px; box-shadow:20px 20px 20px; border-radius:20px;" id="owl-1" class="owl-item">
+                  <img  class="img img-circle" src=""><br>
+                  <p name="commentid">`+comment.id+`</p>
+                  <h3><strong> `+comment.commentdata+`  </strong></h3><br>
+                <h4> `+comment.commentdate+`  </h4><br>
+                  <button  class="btn btn-primary">delete</button>
+                </div>`;
+                
+                Container.appendChild(service_item);
+          }
+
+          },
+          error:function(rt ,re){
+            console.log(re);
+          }
+      });  
+
+}
+
+
+
+    function voteidea(){  
+      $.ajax({
+        url:"/idea/votes/",
+        type:"PATCH",
+        dataType:"JSON",
+        success: function(data)
+        {
+          console.log(data);
+          if (data.succesfull==true){
+  
+            console.log("Here I Am ");
+          var container = document.getElementById("ideaid");
+          var oldone = document.getElementById("register_logout");
+          var specialDiv = document.createElement("div");
+          specialDiv.innerHTML=`<div class="register_login">
+                      <div class="register"><a href="user/register/">register</a></div>
+                      <div class="login"><a href="user/signin/">login</a></div>
+                    </div>`
+          container.replaceChild(specialDiv  ,oldone );
+          }
+        },
+        error:function(rt ,re){
+          console.log(re);
+        }
+      });
+  }
+
+  
+  </script>
+
+
   {{template "sidebarr.html"}}
   <div class="main">
             <div  style="margin: 100px;" class="container">
@@ -16,32 +89,35 @@
 	                <div class="col-md-6 ml-auto mr-auto">
         	           <div class="profile">
 	                        <div>
-	                            <img src="/public/image/saad.jpg" alt="Circle Image" class="img-raised rounded-circle img-fluid">
+	                            <img src="http://localhost:8080/{{.Person.Imagedir}}" alt="Circle Image" class="img-raised rounded-circle img-fluid">
 	                        </div>
 	                        <div class="name">
-	                            <h3 class="title">user name:<br>Followers</h3>
+	                            <h3 class="title"><h2>{{ .Person.Username  }}</h2><br><h2>{{.Person.Followers}}}}</h2></h3>
 								          
 								                <a href="#pablo" class="btn btn-just-icon btn-link btn-dribbble"><i class="fa fa-dribbble"></i></a>
                                 <a href="#pablo" class="btn btn-just-icon btn-link btn-twitter"><i class="fa fa-twitter"></i></a>
-                                <a href="#pablo" class="btn btn-just-icon btn-link btn-pinterest"><i class="fa fa-pinterest"></i></a>
+                                 <a href="#pablo" class="btn btn-just-icon btn-link btn-pinterest"><i class="fa fa-pinterest"></i></a>
 	                        </div>
 	                    </div>
     	            </div>
                 </div>
+                <p id="ideaid" name="{{.Idea.Id}}"   ><stong> IdeaId </strong></p>
                 <div class="row" id="title">
                   <h3>Title:</h3>
-                  <p class="text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempora assumenda sit quidem. Quos error laudantium nostrum eius adipisci dolorum a quas. Ipsa culpa perspiciatis quaerat itaque et voluptates iste placeat.</p> 
+                  <p class="text-justify"><h2>{{.Idea.Title}}.</h2></p> 
                 </div>
                 <div class="row">
                   <h4>Description</h4>
-                  <p class="text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempora assumenda sit quidem. Quos error laudantium nostrum eius adipisci dolorum a quas. Ipsa culpa perspiciatis quaerat itaque et voluptates iste placeat.</p> 
+                  <p class="text-justify"><h2>{{.Idea.Description}}</h2></p> 
                   <!--<p class="text-justify">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempora assumenda sit quidem. Quos error laudantium nostrum eius adipisci dolorum a quas. Ipsa culpa perspiciatis quaerat itaque et voluptates iste placeat.</p> -->
 
                 </div>
                 <div class="row">
                   <div class="col-sm-2"><a href="#" class="btn btn-info" role="button">file</a></div>            
                   <div class="col-sm-2">
-                    <a href="#" id="trigger">Pdf file</a>
+                    {{range .Idea.Resources}}
+                    <a href="{{.}}" id="trigger"> View  </a>
+                    {{end}}
                     <div id="dialog" style="display:none">
                       <div>
                       <iframe src="#pablo"></iframe>
@@ -58,19 +134,21 @@
                <div class="row">
                 <div class="col-sm-2">
                     <div class="raised-block">
-                        <p>X votes</p>
+                        <p><h1>{{.Idea.Numberofvotes }} votes</h1></p>
                     </div>
                 </div>
                 <div class="col-sm-2">
                     <div class="raised-block">
-                        <p>Y comments</p>
+                        <p><h1>{{.Idea.Numberofcomment }} comments</h1></p>
                     </div>
                 </div>
             </div>
             <form>
                 <div class="row">
-                  <button type="button" class="btn btn-primary active">Vote</button>
+                  <a >
+                  <button type="button"  class="btn btn-primary active">Vote</button>
                 </div>
+              </a>
 
                       <div class="md-form amber-textarea active-amber-textarea">
                         <i class="fas fa-pencil-alt prefix"></i>
@@ -79,8 +157,18 @@
                 <div class="commentbtn">
                   <button type="button" class="btn btn-primary active">Comment</button>
                 </div>
+
+<div id="Comments"  class="row" >
+
+</div>
+
               </form>
              </form> 
             </div>  
+            <script src="/public/js/popper.js"></script>
+            <script src="/public/js/bootstrap.min.js"></script>
+            <script src="/public/js/main.js"></script>
+    
+
 </body >
 </html>

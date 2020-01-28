@@ -183,3 +183,22 @@ func (sessionhandler *Cookiehandler) Authorize(request *http.Request) (IsAdmin b
 	}
 	return IsAdmin, IsUser
 }
+
+func (sessionhandle *Cookiehandler) RandomToken() string {
+
+	token := jwt.New(jwt.SigningMethodHS256)
+	tokenString, _ := token.SignedString(jwtKey)
+	return tokenString
+
+}
+
+func (sessionhandle *Cookiehandler) ValidateForm(tokenstring string) bool {
+
+	token, err := jwt.Parse(tokenstring, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil || !token.Valid {
+		return false
+	}
+	return true
+}
