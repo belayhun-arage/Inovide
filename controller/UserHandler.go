@@ -97,6 +97,11 @@ func (user_Admin *UserHandler) RegisterUser(writer http.ResponseWriter, request 
 	// biography := request.FormValue("biography")
 	person.Email = email
 	person.Username = username
+	isAdmin, _ := user_Admin.Sessionservice.Authorize(request)
+
+	if isAdmin {
+		person.IsAdmin = true
+	}
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), 12)
 	if err != nil {
 		systemmessage.Succesful = false
@@ -170,9 +175,9 @@ func (user_Admin *UserHandler) TemplateRegisterUser(writer http.ResponseWriter, 
 }
 func (user_Admin *UserHandler) ServeHome(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	// username, password, present := ReadSession(request)
-	id, name, ok := user_Admin.Sessionservice.Valid(request)
+	id, name, _ := user_Admin.Sessionservice.Valid(request)
 	var person = &entity.Person{}
-	if ok {
+	if id >= 1 {
 		person.ID = uint(id)
 		person.Username = name
 		// person.ID= uint(id)
@@ -189,8 +194,6 @@ func (user_Admin *UserHandler) ServeHome(writer http.ResponseWriter, request *ht
 		person = nil
 
 	}
-
-	/*The Templating work TO be Done to Render the User information */
 	SystemTemplates.ExecuteTemplate(writer, "Home2.html", person)
 }
 
@@ -247,6 +250,7 @@ func (user_controller *UserHandler) LogInRequest(writer http.ResponseWriter, req
 			fmt.Println("\n\n\n\n\n\nThe Person DOes Exist\n\n\n\n\n\n\n\n ")
 			session := &entity.Session{
 				Userid:   int(person.ID),
+				IsAdmin:  person.IsAdmin,
 				Username: person.Username,
 			}
 			user_controller.Sessionservice.DeleteSession(writer, request)
@@ -416,4 +420,25 @@ func (user_controller *UserHandler) EditProfile(writer http.ResponseWriter, requ
 	systemmessage.Succesful = false
 	systemmessage.Message = "Can't update !"
 	return person, systemmessage
+}
+
+func (user_controller *UserHandler) SearchUsers(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+
+	users := &[]entity.Person{}
+
+	jsonusers, _ := json.Marshal(users)
+
+	writer.Header().Add("Content-Type", "application/json")
+	username := request.FormValue("username")
+
+	if username == "" {
+		writer.Write(jsonusers)
+	}
+
+	systemmessage := user_controller.userservice.SearchUsers(users, username) //     .userservice.SearchUsers(users , username )
+	if systemmessage.Succesful {
+		jsonusers, _ = json.Marshal(users)
+		writer.Write(jsonusers)
+	}
+	writer.Write(jsonusers)
 }

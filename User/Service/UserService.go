@@ -10,18 +10,18 @@ import (
 var er error
 
 type UserService struct {
-	userrepo *repository.UserRepo
+	Userrepo *repository.UserRepo
 }
 
 func NewUserService(userep *repository.UserRepo) *UserService {
-	return &UserService{userrepo: userep}
+	return &UserService{Userrepo: userep}
 }
 
 var message *entity.SystemMessage
 
 func (userService *UserService) RegisterUser(person *entity.Person) *entity.SystemMessage {
 	message = &entity.SystemMessage{}
-	_, val := userService.userrepo.CreateUser(person)
+	_, val := userService.Userrepo.CreateUser(person)
 	defer recover()
 	message.Message = "Can't Save The User "
 	message.Succesful = false
@@ -46,7 +46,7 @@ var systemmessagechu *entity.SystemMessage
 func (userService *UserService) CheckUser(person *entity.Person) *entity.SystemMessage {
 	systemmessagechu = &entity.SystemMessage{}
 
-	theBool := userService.userrepo.CheckUser(person)
+	theBool := userService.Userrepo.CheckUser(person)
 
 	fmt.Print(person.ID, " ## ChechUser\n\n")
 	if theBool {
@@ -62,7 +62,7 @@ func (userService *UserService) CheckUser(person *entity.Person) *entity.SystemM
 func (userService *UserService) GetUser(person *entity.Person) *entity.SystemMessage {
 
 	message := &entity.SystemMessage{}
-	bools := userService.userrepo.GetUser(person)
+	bools := userService.Userrepo.GetUser(person)
 
 	if bools == 1 {
 
@@ -79,7 +79,7 @@ func (userService *UserService) GetUser(person *entity.Person) *entity.SystemMes
 
 func (UserService *UserService) AdminDeleteuser(person *entity.Person) *entity.SystemMessage {
 	systemmessage := &entity.SystemMessage{}
-	errors := UserService.userrepo.DeleteUser(person)
+	errors := UserService.Userrepo.DeleteUser(person)
 	if errors != nil {
 
 		systemmessage.Message = "Can't Delete The User "
@@ -94,7 +94,7 @@ func (UserService *UserService) AdminDeleteuser(person *entity.Person) *entity.S
 
 func (userService *UserService) GetUserById(person *entity.Person) *entity.SystemMessage {
 	message := &entity.SystemMessage{}
-	bools := userService.userrepo.GetUserById(person)
+	bools := userService.Userrepo.GetUserById(person)
 
 	if bools {
 		message.Message = "Succesfully Fetched "
@@ -110,7 +110,7 @@ func (userService *UserService) GetUserById(person *entity.Person) *entity.Syste
 func (userservice *UserService) FollowUser(followerid, followingid int) *entity.SystemMessage {
 	systemmessage := &entity.SystemMessage{}
 
-	erro := userservice.userrepo.FollowUser(followingid, followerid)
+	erro := userservice.Userrepo.FollowUser(followingid, followerid)
 	if erro != nil {
 		return systemmessage
 	}
@@ -119,7 +119,7 @@ func (userservice *UserService) FollowUser(followerid, followingid int) *entity.
 func (userservice *UserService) UpdateUser(person *entity.Person) *entity.SystemMessage {
 	systemmessage := &entity.SystemMessage{}
 
-	erro, val := userservice.userrepo.UpdateUser(person)
+	erro, val := userservice.Userrepo.UpdateUser(person)
 
 	if erro != nil {
 
@@ -141,7 +141,7 @@ func (userservice *UserService) UpdateUser(person *entity.Person) *entity.System
 func (userservice *UserService) UnFollowUser(followingid, followerid int) *entity.SystemMessage {
 	systemmessage := &entity.SystemMessage{}
 
-	erro := userservice.userrepo.UnFollowUser(followingid, followerid)
+	erro := userservice.Userrepo.UnFollowUser(followingid, followerid)
 	if erro != nil {
 		systemmessage.Message = "Operation Is Not Succesfull"
 		systemmessage.Succesful = false
@@ -152,7 +152,7 @@ func (userservice *UserService) UnFollowUser(followingid, followerid int) *entit
 	return systemmessage
 }
 func (userservice *UserService) NewIdeas(person *entity.Person) (*entity.SystemMessage, *[]entity.Idea) {
-	idArrayOFPersonsIAmFollowing, err := userservice.userrepo.ListOfFolowingId(person) // Returning []int and error
+	idArrayOFPersonsIAmFollowing, err := userservice.Userrepo.ListOfFolowingId(person) // Returning []int and error
 	systemmessage := &entity.SystemMessage{}
 	if err != nil {
 		systemmessage.Message = "Can't Get The Id OF Users I Am Following "
@@ -163,7 +163,7 @@ func (userservice *UserService) NewIdeas(person *entity.Person) (*entity.SystemM
 		systemmessage.Message = "The List of Users Id I AM Followisng Found "
 	}
 
-	listofIdeas, err := userservice.userrepo.ListOfIdeasById(idArrayOFPersonsIAmFollowing) // returning the list of ideas that for each User Id Passing the List of following
+	listofIdeas, err := userservice.Userrepo.ListOfIdeasById(idArrayOFPersonsIAmFollowing) // returning the list of ideas that for each User Id Passing the List of following
 
 	if err != nil {
 		systemmessage.Message = "Can't Get The Id OF Users I Am Following "
@@ -171,4 +171,32 @@ func (userservice *UserService) NewIdeas(person *entity.Person) (*entity.SystemM
 		return systemmessage, nil
 	}
 	return systemmessage, listofIdeas
+}
+
+func (userService *UserService) SearchUsers(users *[]entity.Person, username string) *entity.SystemMessage {
+	systemmessage := &entity.SystemMessage{}
+	systemmessage.Message = "Can't Found Any User By Thsi Name "
+	systemmessage.Succesful = false
+	rowsaffected := userService.Userrepo.SearchUsers(users, username)
+	if rowsaffected <= 0 {
+		return systemmessage
+	}
+	systemmessage.Message = "success fully Fetched "
+	systemmessage.Succesful = true
+	return systemmessage
+}
+
+func (UserService *UserService) AdminDeleteIdea(idea *entity.Idea) *entity.SystemMessage {
+	systemmessage := &entity.SystemMessage{}
+	errors := UserService.Userrepo.DeleteIdea(idea)
+	if errors != nil {
+
+		systemmessage.Message = "Can't Delete The Idea "
+		systemmessage.Succesful = false
+
+	} else {
+		systemmessage.Message = "Succesfully Deleted The idea"
+		systemmessage.Succesful = true
+	}
+	return systemmessage
 }

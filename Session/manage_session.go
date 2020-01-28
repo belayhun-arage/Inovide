@@ -33,6 +33,7 @@ func (coockiehandler *Cookiehandler) SaveSession(writer http.ResponseWriter, ses
 	usercookie := &entity.Claim{
 		Username: session.Username,
 		Id:       session.Userid,
+		IsAdmin:  session.IsAdmin,
 		StandardClaims: jwt.StandardClaims{
 			// In JWT, the expiry time is expressed as unix milliseconds
 			ExpiresAt: expirationTime.Unix(),
@@ -58,6 +59,7 @@ func (coockiehandler *Cookiehandler) SaveSession(writer http.ResponseWriter, ses
 	http.SetCookie(writer, &cookie)
 	log.Print(cookie)
 
+	session.IsAdmin = false
 	erro := coockiehandler.Sessionrepo.CreateSession(session)
 	if erro != nil {
 		Succesfull = false
@@ -130,4 +132,54 @@ func (sessionhandler *Cookiehandler) Valid(request *http.Request) (int, string, 
 		return -1, "", sucess
 	}
 	return claims.Id, claims.Username, sucess
+}
+
+func (sessionhandler *Cookiehandler) Authorize(request *http.Request) (IsAdmin bool, IsUser bool) {
+	c, err := request.Cookie("inovidetoken")
+
+	defer recover()
+	// fmt.Println(c.Value)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	if err != nil {
+		IsAdmin = false
+		IsUser = false
+		return IsAdmin, IsUser
+	}
+	tknStr := c.Value
+	claims := &entity.Claim{}
+	tkn, err := jwt.ParseWithClaims(tknStr, claims, func(token *jwt.Token) (interface{}, error) {
+		return jwtKey, nil
+	})
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			fmt.Println("two")
+
+			IsAdmin = false
+			IsUser = false
+			return IsAdmin, IsUser
+		}
+		fmt.Println("three")
+
+		IsAdmin = false
+		IsUser = false
+		return IsAdmin, IsUser
+
+	}
+	if !tkn.Valid {
+		fmt.Println("four")
+
+		IsAdmin = false
+		IsUser = false
+		return IsAdmin, IsUser
+	}
+
+	IsUser = true
+	if claims.IsAdmin {
+		IsAdmin = true
+	} else {
+		IsAdmin = false
+	}
+	return IsAdmin, IsUser
 }

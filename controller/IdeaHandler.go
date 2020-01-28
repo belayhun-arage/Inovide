@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 
+	CommentRepo "github.com/Projects/Inovide/Comment/Repository"
 	ideaService "github.com/Projects/Inovide/Idea/Service"
 	session "github.com/Projects/Inovide/Session"
 	UsableFunctions "github.com/Projects/Inovide/Usables"
@@ -26,6 +27,7 @@ type IdeaHandler struct {
 	commenthandler *CommentHandler
 	userrouter     *UserHandler
 	Session        *session.Cookiehandler
+	commentrepo    *CommentRepo.CommentRepo
 }
 
 func NewIdeaHandler(theService *ideaService.IdeaService,
@@ -35,6 +37,10 @@ func NewIdeaHandler(theService *ideaService.IdeaService,
 		commenthandler: commenthandle,
 		userrouter:     userrouters}
 }
+func (ideahandle *IdeaHandler) SetCommentRepo(commentrepo *CommentRepo.CommentRepo) {
+	commentrepo = commentrepo
+}
+
 func (idea_controller *IdeaHandler) CreateIdeaPage(writer http.ResponseWriter, request *http.Request, param httprouter.Params) {
 	SystemTemplates.ExecuteTemplate(writer, "createIdeaMod.html", nil)
 }
@@ -302,72 +308,124 @@ func (idea_Admin *IdeaHandler) VoteIdea(writer http.ResponseWriter, request *htt
 }
 
 // TODO This will be done after the Comment Application of the System Is Done
-func (idea_Admin *IdeaHandler) GetDetailIdea(writer http.ResponseWriter, request *http.Request) *entity.IdeaPersonComments {
-	ideapersoncomment := &entity.IdeaPersonComments{}
+func (idea_Admin *IdeaHandler) GetDetailIdea(writer http.ResponseWriter, request *http.Request) *entity.GeneralIdeaPersonComments {
 	idea := idea_Admin.GetIdea(writer, request)
-	commentsList := &[]entity.Comment{}
-	commentwithpersons := &[]entity.CommentWithPerson{}
-	ok := idea_Admin.commenthandler.GetComments(commentsList, idea.Id)
+	commentsList := []entity.Comment{}
+	commentwithpersons := []entity.CommentWithPerson{}
+	ideapersoncomment := &entity.GeneralIdeaPersonComments{}
+	commentsList = idea_Admin.commentrepo.GetCommentsa(idea.Id)
 	user := idea_Admin.userrouter.UserById(idea.Ideaownerid)
-
-	if !ok || idea == nil || user == nil {
+	IdeaPersonComments := &entity.IdeaPersonComments{}
+	IdeaPersonComments.Idea = *idea
+	IdeaPersonComments.Succesful = true
+	if idea == nil || user == nil {
+		ideapersoncomment.IdeaOwner = user
 		ideapersoncomment.Succesful = false
 		return ideapersoncomment
 	}
+	ideapersoncomment.IdeaOwner = user
 	ideapersoncomment.Succesful = true
-	idea_Admin.commenthandler.GetCommentWithPersons(commentwithpersons, commentsList)
-	if commentwithpersons == nil {
-		return nil
+	for index, comment := range commentsList {
+
+		usr := idea_Admin.userrouter.UserById(comment.Commentorid)
+		newcommentwithperson := entity.CommentWithPerson{}
+		newcommentwithperson.Person = *usr
+		newcommentwithperson.Comment = &comment
+		commentwithpersons[index] = newcommentwithperson
 	}
+	IdeaPersonComments.CommentAndPerson = commentwithpersons
+
 	ideapersoncomment.Succesful = true
-	ideapersoncomment.CommentAndPerson = *commentwithpersons
-	ideapersoncomment.Idea = *idea
+	ideapersoncomment.IdeaRelatedData = IdeaPersonComments
+	IdeaPersonComments.Idea = ideapersoncomment.IdeaRelatedData.Idea
+
 	return ideapersoncomment
 }
-func (idea_Admin *IdeaHandler) TemplateGetDetailIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
-	listed := idea_Admin.GetDetailIdea(writer, request)
-	SystemTemplates.ExecuteTemplate(writer, "viewidea.layout.html", listed)
+
+func (idea_Admin *IdeaHandler) GetDetailIdeas(writer http.ResponseWriter, request *http.Request) entity.FullIdeaView {
+
+	FullIdeaView := entity.FullIdeaView{}
+	person := entity.Person{}
+	Idea := entity.Idea{}
+	// comments := []entity.Comment{}
+	// commentwithperson := []entity.CommentWithPerson{}
+	ideaid, err := strconv.Atoi(request.FormValue("ideaid"))
+	if err != nil {
+		fmt.Println("The Idea id Take  ")
+
+		return FullIdeaView
+	}
+	Idea.Id = ideaid
+	systemmessage := idea_Admin.ideaservice.GetIdea(&Idea, ideaid)
+	if !systemmessage.Succesful {
+		fmt.Println("The Idea Ckeck ")
+		return FullIdeaView
+	}
+
+	person.ID = uint(Idea.Ideaownerid)
+	systemmessage = idea_Admin.userrouter.userservice.GetUser(&person)
+	if !systemmessage.Succesful {
+		fmt.Println("The useckache  Ckeck ", person.ID)
+
+		return FullIdeaView
+	}
+	// comments = idea_Admin.commentrepo.GetCommentsa(ideaid)
+	// if len(comments) > 0 {
+	// 	for idx, comment := range comments {
+	// 		newperson := entity.Person{ID: uint(comment.Commentorid)}
+	// 		idea_Admin.userrouter.userservice.CheckUser(&newperson)
+	// 		commentWithPerson := entity.CommentWithPerson{
+	// 			Person:  &newperson,
+	// 			Comment: &comment,
+	// 		}
+
+	// 		commentwithperson[idx] = commentWithPerson
+	// 	}
+
+	// }
+	FullIdeaView.Success = true
+	FullIdeaView.Person = person
+	FullIdeaView.Idea = Idea
+	// FullIdeaView.CommentWithPerson = commentwithperson
+	return FullIdeaView
+
 }
 
-// func (idea_Admin *IdeaHandler) SaveComment(writer http.ResponseWriter, request *http.Request) {
-// 	request.ParseForm()
-// 	fmt.Println("Inside The Handler ")
-// 	ideaid, err := strconv.Atoi(request.FormValue("ideaid"))
+func (ideahandler *IdeaHandler) GetCommentWithPerson(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 
-// 	if err != nil {
-// 		return
-// 	}
-// 	commentorid, err := strconv.Atoi(request.FormValue("commentorid"))
-// 	if err != nil {
-// 		return
-// 	}
-// 	commentdata := request.FormValue("commentdata")
+	writer.Header().Add("Content-Type", "application/json")
+	ideaid, err := strconv.Atoi(request.FormValue("ideaid"))
+	commentwithperson := []entity.CommentWithPerson{}
+	jsoncommentwithperson, _ := json.Marshal(commentwithperson)
+	if err != nil {
+		writer.Write(jsoncommentwithperson)
+	}
+	commentwithperson = ideahandler.userrouter.userservice.Userrepo.GetCommentWithPerson(ideaid)
+	jsoncommentwithperson, _ = json.Marshal(commentwithperson)
+	writer.Write(jsoncommentwithperson)
 
-// 	if commentdata == "" {
-// 		return
-// 	}
-// comment := &entity.Comment{Ideaid: ideaid, Commentorid: commentorid, Commentdata: commentdata}
-// //systemmessage := idea_Admin.ideaservice.SaveCommentIdea(comment)
+}
 
-// mapping := map[string]interface{}{"systemmessage": systemmessage,
-// 	"comment": comment}
-// jsonbinary, err := json.Marshal(mapping) //  can be sent for the user through  Template(The Map) or api (The Json )
-// if err != nil {
-// 	return
-// }
-// writer.Write(jsonbinary)
-// }
+func (idea_Admin *IdeaHandler) TemplateGetDetailIdea(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
+	listed := idea_Admin.GetDetailIdeas(writer, request)
+
+	fmt.Println(listed.Success)
+	SystemTemplates.ExecuteTemplate(writer, "bviewidea.html", listed)
+}
+
 func (ideahandler *IdeaHandler) ApiMyIdeas(writer http.ResponseWriter, request *http.Request, _ httprouter.Params) {
 	ideas := &[]entity.Idea{}
 	id, _, _ := ideahandler.Session.Valid(request)
 	if id <= 0 {
-		//SystemTemplates.ExecuteTemplate(writer, "four04.html", nil)
 		SystemTemplates.ExecuteTemplate(writer, "youridea.html", nil)
+		return
 	}
 	systemmessage := ideahandler.ideaservice.MyIdeas(id, ideas)
 	if systemmessage.Succesful {
 		SystemTemplates.ExecuteTemplate(writer, "youridea.html", ideas)
+		return
 	} else {
 		SystemTemplates.ExecuteTemplate(writer, "youridea.html", nil)
+		return
 	}
 }

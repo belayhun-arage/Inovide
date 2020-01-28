@@ -69,7 +69,7 @@ func (commentHandler *CommentHandler) CreateComment(writer http.ResponseWriter, 
 	systemmessageforuser := commentHandler.Userrouter.userservice.GetUser(person)
 	if !systemmessageforuser.Succesful {
 		fmt.Println("UsrNot Found ")
-		commentWithThePerson.Person = person
+		commentWithThePerson.Person = *person
 		return commentWithThePerson, systemmessage
 	}
 	if commentdata == "" {
@@ -84,14 +84,14 @@ func (commentHandler *CommentHandler) CreateComment(writer http.ResponseWriter, 
 	systemMessage := commentHandler.CommentService.CreateComment(comment)
 
 	if systemMessage.Succesful {
-		commentWithThePerson.Person = person
+		commentWithThePerson.Person = *person
 		commentWithThePerson.Comment = comment
 		commentWithThePerson.Succesfull = true
 		systemMessage.Succesful = true
 		return commentWithThePerson, systemmessage
 	}
 	commentWithThePerson.Succesfull = false
-	commentWithThePerson.Person = person
+	commentWithThePerson.Person = *person
 	commentWithThePerson.Comment = comment
 	systemMessage.Succesful = false
 	return commentWithThePerson, systemmessage
@@ -104,7 +104,7 @@ func (commentHandler *CommentHandler) GetCommentWithPersons(commentwithpersons *
 			return commentwithpersons
 		}
 		commentwithperson := entity.CommentWithPerson{}
-		commentwithperson.Person = person
+		commentwithperson.Person = *person
 		commentwithperson.Comment = &comment
 		commentwithperson.Succesfull = true
 

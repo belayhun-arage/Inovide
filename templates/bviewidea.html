@@ -1,7 +1,7 @@
-{{define "viewidea.content"}}
+
 <html>
 <head>
-  <link rel="stylesheet" href="../public/css/bviewidea.css">
+  <link rel="stylesheet" href="/public/css/bviewidea.css">
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-material-design@4.1.1/dist/css/bootstrap-material-design.min.css" integrity="sha384-wXznGJNEXNG1NFsbm0ugrLFMQPWswR3lds2VeinahP8N0zJw9VWSopbjv2x7WCvX" crossorigin="anonymous">
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons">
@@ -9,13 +9,14 @@
 </head>
 
 <body >
+  {{template "sidebarr.html"}}
   <div class="main">
-            <div class="container">
+            <div  style="margin: 100px;" class="container">
                 <div class="row">
 	                <div class="col-md-6 ml-auto mr-auto">
         	           <div class="profile">
 	                        <div>
-	                            <img src="../public/image/saad.jpg" alt="Circle Image" class="img-raised rounded-circle img-fluid">
+	                            <img src="/public/image/saad.jpg" alt="Circle Image" class="img-raised rounded-circle img-fluid">
 	                        </div>
 	                        <div class="name">
 	                            <h3 class="title">user name:<br>Followers</h3>
@@ -50,8 +51,8 @@
  
                 </div>
                 <div class="row">
-                  <div class="col-sm-2"><img src="../public/image/is.png" class="rounded float-left" alt="Image-one"></div>
-                  <div class="col-sm-2"><img src="../public/image/is.png" class="rounded float-right" alt="image-two"></div>
+                  <div class="col-sm-2"><img src="/public/image/is.png" class="rounded float-left" alt="Image-one"></div>
+                  <div class="col-sm-2"><img src="/public/image/is.png" class="rounded float-right" alt="image-two"></div>
                </div>
                <br>
                <div class="row">
@@ -83,5 +84,3 @@
             </div>  
 </body >
 </html>
-
-{{end}}

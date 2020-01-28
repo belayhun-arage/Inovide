@@ -27,7 +27,12 @@ type Person struct {
 	Ideas     int    `json:"idea,omitempty"  gorm:"column:ideas"`                          // bson:"idea,omitempty"`
 	Imagedir  string `json:"imagdire,omitempty" gorm:"column:imagedir"`                    //  bson:"imagedirectory,omitempty"`
 	Paid      int    `json:"paid,omitempty"  `                                             // bson:"paid,omitempty"`
+	IsAdmin   bool   `json:"IsAdmin,omitempty"`
+}
 
+type Admin struct {
+	Person
+	IsAdmin bool `json:"IsAdmin"`
 }
 
 type SystemMessage struct {
@@ -90,7 +95,7 @@ type Votee struct {
 
 type CommentWithPerson struct {
 	Succesfull bool     `json:"succesful:omitempty"`
-	Person     *Person  `json : "person, omitempty"`
+	Person     Person   `json : "person, omitempty"`
 	Comment    *Comment `json: "comment, omitempty"`
 }
 
@@ -110,11 +115,20 @@ type GeneralIdeaPersonComments struct {
 type Claim struct {
 	Username string `json:"username,omitempty"`
 	Id       int    `json:"id,omitempty"`
+	IsAdmin  bool   `json:"isadmin:omitempty"`
 	jwt.StandardClaims
 }
 
 type Session struct {
 	Id       int    `json:"id,omitempty"`
-	Userid   int    `json:userid,omitempty`
+	Userid   int    `json:"userid,omitempty"`
+	IsAdmin  bool   `json:"IsAdmin, omitempty"  gorm:"is_admin:omitempty"`
 	Username string `json:"username,omitempty"`
+}
+
+type FullIdeaView struct {
+	Success           bool
+	Person            Person
+	Idea              Idea
+	CommentWithPerson []CommentWithPerson
 }

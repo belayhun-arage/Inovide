@@ -7,6 +7,8 @@ import (
 	"text/template"
 	"time"
 
+	AdminRepository "github.com/Projects/Inovide/Admin/Repository"
+
 	ChatRepository "github.com/Projects/Inovide/Chat/Repository"
 	ChatService "github.com/Projects/Inovide/Chat/Service"
 	CommentRepo "github.com/Projects/Inovide/Comment/Repository"
@@ -46,9 +48,10 @@ var commentservice *CommentService.CommentService
 var commentrepo *CommentRepo.CommentRepo
 var apicontroller *handler.ApiUserHandler
 var apiideahandler *handler.ApiIdeaHandler
+var adminhandler *handler.AdminHandler
+var adminrepo *AdminRepository.AdminRepo
 
 func init() {
-
 	handler.SetSystemTemplate(TemplateGroupUser)
 	/*    Initializing Users  Structure        <<Begin>>   */
 	db, _ = config.InitializPostgres()
@@ -62,14 +65,20 @@ func init() {
 	ideaRepository = IdeaRepository.NewIdeaRepo(db)
 	ideaservice = ideaService.NewIdeaService(ideaRepository)
 	idearouter = handler.NewIdeaHandler(ideaservice, commentrouter, userrouter, sessionHandler)
-
 	initChatComponents()
 	initCommentComponent()
 	initApiRelatedData()
+	initAdmin()
+	idearouter.SetCommentRepo(commentrepo)
 }
 
 func initApiRelatedData() {
 	apicontroller = &handler.ApiUserHandler{}
+}
+
+func initAdmin() {
+	adminrepo = AdminRepository.NewAdminRepo(db)
+	adminhandler = handler.NewAdminHandler(adminrepo, userrouter, sessionHandler)
 }
 
 func initAprIdeaHandler() {
@@ -120,6 +129,12 @@ func main() {
 	router.POST("/user/register/", userrouter.TemplateRegistrationRequest)
 	router.GET("/user/profile/", userrouter.ViewProfile)
 
+	router.GET("/api/v1/admin/", userrouter.SearchUsers)
+	router.DELETE("/api/admin/users/:userid", adminhandler.AdminDeleteIdea)
+	router.DELETE("/api/admin/ideas/:ideaid", adminhandler.AdminDeleteIdea)
+	router.GET("/admin/analysis/", adminhandler.AnalysisPage)
+	router.POST("/admin/admins/", adminhandler.CreateAdmin)
+
 	router.POST("/api/v1/user/register/", apicontroller.ApiRegisterUser)
 	router.POST("/user/signin/", userrouter.TemplateLogInPage)
 	router.PUT("/api/v1/user/update/", userrouter.ApiEditeProfile)
@@ -132,6 +147,7 @@ func main() {
 	router.DELETE("/ideas/", idearouter.DeleteIdea)
 	router.GET("/ideas/", idearouter.TemplateGetDetailIdea)
 	router.GET("/default/idea/", idearouter.ApiGetIdea)
+	router.GET("/idea/commentandpersons/", idearouter.GetCommentWithPerson)
 	//_-----------------Commenting related ---------
 	router.POST("/idea/comments/", commentrouter.CommentOnIdea)
 	router.DELETE("/comments/comment/", commentrouter.DeleteComment)

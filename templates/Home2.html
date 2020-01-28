@@ -17,11 +17,8 @@
 <body>
 
 <div class="super_container">
-	
-
 <script>
-	function LogOut(){
-  
+	function LogOut(){  
 		$.ajax({
 			url:"/logout/",
 			type:"GET",
@@ -33,26 +30,12 @@
 
 					console.log("Here I Am ");
 				var container = document.getElementById("top_bar_content");
-
-
-
-
-
 				var oldone = document.getElementById("register_logout");
 				var specialDiv = document.createElement("div");
-				specialDiv.setAttribute("class" , "register_login");
-				var maindiv= document.createElement("div");
-				maindiv.setAttribute("class" , "register");
-				maindiv.setAttribute("href" , "/user/register/");
-				maindiv.innerHTML="register";
-
-
-				var login= document.createElement("div");
-				login.setAttribute("class" , "login");
-				login.setAttribute("href" , "/user/signin/");
-				login.innerHTML="Log In";
-				specialDiv.appendChild(maindiv);
-				specialDiv.appendChild(login);
+				specialDiv.innerHTML=`<div class="register_login">
+										<div class="register"><a href="user/register/">register</a></div>
+										<div class="login"><a href="user/signin/">login</a></div>
+									</div>`
 				container.replaceChild(specialDiv  ,oldone );
 				}
 			},
@@ -95,7 +78,6 @@ function searchIdea(){
 			var titile=idea.title;
             var description=idea.description;
             var visibility= idea.visibility; 
-
             // console.log(data);
 			var owl_item = document.createElement("div");
 			owl_item.setAttribute("class" , "owl-item");

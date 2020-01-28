@@ -16,6 +16,13 @@ func NewUserRepo(sqlite *gorm.DB) *UserRepo {
 	return &UserRepo{db: sqlite}
 }
 
+func (userrepo *UserRepo) SearchUsers(users *[]entity.Person, username string) int64 {
+
+	rowsaffected := userrepo.db.Table("users").Select("username , email , id , firstname , lastname ").Where("username <> ? ", username).Find(users).RowsAffected
+	defer recover()
+
+	return rowsaffected
+}
 func (users *UserRepo) CreateUser(enti *entity.Person) (error, int64) {
 
 	rowsaffected := users.db.Table("users").Create(enti).RowsAffected
@@ -151,4 +158,31 @@ func (userrepo *UserRepo) UploadProfilePicture(person *entity.Person) []error {
 		return theerror
 	}
 	return nil
+}
+
+func (UserRepo *UserRepo) DeleteIdea(idea *entity.Idea) []error {
+	erro := UserRepo.db.Table("idea").Debug().Delete(idea).GetErrors()
+	return erro
+}
+func (users *UserRepo) GetCommentWithPerson(ideaid int) []entity.CommentWithPerson {
+	// comments = idea_Admin.commentrepo.GetCommentsa(ideaid)mment
+	commentswithperson := []entity.CommentWithPerson{entity.CommentWithPerson{}}
+	comments := []entity.Comment{}
+	rowsaff := users.db.Table("comment").Where(entity.Idea{}, ideaid).Find(&comments).RowsAffected
+	if rowsaff <= 0 {
+		return commentswithperson
+	}
+	if len(comments) > 0 {
+		for _, comment := range comments {
+			newperson := entity.Person{ID: uint(comment.Commentorid)}
+			users.CheckUser(&newperson)
+			commentWithPerson := entity.CommentWithPerson{
+				Person:  newperson,
+				Comment: &comment,
+			}
+			commentswithperson = append(commentswithperson, commentWithPerson)
+		}
+	}
+	return commentswithperson
+
 }

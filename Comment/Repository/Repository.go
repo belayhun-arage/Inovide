@@ -26,6 +26,17 @@ func (commentrepo *CommentRepo) GetComments(comment *[]entity.Comment, id int) i
 	defer recover()
 	return err
 }
+
+func (commentrepo *CommentRepo) GetCommentsa(id int) []entity.Comment {
+	comments := []entity.Comment{}
+	bd := commentrepo.db.Table("comment").Where("ideaid=?", id).Find(&comments).RowsAffected
+	defer recover()
+	if bd >= 1 {
+		return comments
+	} else {
+		return []entity.Comment{}
+	}
+}
 func (CommentRepo *CommentRepo) UpdateComment(comment *entity.Comment) []error {
 	erro := CommentRepo.db.Model(&entity.Comment{}).Table("comment").Save(comment).GetErrors()
 	return erro
